@@ -1,0 +1,9 @@
+{
+  "label": "Webpack",
+  "position": 60,
+  "link": {
+    "type": "generated-index",
+    "slug": "FrontEnd/Webpack",
+    "description": "5 minutes to learn the most important Docusaurus concepts."
+  }
+}

@@ -1,0 +1,54 @@
+---
+displayed_sidebar: frontendSidebar
+title: 前端代码中 ESLint 的临时禁用
+keywords: [ESLint, ESLint 禁用]
+tags: [ESLint, ESLint 禁用]
+description: 在前端代码中临时禁用 ESLint
+---
+
+---
+## 单行禁用
+主要是使用 `eslint-disable-line` 和 `eslint-disable-next-line` 注释。使用单行 `//` 或者多行 `/* */` 都可。
+
+**1. 当前行禁用**
+```js
+console.log('debug'); // eslint-disable-line
+
+// 单独禁用 no-console 规则
+console.log('debug'); // ealint-disable-line no-console
+```
+**2. 下一行禁用**
+```js
+// eslint-disable-next-line
+console.log('debug');
+
+// 单独禁用 no-console 规则
+// eslint-disable-next-line no-console
+console.log('debug');
+```
+
+
+## 多行禁用
+使用 `eslint-disable`， 必须使用多行注释包裹 `/* */`
+
+```js
+/* eslint-disable no-console */
+console.log('debug');
+console.log('debugger');
+/* eslint-disable */
+```
+同时禁用多条规则用逗号 `,` 隔开
+```js
+/* eslint-disable no-console,no-unused-vars */
+let debug = 'debug';
+console.log('debugger');
+/* eslint-disable */
+```
+## 整个文件禁用
+在文件开头使用 `eslint-disable`， 必须使用多行注释包裹 `/* */`
+
+```js
+/* eslint-disable */
+
+/* eslint-disable no-console */
+```
