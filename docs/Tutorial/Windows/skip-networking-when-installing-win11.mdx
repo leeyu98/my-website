@@ -1,0 +1,40 @@
+---
+title: 安装 Win11 跳过联网创建本地账户
+tags: [Win11, 联网, 安装 Win11]
+keywords: [Win11, 联网, 安装 Win11]
+description: 安装 Windows11 时，如何跳过联网步骤，创建本地账户。
+---
+
+---
+
+## 方法 1: 我没有 Internet 连接
+
+1. 快捷键 `Shift + F10` 或者 `Fn +Shift + F10` 打开命令行
+2. 输入 `oobe\BypassNRO.cmd` 回车会自动重启，重启完成之后会出现【我没有 Internet 连接】选项
+
+![我没有Internet连接](./images/i-have-no-internet.jpeg)
+
+## 方法 2: 修改注册表
+
+### 1. 终止网络连接进程
+
+1. 快捷键 `Shift + F10` 或者 `Fn +Shift + F10` 打开命令行
+2. 输入 `taskmgr` 打开任务管理器
+3. 终止 `OOBE Network Connection Flow` 进程
+
+![终止网络连接进程](./images/kill-networking-process.jpeg)
+
+> 执行完上述步骤之后，会出现刷新重试按钮。如果刷新之后不能跳过联网，那么需要修改注册表之后再刷新。
+
+### 2. 修改注册表
+
+1. 快捷键 `Shift + F10` 或者 `Fn +Shift + F10` 打开命令行
+2. 输入 `rededit` 打开注册表
+3. 在 `OOBE` 中新建 `DWORD`，字段名为 `BypassNRO`，将值修改为 1
+
+```bash
+# 注册表
+计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE
+```
+
+![注册表BypassNRO](./images/regedit-bypassnro.png)

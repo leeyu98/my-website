@@ -1,0 +1,9 @@
+{
+  "label": "MacOS",
+  "position": 10,
+  "link": {
+    "type": "generated-index",
+    "slug": "Tutorial/MacOS",
+    "description": "5 minutes to learn the most important Docusaurus concepts."
+  }
+}
