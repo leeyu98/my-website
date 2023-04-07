@@ -7,6 +7,7 @@ description: 如何在前端代码中临时禁用 ESLint
 ---
 
 ---
+
 ## 单行禁用
 主要是使用 `eslint-disable-line` 和 `eslint-disable-next-line` 注释。使用单行 `//` 或者多行 `/* */` 都可。
 

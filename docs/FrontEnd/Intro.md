@@ -1,9 +1,10 @@
 ---
 sidebar_position: 0
 displayed_sidebar: frontendSidebar
+title: 前言
 ---
 
-# React Docs Introduction
+# 前言
 
 Let's discover **Docusaurus in less than 5 minutes**.
 

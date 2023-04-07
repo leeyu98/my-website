@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: '爬上神坛的猫',
-  tagline: 'Cat on',
+  title: '长念的博客',
+  tagline: '长念的博客',
   favicon: 'img/favicon.ico',
 
   url: 'https://changnian.netlify.app/',
@@ -64,7 +64,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
         title: '长念的博客',
