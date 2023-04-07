@@ -3,7 +3,7 @@ displayed_sidebar: frontendSidebar
 title: 前端代码中 ESLint 的临时禁用
 keywords: [ESLint, ESLint 禁用]
 tags: [ESLint, ESLint 禁用]
-description: 在前端代码中临时禁用 ESLint
+description: 如何在前端代码中临时禁用 ESLint
 ---
 
 ---
