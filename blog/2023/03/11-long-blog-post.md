@@ -1,6 +1,6 @@
 ---
 slug: long-blog-post
-title: 2023
+title: 测试长长的博客
 authors: wentao
 tags: [hello, docusaurus]
 ---
