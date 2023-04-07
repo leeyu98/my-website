@@ -50,7 +50,20 @@ const config = {
       })
     ]
   ],
-  plugins: ['docusaurus-plugin-sass'], // enable scss
+  plugins: [
+    'docusaurus-plugin-sass',
+    [
+      // 本地搜索插件
+      '@easyops-cn/docusaurus-search-local',
+      /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
+      {
+        // `hashed` is recommended as long-term-cache of index file is possible.
+        hashed: true,
+        // For Docs using Chinese, The `language` is recommended to set to:
+        language: ['en', 'zh']
+      }
+    ]
+  ], // enable scss
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -117,16 +130,8 @@ const config = {
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus'
-              },
-              {
                 label: 'Discord',
                 href: 'https://discordapp.com/invite/docusaurus'
-              },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus'
               }
             ]
           },
@@ -134,17 +139,13 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Blog',
-                to: '/blog'
-              },
-              {
                 label: 'GitHub',
                 href: 'https://github.com/facebook/docusaurus'
               }
             ]
           }
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`
+        copyright: `Copyright © ${new Date().getFullYear()} Jerry's Blog, Inc. Built with Docusaurus.`
       },
       docs: {
         sidebar: {
@@ -155,6 +156,10 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme
+      },
+      colorMode: {
+        disableSwitch: false, // 禁用主题切换
+        respectPrefersColorScheme: true // 自动适应系统主题
       }
     })
 };
