@@ -19,6 +19,9 @@
   --ifm-color-primary-lightest: #3cad6e;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --background-color: rgba(245, 247, 248, 0.5);
+  --mobile-search-background: #f8f8f8;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -31,12 +34,57 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --background-color: #18191c;
+  --mobile-search-background: #454545;
 }
 
+*::selection {
+  background-color: rgba(#25c2a0, 0.4);
+}
+.heart-style {
+  content: '';
+  width: 15px;
+  height: 10px;
+  display: inline-block;
+  background-color: rgba(0, 128, 0, 1);
+  position: absolute;
+  top: 0;
+  right: 4px;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  background-color: rgba(#6bc96c, 0.6);
+}
 #__docusaurus {
   // 导航栏
   nav.navbar {
     backdrop-filter: blur(10px);
+
+    .navbar__items:not(.navbar__items--right) {
+      .navbar__item.navbar__link {
+        position: relative;
+
+        &::before {
+          @extend .heart-style;
+          transition: all 0.25s ease;
+          transform: rotateZ(150deg) translateY(-5.5px) translateX(5.5px) scale(0);
+        }
+        &::after {
+          transition: all 0.2s ease;
+          @extend .heart-style;
+          transform: rotateZ(60deg) translateY(8px) translateX(3px) scale(0);
+        }
+        &.navbar__link--active {
+          &::before {
+            clip-path: polygon(0 0, 33.5% 0, 33.5% 100%, 0 100%);
+            transform: rotateZ(150deg) translateY(-5.5px) translateX(5.5px) scale(1);
+          }
+          &::after {
+            transform: rotateZ(60deg) translateY(8px) translateX(3px) scale(1);
+          }
+        }
+      }
+    }
     // 搜索按钮
     .navbar__search-input {
       transition: all 0.2s ease;
@@ -52,13 +100,25 @@
   }
   // 内容区
   .main-wrapper {
+    // 左侧
     aside.theme-doc-sidebar-container {
       min-height: 100vh;
       border-right: none;
+      nav.menu {
+        & + button.button {
+          border: none;
+          border-top-left-radius: 8px;
+          border-top-right-radius: 8px;
+        }
+      }
+      div[class^='expandButton'] {
+        &:hover {
+        }
+      }
     }
     // 排除博客
     main:not([itemscope]) {
-      border-top-left-radius: 20px;
+      // border-top-left-radius: 20px;
       article {
         a.card {
           border: none;
@@ -86,13 +146,38 @@
                 transition: all 0.3s ease;
                 transition-delay: 0.1s;
                 position: absolute;
-                left: -40px;
+                left: -30px;
               }
               &:hover {
                 padding-left: 40px;
                 a.hash-link {
                   left: 0;
                 }
+              }
+            }
+          }
+        }
+      }
+
+      // 右侧导航目录
+      .theme-doc-toc-desktop {
+        overflow-y: visible;
+        ul.table-of-contents {
+          overflow-x: visible;
+          a.toc-highlight {
+            display: flex;
+            align-items: center;
+            &.table-of-contents__link--active {
+              &::before {
+                content: '';
+                position: absolute;
+                left: 0px;
+                transform: translateX(-3.5px);
+                width: 4px;
+                height: 4px;
+                background-color: var(--background-color);
+                border-radius: 10px;
+                border: 2px solid var(--ifm-color-primary);
               }
             }
           }
@@ -109,6 +194,22 @@
           transition: all 0.2s ease;
           transform: translateY(-2px);
         }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 997px) {
+  .main-wrapper {
+    main:not([itemscope]) {
+      border-top-left-radius: 20px;
+    }
+    // 返回顶部按钮
+    button.theme-back-to-top-button {
+      right: 10rem;
+      bottom: 4rem;
+      &:hover {
+        transform: scale(1.2);
       }
     }
   }

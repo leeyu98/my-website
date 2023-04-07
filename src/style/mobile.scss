@@ -12,3 +12,18 @@
     }
   }
 }
+
+@media screen and (max-width: 375px) {
+  #__docusaurus {
+    nav.navbar {
+      .navbar__search {
+        // 搜索按钮
+        input.navbar__search-input {
+          &:focus {
+            background-color: var(--mobile-search-background);
+          }
+        }
+      }
+    }
+  }
+}

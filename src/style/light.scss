@@ -16,9 +16,18 @@
       }
     }
     .main-wrapper {
+      aside.theme-doc-sidebar-container {
+        nav.menu {
+          & + button.button {
+            // border: none;
+            box-shadow: 0 0 6px 0 rgba($color: #000000, $alpha: 0.05);
+          }
+        }
+      }
       // 排除博客
       main:not([itemscope]) {
-        background-color: #f5f7f899;
+        background-color: rgba(245, 247, 248, 0.5);
+        box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.05);
         article {
           a.card {
             box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.05);
