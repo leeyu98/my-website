@@ -5,6 +5,10 @@
  */
 
 /* You can override the default Infima variables here. */
+@import './style/mobile.scss';
+@import './style/light.scss';
+@import './style/dark.scss';
+
 :root {
   --ifm-color-primary: #2e8555;
   --ifm-color-primary-dark: #29784c;
@@ -29,8 +33,83 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-.main-wrapper {
-  aside {
-    min-height: 100vh;
+#__docusaurus {
+  // 导航栏
+  nav.navbar {
+    backdrop-filter: blur(10px);
+    // 搜索按钮
+    .navbar__search-input {
+      transition: all 0.2s ease;
+      outline-width: 1px;
+      outline-style: solid;
+      &:focus {
+        width: 250px;
+        transition: all 0.2s ease;
+        outline-width: 1px;
+        outline-style: solid;
+      }
+    }
+  }
+  // 内容区
+  .main-wrapper {
+    aside.theme-doc-sidebar-container {
+      min-height: 100vh;
+      border-right: none;
+    }
+    // 排除博客
+    main:not([itemscope]) {
+      border-top-left-radius: 20px;
+      article {
+        a.card {
+          border: none;
+          transition: all 0.2s ease;
+          &:hover {
+            transition: all 0.2s ease;
+            transform: translateY(-2px);
+          }
+        }
+
+        @media screen and (min-width: 997px) {
+          //大标题
+          .theme-doc-markdown.markdown {
+            :is(h2, h3, h4, h5, h6).anchor {
+              position: relative;
+              padding-left: 0;
+              display: flex;
+              flex-direction: row-reverse;
+              align-items: center;
+              justify-content: flex-end;
+              transition: padding 0.3s ease;
+              transition-delay: 0.1s;
+
+              a.hash-link {
+                transition: all 0.3s ease;
+                transition-delay: 0.1s;
+                position: absolute;
+                left: -40px;
+              }
+              &:hover {
+                padding-left: 40px;
+                a.hash-link {
+                  left: 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 上/下一个导航
+    .pagination-nav {
+      .pagination-nav__link {
+        border: none;
+        transition: all 0.2s ease;
+        &:hover {
+          transition: all 0.2s ease;
+          transform: translateY(-2px);
+        }
+      }
+    }
   }
 }

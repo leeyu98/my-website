@@ -1,0 +1,43 @@
+// 亮色主题
+:root[data-theme='light'] {
+  #__docusaurus {
+    nav.navbar {
+      background-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 2px 0px 10px 0 rgba(0, 0, 0, 0.1);
+      // 搜索按钮
+      .navbar__search-input {
+        background-color: rgba(240, 240, 240, 0.5);
+        outline-color: rgba(240, 240, 240, 0.5);
+        &:focus {
+          width: 250px;
+          transition: all 0.2s ease;
+          outline-color: var(--ifm-color-primary-lighter);
+        }
+      }
+    }
+    .main-wrapper {
+      // 排除博客
+      main:not([itemscope]) {
+        background-color: #f5f7f899;
+        article {
+          a.card {
+            box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            &:hover {
+              box-shadow: 0 4px 10px 0 rgba(220, 220, 220, 0.6);
+            }
+          }
+        }
+      }
+      .pagination-nav {
+        .pagination-nav__link {
+          box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.05);
+          background-color: #ffffff;
+          &:hover {
+            box-shadow: 0 4px 10px 0 rgba(220, 220, 220, 0.6);
+          }
+        }
+      }
+    }
+  }
+}

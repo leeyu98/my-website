@@ -1,0 +1,14 @@
+//移动端
+@media screen and (max-width: 996px) {
+  #__docusaurus {
+    // 修复移动端侧边导航栏样式问题
+    .navbar-sidebar__backdrop {
+      min-height: 100vh;
+    }
+    .navbar {
+      .navbar-sidebar {
+        min-height: 100vh;
+      }
+    }
+  }
+}
