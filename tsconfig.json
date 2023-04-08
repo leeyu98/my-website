@@ -1,0 +1,9 @@
+{
+  "extends": "@tsconfig/docusaurus/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "typeRoots": ["./typings"]
+  },
+  "include": ["src", "./typings"],
+  "exclude": ["node_modules", "**/node_modules/*"]
+}
