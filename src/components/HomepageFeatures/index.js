@@ -4,38 +4,40 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: '前端开发',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        涉及基础技能 <code>HTML</code> <code>CSS</code> <code>JavaScript (ES6+)</code> 以及 <code>TypeScript</code>
+        ，打包工具 <code>Webpack</code> <code>Vite</code> 等，热门框架 <code>React</code>
+        {` `}
+        <code>Vue</code>
+        {` `}
+        及其相关的状态管理库等，热门工具库如 <code>lodash</code> <code>dayjs</code> 等。
       </>
-    ),
+    )
   },
   {
-    title: 'Focus on What Matters',
+    title: '猪齿鱼',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        猪齿鱼是工作中需要用到的技术，其中 <code>DatSet</code> 为其关键特性。
       </>
-    ),
+    )
   },
   {
-    title: 'Powered by React',
+    title: '其他工具',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        包括代码管理工具 <code>Git</code>、前端语法校验工具 <code>ESLint</code>、格式化工具 <code>Prettier</code> 等等。
       </>
-    ),
-  },
+    )
+  }
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({ Svg, title, description }) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">

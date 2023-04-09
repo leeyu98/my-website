@@ -1,0 +1,19 @@
+.typing_wrapper {
+  font-size: 2rem;
+  font-weight: 600;
+}
+:root[data-theme='light'] {
+  .cursor {
+    color: #ffffff !important;
+  }
+}
+:root[data-theme='dark'] {
+  .cursor {
+    color: #000000 !important;
+  }
+}
+.cursor {
+  font-weight: 600 !important;
+  vertical-align: text-top;
+  line-height: 2rem;
+}
