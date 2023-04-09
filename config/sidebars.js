@@ -1,5 +1,5 @@
 // @ts-check
-
+// 侧边导航
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */
 const sidebars = {
   frontendSidebar: [

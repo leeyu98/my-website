@@ -7,9 +7,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: '长念的博客',
-  tagline: '长念的博客',
+  tagline: '持续构建中...',
   favicon: 'img/favicon.ico',
-
   url: 'https://changnian.netlify.app/',
   baseUrl: '/',
 
@@ -26,7 +25,7 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh',
-    locales: ['zh']
+    locales: ['zh', 'en']
   },
   presets: [
     [
@@ -34,7 +33,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: require.resolve('./sidebars.js')
+          sidebarPath: require.resolve('./config/sidebars')
         },
         blog: {
           blogTitle: 'Docusaurus 博客！',
@@ -48,101 +47,22 @@ const config = {
     ]
   ],
   plugins: [
-    'docusaurus-plugin-sass',
+    'docusaurus-plugin-sass', // 启用 scss
     [
-      // 本地搜索插件
-      '@easyops-cn/docusaurus-search-local',
+      '@easyops-cn/docusaurus-search-local', // 本地搜索插件
       /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
       {
-        // `hashed` is recommended as long-term-cache of index file is possible.
-        hashed: true,
-        // For Docs using Chinese, The `language` is recommended to set to:
-        language: ['en', 'zh']
+        hashed: true, // `hashed` is recommended as long-term-cache of index file is possible.
+        language: ['en', 'zh'] // 支持搜索的语言
       }
     ]
-  ], // enable scss
+  ],
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: 'img/docusaurus-social-card.jpg',
-      navbar: {
-        title: '长念的博客',
-        logo: {
-          alt: '长念的博客',
-          src: 'img/logo.svg'
-        },
-        items: [
-          {
-            label: '前端',
-            type: 'doc',
-            docId: 'FrontEnd/Intro',
-            position: 'left'
-          },
-          {
-            label: '猪齿鱼',
-            type: 'doc',
-            docId: 'C7N/Intro',
-            position: 'left'
-          },
-          {
-            label: '教程',
-            type: 'doc',
-            docId: 'Tutorial/Intro',
-            position: 'left'
-          },
-          {
-            label: '其他',
-            type: 'doc',
-            docId: 'Other/Intro',
-            position: 'left'
-          },
-          { to: 'blog', label: '博客', position: 'left' },
-          // display at right
-          {
-            href: 'https://github.com/facebook/docusaurus',
-            label: 'GitHub',
-            position: 'right'
-          },
-          {
-            href: 'https://gitee.com/leewentao98',
-            label: 'Gitee',
-            position: 'right'
-          }
-        ]
-      },
-      footer: {
-        style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/intro'
-              }
-            ]
-          },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus'
-              }
-            ]
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus'
-              }
-            ]
-          }
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()} Jerry's Blog, Inc. Built with Docusaurus.`
-      },
+      navbar: require('./config/navbar'),
+      footer: require('./config/footer'),
       docs: {
         sidebar: {
           hideable: true, // 可收起
@@ -162,7 +82,10 @@ const config = {
         minHeadingLevel: 2,
         maxHeadingLevel: 5
       }
-    })
+    }),
+  customFields: {
+    introduction: ['欢迎来到长念的博客', '我是一名前端开发工程师']
+  }
 };
 
 module.exports = config;
