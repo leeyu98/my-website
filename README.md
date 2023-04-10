@@ -1,41 +1,57 @@
-# Website
+# 长念的博客
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+<img width="100" src="./static/img/logo.png" /> 
 
-### Installation
+基于 [Docusaurus 2](https://docusaurus.io/) 构建的个人博客。
 
-```
+
+## 安装
+
+```bash
 $ yarn
 ```
 
-### Local Development
 
-```
+## 本地开发
+
+该命令用于启动本地服务器，并自动打开浏览器，大部分更改会实时更新且无须重启服务器。
+
+```bash
 $ yarn start
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+## 构建
 
-### Build
+该命令用于生成静态资源到 `build` 目录下，并且可以直接部署静态资源到服务器上。
 
-```
+```bash
 $ yarn build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
 
-### Deployment
+## 部署
 
-Using SSH:
+### 1. GitHub Pages
 
-```
+该命令可以更方便地将静态资源部署到 GitHub Pages 并推送到 `gh-pages` 分支。
+
+使用 SSH:
+
+```bash
 $ USE_SSH=true yarn deploy
 ```
 
-Not using SSH:
+不使用 SSH:
 
-```
+```bash
 $ GIT_USER=<Your GitHub username> yarn deploy
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+### 2. Netlify
+Netlify 提供 Docusaurus 部署模版。
+
+### 3. Vercel
+
+> 缺点：国内无法访问。
+
+Vercel 提供 Docusaurus 部署模版。
