@@ -1,0 +1,25 @@
+.emphasis {
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.green {
+  color: var(--ifm-color-primary);
+}
+
+// :root[data-theme='light'] {
+//   .green {
+//     color: #fff;
+//    color: var(--ifm-color-primary);
+//   }
+// }
+
+// :root[data-theme='dark'] {
+//   .green {
+//     background-color: rgb(18 124 66);
+//   }
+// }

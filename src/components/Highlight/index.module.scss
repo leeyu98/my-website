@@ -1,0 +1,18 @@
+.highlight {
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+:root[data-theme='light'] {
+  .green {
+    color: #fff;
+    background-color: var(--ifm-color-primary);
+  }
+}
+
+:root[data-theme='dark'] {
+  .green {
+    color: #fff;
+    background-color: rgb(18 124 66);
+  }
+}
