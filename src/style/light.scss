@@ -19,7 +19,6 @@
       aside.theme-doc-sidebar-container {
         nav.menu {
           & + button.button {
-            // border: none;
             box-shadow: 0 0 6px 0 rgba($color: #000000, $alpha: 0.05);
           }
         }
@@ -30,8 +29,13 @@
         box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.05);
         // 面包屑
         nav.theme-doc-breadcrumbs {
-          background-color: rgba(255, 255, 255, 0.6);
-          box-shadow: 2px 0px 10px 0 rgba(0, 0, 0, 0.1);
+          background: linear-gradient(
+            90deg,
+            rgb(250, 251, 251) 0%,
+            rgba(250, 251, 251, 0.8) 20%,
+            rgba(250, 251, 251, 0.8) 80%,
+            rgb(250, 251, 251) 100%
+          );
         }
         article {
           a.card {
