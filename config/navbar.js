@@ -1,4 +1,19 @@
 // @ts-check
+
+const netlify = {
+  href: 'https://changnian.netlify.app/',
+  label: 'Netlify',
+  position: 'right'
+};
+
+const vercel = {
+  href: 'https://changnian.vercel.app/',
+  label: 'Vercel',
+  position: 'right'
+};
+
+const backupSite = process.env.DEPLOY_SITE === 'netlify' ? vercel : netlify;
+
 // 侧边导航配置
 const navbar =
   /**@type {import('@docusaurus/theme-common').Navbar} */
@@ -34,18 +49,9 @@ const navbar =
         docId: 'Other/Intro',
         position: 'left'
       },
-      { to: 'blog', label: '博客', position: 'left' }
-      // display at right
-      // {
-      //   href: 'https://github.com/facebook/docusaurus',
-      //   label: 'GitHub',
-      //   position: 'right'
-      // },
-      // {
-      //   href: 'https://gitee.com/leewentao98',
-      //   label: 'Gitee',
-      //   position: 'right'
-      // }
+      { to: 'blog', label: '博客', position: 'left' },
+      // 备用站点
+      { ...backupSite }
     ]
   });
 
