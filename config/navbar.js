@@ -1,18 +1,20 @@
 // @ts-check
-
-const netlify = {
-  href: 'https://changnian.netlify.app/',
-  label: 'Netlify',
-  position: 'right'
+const getSites = () => {
+  if (!process.env.DEPLOY_SITE) {
+    return [];
+  }
+  const deploySites =
+    /**@type {import('@docusaurus/theme-common').NavbarItem[]} */
+    ([
+      {
+        label: 'Netlify',
+        href: 'https://changnian.netlify.app/',
+        position: 'right'
+      },
+      { label: 'Vercel', href: 'https://changnian.vercel.app/', position: 'right' }
+    ]);
+  return deploySites.filter((s) => s.label.toLocaleLowerCase() !== process.env.DEPLOY_SITE);
 };
-
-const vercel = {
-  href: 'https://changnian.vercel.app/',
-  label: 'Vercel',
-  position: 'right'
-};
-
-const backupSite = process.env.DEPLOY_SITE === 'netlify' ? vercel : netlify;
 
 // 侧边导航配置
 const navbar =
@@ -51,7 +53,7 @@ const navbar =
       },
       { to: 'blog', label: '博客', position: 'left' },
       // 备用站点
-      { ...backupSite }
+      ...getSites()
     ]
   });
 
