@@ -15,7 +15,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'Personal', // Usually your GitHub org/user name.
-  projectName: 'Jerry House', // Usually your repo name.
+  projectName: 'my-website', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -25,7 +25,7 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh',
-    locales: ['zh', 'en']
+    locales: ['zh']
   },
   presets: [
     [
@@ -37,7 +37,7 @@ const config = {
         },
         blog: {
           blogTitle: 'Docusaurus 博客！',
-          blogDescription: '这是个用 Docusaurus 搭建的博客！',
+          blogDescription: '基于 Docusaurus 构建！',
           postsPerPage: 'ALL'
         }, // 禁用博客
         theme: {
