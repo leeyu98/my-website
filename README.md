@@ -1,8 +1,9 @@
 # 长念的博客
 
-<img width="100" src="./static/img/logo.png" /> 
+<img width="100" src="./static/img/logo.png" />
 
-基于 [Docusaurus 2](https://docusaurus.io/) 构建的个人博客。
+
+本站是基于 [Docusaurus 2](https://docusaurus.io/) 构建的个人博客。
 
 
 ## 安装
