@@ -30,7 +30,7 @@ console.log('debug');
 
 
 ## 多行禁用
-使用 `eslint-disable`， 必须使用多行注释包裹 `/* */`
+使用 `eslint-disable`， <Highlight>必须</Highlight>使用多行注释包裹 `/* */`
 
 ```js
 /* eslint-disable no-console */
@@ -46,7 +46,7 @@ console.log('debugger');
 /* eslint-disable */
 ```
 ## 整个文件禁用
-在文件开头使用 `eslint-disable`， 必须使用多行注释包裹 `/* */`
+在文件开头 (首行) 使用 `eslint-disable`， <Highlight>必须</Highlight>使用多行注释包裹 `/* */`
 
 ```js
 /* eslint-disable */

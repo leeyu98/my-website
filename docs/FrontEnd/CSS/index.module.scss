@@ -1,0 +1,13 @@
+.hide-scrollbar {
+  height: 100px;
+  border: 1px solid #aaaaaa66;
+  padding: 10px;
+  border-radius: 6px;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  text-align: center;
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, MSEdge, Safari and Opera */
+  }
+}
