@@ -4,7 +4,8 @@ import styles from './index.module.scss';
 
 enum HighlightColor {
   green = 'green',
-  yellow = 'yellow'
+  red = 'red',
+  yellow = 'yellow',
 }
 
 type IProps = React.PropsWithChildren<{

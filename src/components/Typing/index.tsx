@@ -6,7 +6,7 @@ import styles from './index.module.scss';
 let index = 0;
 const Typings = () => {
   const {
-    siteConfig: { customFields }
+    siteConfig: { customFields },
   } = useDocusaurusContext();
 
   const { introduction } = customFields as { introduction: string[] };
@@ -37,7 +37,8 @@ const Typings = () => {
       speed={100}
       className={styles.typing_wrapper}
       onFinishedTyping={handleFinished}
-      cursorClassName={styles.cursor}>
+      cursorClassName={styles.cursor}
+    >
       <span>{word}</span>
       <Backspace speed={50} delay={2000} count={word.length} />
       <Reset count={1} />

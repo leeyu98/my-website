@@ -3,7 +3,7 @@ import * as React from 'react';
 import styles from './index.module.scss';
 
 enum EmphasisColor {
-  green = 'green'
+  green = 'green',
 }
 
 type IProps = React.PropsWithChildren<{
@@ -18,8 +18,9 @@ const Emphasis: React.FC<IProps> = ({ children, color = 'green', bold = true }) 
   return (
     <span
       className={clsx(styles[`emphasis`], styles[color], {
-        [styles['bold']]: bold
-      })}>
+        [styles['bold']]: bold,
+      })}
+    >
       {children}
     </span>
   );
