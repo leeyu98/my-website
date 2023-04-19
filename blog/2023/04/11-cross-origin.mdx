@@ -3,7 +3,6 @@ title: 为什么存在跨域，前端是如何解决的？
 authors: [wentao]
 ---
 
-
 ## 关于跨域问题
 
 ### 同源策略
@@ -14,14 +13,18 @@ authors: [wentao]
 同源三要素：协议 + 域名 + 端口
 :::
 
+<!--truncate-->
+
+>
+
 示例：`https://www.baidu.com/index.html`
 
-|网址| 是否同源 |描述|
-|:--|:--:|:--|
-|`https://www.baidu.com/about.html`| ✅ | 只有路径不同 |
-|`http://www.baidu.com/index.html`|❌|协议不同 `http`|
-|`https://www.baibu.com/index.html`|❌|很明显域名 (主机) 不同|
-|`https://www.baidu.com:8000/index.html`|❌|端口号不同 `http` 默认是 `80` 端口|
+| 网址                                    | 是否同源 | 描述                               |
+| :-------------------------------------- | :------: | :--------------------------------- |
+| `https://www.baidu.com/about.html`      |    ✅    | 只有路径不同                       |
+| `http://www.baidu.com/index.html`       |    ❌    | 协议不同 `http`                    |
+| `https://www.baibu.com/index.html`      |    ❌    | 很明显域名 (主机) 不同             |
+| `https://www.baidu.com:8000/index.html` |    ❌    | 端口号不同 `http` 默认是 `80` 端口 |
 
 因为浏览器同源策略的限制，不同源之间资源加载存在跨域问题，<Emphasis>跨域问题只存在于浏览器环境中</Emphasis>。
 
@@ -32,31 +35,36 @@ authors: [wentao]
 
 :::
 **跨域发生在什么时候？**
-:::info 
+:::info
 浏览器接收到服务器响应之后。
 
 在默认情况下，浏览器发送的跨域请求，实际上服务器接收并响应了的，只不过响应结果被浏览器拦截了，因为同源策略。细分的话有两种情况：
+
 - 简单请求：服务器处理并相应；
 - 复杂请求：浏览器会发送预检请求，服务器只是应答了预检请求，预检请求的响应结果被浏览器拦截，所以并未收到真正的业务请求，也就不会处理真实业务逻辑。
+
 :::
 
 ### 跨域资源共享
+
 跨域资源共享 (`CORS`, `Cross Origin Resource Sharing`) 是一种基于 `HTTP` 头的机制，该机制可以通过服务器指定能够访问它的源，这使浏览器允许这些源访问加载自己的资源。
 
 当浏览器认为即将要执行的请求可能会<Emphasis>对服务器造成不可预知的影响时</Emphasis>，会在正式请求资源之前，先发送一个 `preflight` 预检请求 (`preflight` 请求类型为 `OPTIONS`)，根据服务器响应判断是否允许即将执行的请求。
 
 响应头中通常包含这些信息：
+
 ```bash
 Access-Control-Allow-Headers: Content-Type, Content-Length, Authorization, Accept, X-Requested-With
 Access-Control-Allow-Origin: http://www.baidu.com
 Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE
 Access-Control-Max-Age: 86400
 ```
+
 其中 `Access-Control-Allow-Origin` 就表示当前服务器允许的源，如果与当前源不匹配或不存在该字段，就会触发跨域错误。
 
 ## 解决方案
 
-### 前端代理 
+### 前端代理
 
 **应用场景：** 本地开发
 
@@ -81,6 +89,7 @@ devServer: {
   }
 }
 ```
+
 **vite**
 
 `vite` 与 `webpack` 的写法略有不同，更多写法可参考 [Vite 官方中文文档](https://cn.vitejs.dev/config/server-options.html#server-proxy)
@@ -96,7 +105,9 @@ server: {
   }
 }
 ```
+
 ### 后端
+
 **应用场景：** 应用比较少吧，因为开发环境和生产环境部署时的源不相同，而且每次在不同的服务器部署时都需要改代码去调整允许访问的源也不现实。一般也不建议设为 `*`。
 
 **后端是如何解决跨域问题的？**
@@ -128,7 +139,7 @@ app.all('*', function (req, res, next) {
 **Nginx 反向代理**
 
 前端分离项目部署通常也都需要解决跨域问题，因为前后端项目部署在不同的端口，甚至不同的服务器上。通过 `Nginx` 转发请求，不会触发同源策略。
- 
+
 ```bash
 {
    server {
@@ -141,7 +152,7 @@ app.all('*', function (req, res, next) {
         index index.html index.htm;
         try_files $uri $uri/ /index.html;
     }
-    
+
     # 代理后端 API 的配置
     location /api/ { # 用于转发的后端地址标志
         proxy_pass http://192.168.0.1:8080/; # 后端部署的真实地址
