@@ -20,35 +20,47 @@ keywords: [TransferPro]
 ## 基本用法
 
 ```tsx
-Modal.open({
-  title: intl.get(`${intlPrefix}.title.assignment`).d('分配'),
-  onOk: (args) => handleAssign(args, record),
-  children: (
-    <TransferPro
-      titles={[
-        intl.get(`${intlPrefix}.title.unassignedTenants`).d('未分配租户'),
-        intl.get(`${intlPrefix}.title.assignedTenants`).d('已分配租户'),
-      ]}
-      configProps={{
-        primaryKey: 'tenantId',
-        textField: 'tenantName',
-        valueField: 'tenantNum',
-        lovCode: 'HPFM.TENANT_PAGING',
-        lovUrl: 'sql',
-      }}
-      targetProps={{
-        primaryKey: 'assignTenantId',
-        read: ({ data }) => {
-          return {
-            url: `${IPFM_API_PREFIX_BASE}/model-assigns`,
-            method: 'GET',
-            data: { ...data, modelId: record?.get('modelId') },
-          };
-        },
-      }}
-    />
-  ),
-});
+export default () => {
+  const handleAssign = async ({ originalData, initialData, value, created, deleted }) => {
+    console.log(originalData, initialData, value, created, deleted);
+    // call save api
+  };
+
+  const handleOpen = () => {
+    Modal.open({
+      title: '分配',
+      onOk: handleAssign,
+      children: (
+        <TransferPro
+          titles={['未分配租户', '已分配租户']}
+          configProps={{
+            primaryKey: 'tenantId',
+            textField: 'tenantName',
+            valueField: 'tenantNum',
+            lovCode: 'HPFM.TENANT_PAGING',
+            lovUrl: 'sql',
+          }}
+          targetProps={{
+            primaryKey: 'assignTenantId',
+            read: ({ data }) => {
+              return {
+                url: `${IPFM_API_PREFIX_BASE}/model-assigns`,
+                method: 'GET',
+                data: { ...data, modelId: record?.get('modelId') },
+              };
+            },
+          }}
+        />
+      ),
+    });
+  };
+
+  return (
+    <Button funcType={FuncType.link} onClick={handleOpen}>
+      分配
+    </Button>
+  );
+};
 ```
 
 ## API
@@ -107,11 +119,11 @@ export type TargetProps = {
 
 | 参数       | 类型             | 说明                                                                   | 默认值                               |
 | :--------- | :--------------- | :--------------------------------------------------------------------- | :----------------------------------- |
-| data       | `string`         | <Highlight color="red">必输</Highlight> 目标数据                       | -                                    |
+| data       | `Array<any>`     | <Highlight color="red">必输</Highlight> 目标数据                       | -                                    |
 | transport  | `TransportProps` | <Highlight color="red">必输</Highlight> 目标数据源配置，仅 `read` 有效 | -                                    |
 | primaryKey | `string`         | <Highlight>可选</Highlight> 仅用于数据匹配                             | 默认与 `ConfigProps.primaryKey` 一致 |
 
 :::caution 注意
-`TransferDSProps` 与 `TargetDSProps` 对返回数据的要求：<br/>
-`Array` 或者 `{ content: Array }`，其他返回结果需要通过配置 `transport.read.transformResponse` 自行格式转换。
+`ConfigProps` 与 `TargetProps` 对返回数据的要求：<br/>
+`Array` 或者 `{ content: Array }`，其他返回结果需要通过配置 `read.transformResponse` 自行格式转换。
 :::
