@@ -1,6 +1,7 @@
 {
   "position": 30,
   "label": "自定义组件",
+  "collapsible": true,
   "link": {
     "type": "generated-index",
     "slug": "C7N/CustomComponents",
