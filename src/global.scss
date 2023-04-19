@@ -213,6 +213,9 @@ $languages: (
               display: flex;
               transition: padding 0.3s ease;
               transition-delay: 0.1s;
+              // 控制锚点滚动到顶部的距离
+              padding-top: 50px;
+              margin-top: -50px;
 
               a.hash-link {
                 transition: all 0.3s ease;
@@ -255,6 +258,16 @@ $languages: (
           }
         }
       }
+    }
+
+    // 博客
+    main[itemscope] {
+      // & > article[itemprop='blogPost'] {
+      //   :is(h2, h3, h4, h5, h6).anchor {
+      //     margin-top: -60px;
+      //     padding-top: 60px;
+      //   }
+      // }
     }
 
     // 上/下一个导航

@@ -38,6 +38,8 @@ const config = {
         blog: {
           blogTitle: 'Docusaurus 博客！',
           blogDescription: '基于 Docusaurus 构建！',
+          blogSidebarTitle: '最新文章',
+          blogSidebarCount: 'ALL',
           postsPerPage: 'ALL',
         }, // 禁用博客
         theme: {
@@ -60,7 +62,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/social-card.jpg',
       navbar: require('./config/navbar'),
       footer: require('./config/footer'),
       docs: {
