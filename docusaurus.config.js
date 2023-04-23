@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: '长念的博客',
+  title: '长念的小站',
   tagline: '持续构建中...',
   favicon: 'img/favicon.ico',
   url: 'https://changnian.netlify.app/',
@@ -36,7 +36,7 @@ const config = {
           sidebarPath: require.resolve('./config/sidebars'),
         },
         blog: {
-          blogTitle: 'Docusaurus 博客！',
+          blogTitle: '博客',
           blogDescription: '基于 Docusaurus 构建！',
           blogSidebarTitle: '最新文章',
           blogSidebarCount: 'ALL',
@@ -86,7 +86,7 @@ const config = {
       },
     }),
   customFields: {
-    introduction: ['欢迎来到长念的博客', '我是一名前端开发者'],
+    introduction: ['欢迎来到长念的小站', '我是一名前端开发者'],
   },
 };
 

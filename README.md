@@ -1,4 +1,4 @@
-# 长念的博客
+# 长念的小站
 
 <img width="100" src="./static/img/logo.png" />
 
