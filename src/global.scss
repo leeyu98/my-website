@@ -146,7 +146,7 @@ $languages: (
       }
       .theme-code-block {
         position: relative;
-        padding-top: 10px;
+        padding-top: 6px;
         &::after {
           content: ' ';
           position: absolute;
@@ -179,15 +179,15 @@ $languages: (
     // 排除博客
     main:not([itemscope]) {
       // 面包屑
-      nav.theme-doc-breadcrumbs {
-        position: sticky;
-        top: 0;
-        padding: 10px 6px;
-        z-index: 1;
-        backdrop-filter: blur(10px);
-        margin-left: -10px;
-        margin-right: -20px;
-      }
+      // nav.theme-doc-breadcrumbs {
+      //   position: sticky;
+      //   top: 0;
+      //   padding: 10px 6px;
+      //   z-index: 1;
+      //   backdrop-filter: blur(10px);
+      //   margin-left: -10px;
+      //   margin-right: -20px;
+      // }
       article {
         a.card {
           border: none;
@@ -214,8 +214,8 @@ $languages: (
               transition: padding 0.3s ease;
               transition-delay: 0.1s;
               // 控制锚点滚动到顶部的距离
-              padding-top: 50px;
-              margin-top: -50px;
+              // padding-top: 50px;
+              // margin-top: -50px;
 
               a.hash-link {
                 transition: all 0.3s ease;

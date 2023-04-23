@@ -23,6 +23,16 @@
           }
         }
       }
+
+      main {
+        .theme-code-block {
+          //代码高亮行
+          .theme-code-block-highlighted-line {
+            background-color: rgb(137 132 255 / 25%);
+          }
+        }
+      }
+
       // 排除博客
       main[class^='docMainContainer']:not([itemscope]) {
         background-color: rgba(245, 247, 248, 0.5);
