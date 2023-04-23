@@ -44,6 +44,10 @@
           }
         }
       }
+      // 全屏搜索
+      input[type='search'][class^='searchQueryInput'] {
+        background: #2f2f2f;
+      }
 
       .pagination-nav {
         .pagination-nav__link {

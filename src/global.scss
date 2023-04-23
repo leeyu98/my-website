@@ -291,6 +291,17 @@ $languages: (
         }
       }
     }
+
+    // 全屏搜索
+    input[type='search'][class^='searchQueryInput'] {
+      border-radius: 6px;
+      outline: none;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      &:focus {
+        border-color: var(--ifm-color-primary);
+      }
+    }
   }
 }
 
