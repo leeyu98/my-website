@@ -12,12 +12,12 @@ keywords: [TransferProModal]
 
 ## 特性说明
 
-- 支持 TransferPro 所有特性
+- 支持 `TransferPro` 所有特性
 - 内建弹窗支持
 
 ## 基本用法
 
-```tsx
+```tsx {3,13-15} showLineNumbers
 export default () => {
   const handleAssign = async ({ originalData, initialData, value, created, deleted }) => {
     console.log(originalData, initialData, value, created, deleted);
@@ -62,9 +62,9 @@ export default () => {
 
 | 参数        | 类型               | 说明                                                                                                                                                                                                       | 默认值 |
 | :---------- | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----- |
-| buttonProps | `ButtonProps`      | <Highlight>可选</Highlight> 按钮属性，默认 onClick 是打开弹窗，如果传入 onClick 事件，会先执行                                                                                                             |        |
-| modalProps  | `TModalProps`      | <Highlight>可选</Highlight> 基于弹窗属性 [ModalProps](https://open.hand-china.com/choerodon-ui/zh/procmp/feedback/modal#API)，`key` `children` 除外，`onOk` 事件回调中会注入参数，[详细](#tmodalpropsonok) |        |
-| 其他        | `TransferProProps` | 参见 [TransferProProps](/docs/C7N/CustomComponents/transfer-pro#api)                                                                                                                                       |        |
+| buttonProps | `ButtonProps`      | <Highlight>可选</Highlight> 按钮属性，默认 onClick 是打开弹窗，如果传入 onClick 事件，会先执行                                                                                                             | -      |
+| modalProps  | `TModalProps`      | <Highlight>可选</Highlight> 基于弹窗属性 [ModalProps](https://open.hand-china.com/choerodon-ui/zh/procmp/feedback/modal#API)，`key` `children` 除外，`onOk` 事件回调中会注入参数，[详细](#tmodalpropsonok) | -      |
+| 其他        | `TransferProProps` | 参见 [TransferProProps](/docs/C7N/CustomComponents/transfer-pro#api)                                                                                                                                       | -      |
 
 ### ButtonProps.onClick
 
@@ -83,3 +83,20 @@ export default () => {
 | deleted      | <Highlight>数组</Highlight> `value` 与 `initialData` 对比，删除的数据            |
 
 ## Q & A
+
+**1. 怎么理解 `originalData` 与 `initialData`**
+
+示例：现在存在两个实体教师 (`Teacher`) 和教室 (`ClassRoom`)，两者之间存在多对多的关系。
+
+```js
+// 实例
+teacher1 = { tid: 't01', tName: 'Sir' };
+teacher2 = { tid: 't02', tName: 'Madam' };
+classRoom = { cid: 'c01', tName: 'Class A' };
+
+// 假设存在这样一条匹配关系
+relation = { tid: 't01', cid: 'c01' };
+```
+
+在为教室分配教师的情况下，穿梭框的数据就是教师，`configProps` 的配置用来加载所有教师数据，`targetProps` 配置用来加载已匹配的关系数据。<br/>
+`originalData` 就是这里的匹配关系原始数据；`initialData` 就是用 `originalData` 中的主键 `tid` 去匹配所有教师，将已包含的教师数据作为穿梭框【已选数据】，剩余部分作为穿梭框【源数据】
