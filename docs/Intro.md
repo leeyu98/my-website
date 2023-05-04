@@ -3,7 +3,7 @@ sidebar_position: 1
 displayed_sidebar: frontendSidebar
 ---
 
-# 欢迎来到长念的博客
+# 欢迎来到长念的小站
 ---
 
 ## 站点导航
