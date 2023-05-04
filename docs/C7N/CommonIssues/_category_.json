@@ -1,0 +1,9 @@
+{
+  "position": 100,
+  "label": "常见问题",
+  "link": {
+    "type": "generated-index",
+    "slug": "C7N/CommonIssues",
+    "description": "常见问题"
+  }
+}

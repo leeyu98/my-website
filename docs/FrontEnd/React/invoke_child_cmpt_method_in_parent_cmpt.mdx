@@ -1,0 +1,277 @@
+---
+title: 父组件中调用子组件中的方法
+description: 在类组件和函数组件中如何通过父组件触发子组件的方法
+sidebar_position: 2
+displayed_sidebar: frontendSidebar
+---
+
+> 文章中涉及 `ref` 的应用仅为父组件调用子组件场景下的应用方式，并未涵盖 `ref` 的所有应用方式！
+
+## Class 组件
+
+### 1. 自定义事件
+
+**🔖 Parent.js**
+
+```js
+import React, { Component } from 'react';
+
+import Child from './Child';
+
+class Parent extends Component {
+  componentDidMount() {
+    console.log(this.childRef);
+  }
+  handleChildEvent = (ref) => {
+    // 将子组件的实例存到 this.childRef 中, 这样整个父组件就能拿到
+    this.childRef = ref;
+  };
+  //按钮事件处理
+  handleClick = () => {
+    // 通过子组件的实例调用组组件中的方法
+    this.childRef.sendMessage();
+  };
+  render() {
+    return (
+      <>
+        <Child onChildEvent={this.handleChildEvent} />
+        <button onClick={this.handleClick}>Trigger Child Event</button>
+      </>
+    );
+  }
+}
+
+export default Parent;
+```
+
+**🔖 Child.js**
+
+```js
+import React, { Component } from 'react';
+
+class Child extends Component {
+  //子组件完成挂载时, 将子组件的方法 this 作为参数传到父组件的函数中
+  componentDidMount() {
+    // 在子组件中调用父组件的方法,并把当前的实例传进去
+    this.props.onChildEvent(this);
+  }
+  // 子组件的方法, 在父组件中触发
+  sendMessage = () => {
+    console.log('sending message');
+  };
+  render() {
+    return <span>Child</span>;
+  }
+}
+
+export default Child;
+```
+
+### 2. 使用 React.createRef()
+
+**🔖 ParentCmp.js**
+
+```js
+import React, { Component } from 'react';
+
+import ChildCmp from './ChildCmp';
+
+export default class ParentCmp extends Component {
+  constructor(props) {
+    super(props);
+    // 创建Ref
+    this.childRef = React.createRef();
+  }
+  // 直接通过 this.childRef.current 拿到子组件实例
+  handleClick = () => {
+    this.childRef.current.sendMessage();
+  };
+  render() {
+    return (
+      <>
+        <ChildCmp ref={this.childRef} />
+        <button onClick={this.handleClick}>Trigger Child Event</button>
+      </>
+    );
+  }
+}
+```
+
+而子组件就是一个普通的组件 <br/>
+
+**🔖 ChildCmp.js**
+
+```js
+import React, { Component } from 'react';
+
+export default class ChildCmp extends Component {
+  sendMessage = () => {
+    console.log('sending message');
+  };
+  render() {
+    return <span>Child</span>;
+  }
+}
+```
+
+### 3. 回调 Refs
+
+回调 `Refs` 是另一种设置 `Ref` 的方式，它能助你更精细地控制何时 `refs` 被设置和解除。
+
+不同于传递 `React.createRef()` 创建的 `ref` 属性，需要传递一个函数。🍒 访问 `Ref` 的时候也不需要 `current`。
+
+**🔖 ParentCmp.js**
+
+```js
+import React from 'react';
+import ChildCmp from './ChildCmp';
+
+export default class ParentCmp extends React.Component {
+  constructor(props) {
+    super(props);
+    // 创建 Ref，不通过 React.createRef()
+    this.childRef = null;
+  }
+  // 设置 Ref
+  setChildRef = (ref) => {
+    this.childRef = ref;
+  };
+
+  // 直接通过 this.childRef 拿到子组件实例
+  handleClick = () => {
+    this.childRef.sendMessage(`Trigger Child Event from Parent`);
+  };
+
+  render() {
+    return (
+      <Reaact.Fragment>
+        <ChildCmp ref={this.setChildRef} />
+        <button onClick={this.handleClick}>Trigger Child Event</button>
+      </Reaact.Fragment>
+    );
+  }
+}
+```
+
+而子组件还是一个普通的组件 <br/>
+
+**🔖 ChildCmp.js**
+
+```js
+import React from 'react';
+
+export default class ChildCmp extends React.Component {
+  sendMessage = (message) => {
+    console.log('sending message:', message);
+  };
+  render() {
+    return <span>Child</span>;
+  }
+}
+```
+
+> 对比自定义事件方式，回调 `Refs` 更像是精简的自定义事件方式：
+>
+> - 自定义事件名称变成了 `ref`
+> - 子组件内不需要手动绑定
+
+## Function 组件
+
+默认情况下，不能在函数组件上使用 `ref` 属性，因为它们没有实例。所以上面的两种方式是行不通的。
+解决办法就是使用 `forwardRef` 和 `useImperativeHandle`。
+
+==不过在函数的内部是可以使用 useRef 钩子来获取组件内的 DOM 元素。==
+
+### 1. forwardRef 和 useImperativeHandle
+
+**🔖 Parent.js**
+
+```js
+import React from 'react';
+import Child from './Child';
+
+const Parent = () => {
+  // 通过 Hooks 创建 Ref
+  const childRef = React.useRef(null);
+  const handleClick = () => {
+    childRef.current.sendMessage();
+  };
+  return (
+    <Reaact.Fragment>
+      <Child ref={childRef} />
+      <button onClick={handleClick}>Trigger Child Event</button>
+    </Reaact.Fragment>
+  );
+};
+
+export default Parent;
+```
+
+**🔖 Child.js**
+
+```js
+import React, { forwardRef, useImperativeHandle } from 'react';
+
+const Child = forwardRef((props, ref) => {
+  const sendMessage = () => {
+    console.log('sending message');
+  };
+  //将子组件的方法 暴露给父组件
+  useImperativeHandle(ref, () => ({
+    sendMessage,
+  }));
+  return <span>Child</span>;
+});
+
+export default Child;
+```
+
+### 2. 自定义 props 和 useImperativeHandle
+
+将 ref 替换为 props
+
+**🔖 Parent.js**
+
+```js
+import React from 'react';
+import Child from './Child';
+
+const Parent = () => {
+  // 通过 Hooks 创建 Ref
+  const childRef = React.useRef(null);
+  const handleClick = () => {
+    childRef.current.sendMessage();
+  };
+  return (
+    <Reaact.Fragment>
+      <Child onRef={childRef} />
+      <button onClick={handleClick}>Trigger Child Event</button>
+    </Reaact.Fragment>
+  );
+};
+
+export default Parent;
+```
+
+**🔖 Child.js**
+
+```js
+import React, { useImperativeHandle } from 'react';
+
+const Child = (props) => {
+  const sendMessage = () => {
+    console.log('sending message');
+  };
+  //将子组件的方法 暴露给父组件
+  useImperativeHandle(props.onRef, () => ({
+    sendMessage,
+  }));
+  return <span>Child</span>;
+};
+
+export default Child;
+```
+
+:::caution 注意
+以上例子中只是简单地演示了父子组件之间的方法调用，当然实际情况中子组件中可以也会有自己的 `ref` 指向自己内部的 `DOM` 元素，不过这些原理都是一样的。
+:::
