@@ -216,31 +216,31 @@ $languages: (
 
         @media screen and (min-width: 997px) {
           //大标题
-          .theme-doc-markdown.markdown {
-            :is(h2, h3, h4, h5, h6).anchor {
-              position: relative;
-              padding-left: 0;
-              display: flex;
-              transition: padding 0.3s ease;
-              transition-delay: 0.1s;
-              // 控制锚点滚动到顶部的距离
-              // padding-top: 50px;
-              // margin-top: -50px;
+          // .theme-doc-markdown.markdown {
+          //   :is(h2, h3, h4, h5, h6).anchor {
+          //     position: relative;
+          //     padding-left: 0;
+          //     display: flex;
+          //     transition: padding 0.3s ease;
+          //     transition-delay: 0.1s;
+          //     // 控制锚点滚动到顶部的距离
+          //     // padding-top: 50px;
+          //     // margin-top: -50px;
 
-              a.hash-link {
-                transition: all 0.3s ease;
-                transition-delay: 0.1s;
-                position: absolute;
-                left: -30px;
-              }
-              &:hover {
-                padding-left: 40px;
-                a.hash-link {
-                  left: 0;
-                }
-              }
-            }
-          }
+          //     a.hash-link {
+          //       transition: all 0.3s ease;
+          //       transition-delay: 0.1s;
+          //       position: absolute;
+          //       left: -30px;
+          //     }
+          //     &:hover {
+          //       padding-left: 40px;
+          //       a.hash-link {
+          //         left: 0;
+          //       }
+          //     }
+          //   }
+          // }
         }
       }
 
