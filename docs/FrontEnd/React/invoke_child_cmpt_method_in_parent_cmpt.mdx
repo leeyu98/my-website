@@ -11,11 +11,14 @@ displayed_sidebar: frontendSidebar
 
 ### 1. 自定义事件
 
-**🔖 Parent.js**
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-```js
+<Tabs>
+<TabItem value="parent" label="父组件" default>
+
+```js {10,20} showLineNumbers title=Parent.js
 import React, { Component } from 'react';
-
 import Child from './Child';
 
 class Parent extends Component {
@@ -44,12 +47,13 @@ class Parent extends Component {
 export default Parent;
 ```
 
-**🔖 Child.js**
+</TabItem >
+<TabItem value="child" label="子组件" default>
 
-```js
+```js title=Child.js
 import React, { Component } from 'react';
 
-class Child extends Component {
+export default class Child extends Component {
   //子组件完成挂载时, 将子组件的方法 this 作为参数传到父组件的函数中
   componentDidMount() {
     // 在子组件中调用父组件的方法,并把当前的实例传进去
@@ -63,24 +67,24 @@ class Child extends Component {
     return <span>Child</span>;
   }
 }
-
-export default Child;
 ```
+
+</TabItem>
+</Tabs>
 
 ### 2. 使用 React.createRef()
 
-**🔖 ParentCmp.js**
+<Tabs>
+<TabItem value="parent" label="父组件" default>
 
-```js
+```js {8,17} showLineNumbers title=Parent.js
 import React, { Component } from 'react';
+import Child from './Child';
 
-import ChildCmp from './ChildCmp';
-
-export default class ParentCmp extends Component {
+export default class Parent extends Component {
   constructor(props) {
     super(props);
-    // 创建Ref
-    this.childRef = React.createRef();
+    this.childRef = React.createRef(); // 创建Ref
   }
   // 直接通过 this.childRef.current 拿到子组件实例
   handleClick = () => {
@@ -97,14 +101,15 @@ export default class ParentCmp extends Component {
 }
 ```
 
-而子组件就是一个普通的组件 <br/>
+</TabItem>
+<TabItem value="child" label="子组件" >
 
-**🔖 ChildCmp.js**
+> 而子组件就是一个普通的组件
 
-```js
+```js title=Child.js
 import React, { Component } from 'react';
 
-export default class ChildCmp extends Component {
+export default class Child extends Component {
   sendMessage = () => {
     console.log('sending message');
   };
@@ -114,23 +119,26 @@ export default class ChildCmp extends Component {
 }
 ```
 
+  </TabItem >
+</Tabs>
+
 ### 3. 回调 Refs
 
 回调 `Refs` 是另一种设置 `Ref` 的方式，它能助你更精细地控制何时 `refs` 被设置和解除。
 
 不同于传递 `React.createRef()` 创建的 `ref` 属性，需要传递一个函数。🍒 访问 `Ref` 的时候也不需要 `current`。
 
-**🔖 ParentCmp.js**
+<Tabs>
+<TabItem value="parent" label="父组件" default>
 
-```js
+```js {7,11,22} showLineNumbers title=Parent.js
 import React from 'react';
-import ChildCmp from './ChildCmp';
+import Child from './Child';
 
-export default class ParentCmp extends React.Component {
+export default class Parent extends React.Component {
   constructor(props) {
     super(props);
-    // 创建 Ref，不通过 React.createRef()
-    this.childRef = null;
+    this.childRef = null; // 创建 Ref，不通过 React.createRef()
   }
   // 设置 Ref
   setChildRef = (ref) => {
@@ -153,14 +161,15 @@ export default class ParentCmp extends React.Component {
 }
 ```
 
-而子组件还是一个普通的组件 <br/>
+</TabItem>
+<TabItem value="child" label="子组件" >
 
-**🔖 ChildCmp.js**
+> 而子组件就是一个普通的组件
 
-```js
+```js title=Child.js
 import React from 'react';
 
-export default class ChildCmp extends React.Component {
+export default class Child extends React.Component {
   sendMessage = (message) => {
     console.log('sending message:', message);
   };
@@ -170,29 +179,36 @@ export default class ChildCmp extends React.Component {
 }
 ```
 
-> 对比自定义事件方式，回调 `Refs` 更像是精简的自定义事件方式：
->
-> - 自定义事件名称变成了 `ref`
-> - 子组件内不需要手动绑定
+</TabItem >
+</Tabs>
+
+:::tip 小结
+
+对比自定义事件方式，回调 `Refs` 更像是精简的自定义事件方式：
+
+- 自定义事件名称变成了 `ref`
+- 子组件内不需要手动绑定
+
+:::
 
 ## Function 组件
 
 默认情况下，不能在函数组件上使用 `ref` 属性，因为它们没有实例。所以上面的两种方式是行不通的。
 解决办法就是使用 `forwardRef` 和 `useImperativeHandle`。
 
-==不过在函数的内部是可以使用 useRef 钩子来获取组件内的 DOM 元素。==
+> <Emphasis>不过在函数的内部是可以使用 useRef 钩子来获取组件内的 DOM 元素。</Emphasis>
 
 ### 1. forwardRef 和 useImperativeHandle
 
-**🔖 Parent.js**
+<Tabs>
+<TabItem value="parent" label="父组件" default>
 
-```js
+```js {5,11} showLineNumbers title=Parent.js
 import React from 'react';
 import Child from './Child';
 
 const Parent = () => {
-  // 通过 Hooks 创建 Ref
-  const childRef = React.useRef(null);
+  const childRef = React.useRef(null); // 通过 Hooks 创建 Ref
   const handleClick = () => {
     childRef.current.sendMessage();
   };
@@ -207,9 +223,10 @@ const Parent = () => {
 export default Parent;
 ```
 
-**🔖 Child.js**
+</TabItem>
+<TabItem value="child" label="子组件" >
 
-```js
+```js {8-10} showLineNumbers title=Child.js
 import React, { forwardRef, useImperativeHandle } from 'react';
 
 const Child = forwardRef((props, ref) => {
@@ -226,19 +243,22 @@ const Child = forwardRef((props, ref) => {
 export default Child;
 ```
 
+  </TabItem >
+</Tabs>
+
 ### 2. 自定义 props 和 useImperativeHandle
 
-将 ref 替换为 props
+只需将 `ref` 替换为 `props`
 
-**🔖 Parent.js**
+<Tabs>
+<TabItem value="parent" label="父组件" default>
 
-```js
+```js title=Parent.js
 import React from 'react';
 import Child from './Child';
 
 const Parent = () => {
-  // 通过 Hooks 创建 Ref
-  const childRef = React.useRef(null);
+  const childRef = React.useRef(null); // 通过 Hooks 创建 Ref
   const handleClick = () => {
     childRef.current.sendMessage();
   };
@@ -253,9 +273,10 @@ const Parent = () => {
 export default Parent;
 ```
 
-**🔖 Child.js**
+</TabItem>
+<TabItem value="child" label="子组件" >
 
-```js
+```js {8-10} showLineNumbers title=Child.js
 import React, { useImperativeHandle } from 'react';
 
 const Child = (props) => {
@@ -271,6 +292,9 @@ const Child = (props) => {
 
 export default Child;
 ```
+
+  </TabItem >
+</Tabs>
 
 :::caution 注意
 以上例子中只是简单地演示了父子组件之间的方法调用，当然实际情况中子组件中可以也会有自己的 `ref` 指向自己内部的 `DOM` 元素，不过这些原理都是一样的。
