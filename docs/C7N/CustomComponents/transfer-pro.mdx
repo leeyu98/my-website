@@ -2,7 +2,7 @@
 title: TransferPro
 description: 基于 SelectBox 组件封装的符合现行 UED 规范的简单易用的穿梭框组件。
 sidebar_position: 10
-tags: [TransferPro]
+tags: [Transfer, 穿梭框]
 keywords: [TransferPro]
 ---
 
@@ -13,7 +13,7 @@ keywords: [TransferPro]
 ## 特性说明
 
 - 支持单选、多选，简单搜索
-- 支持 `lovCode` 值集配置
+- 支持 `lovCode` `lookupCode` 值集配置
 - 支持数据手动、自动加载
 - 支持自定义渲染
 
@@ -71,6 +71,8 @@ export default () => {
 | targetProps | `TargetDSProps`                                                         | <Highlight color="red">必输</Highlight> 目标数据源补充配置，[详细](#targetprops)                                                                                   | -                              |
 | searchable  | `boolean`                                                               | <Highlight>可选</Highlight> 是否支持搜索                                                                                                                           | `true`                         |
 | titles      | `string[] 或 React.ReactNode[]`                                         | <Highlight>可选</Highlight> 左右侧标题                                                                                                                             | `["已选择","未选择"]`          |
+| header      | `React.ReactNode`                                                       | <Highlight>可选</Highlight> 顶部自定义渲染                                                                                                                         | -                              |
+| footer      | `React.ReactNode`                                                       | <Highlight>可选</Highlight> 地步自定义渲染                                                                                                                         | -                              |
 | avatarProps | `AvatarProps`                                                           | <Highlight>可选</Highlight> 支持头像组件所有属性                                                                                                                   | `{ size: 28, shape: "square"}` |
 | className   | `string`                                                                | <Highlight>可选</Highlight> 自定义类名                                                                                                                             | -                              |
 | style       | `React.CSSProperties`                                                   | <Highlight>可选</Highlight> 自定义样式                                                                                                                             | -                              |
@@ -81,27 +83,33 @@ export default () => {
 ### ConfigProps
 
 ```ts
-/** @description lovCode 与 read 二选一不能共存 */
-export type ConfigProps = {
-  primaryKey: string;
-  textField: string;
-  valueField?: string;
-  lovUrl?: string;
-} & ({ lovCode: string; read?: undefined } | { lovCode?: undefined; read: TransportType });
+/**
+ * @description lovCode,lookupCode 与 read 三选一
+ */
+export type ConfigProps =
+  | {
+      primaryKey: string;
+      textField: string;
+      valueField?: string;
+    } & (
+      | { lovCode: string; lookupCode?: undefined; read?: undefined }
+      | { lovCode?: undefined; lookupCode: string; read?: undefined }
+      | { lovCode?: undefined; lookupCode?: undefined; read: TransportType }
+    );
 ```
 
 :::info 注意
-加载源数据的方式<Emphasis>只能且必须</Emphasis>选择 `lovCode` 与 `read` 一种：`lovCode` 的配置更为简洁， `read` 配置更为灵活。<br/>如果使用 `JS/JSX` 可能不会有类型错误提示，同时配置的话 `read` 优先级更高。
+加载源数据的方式<Emphasis>只能且必须</Emphasis>选择 `lovCode` `lookupCode` 与 `read` 一种：值集 (列表) 的配置更为简洁， `read` 配置更为灵活。<br/>如果使用 `JS/JSX` 可能不会有类型错误提示，同时配置的话 `read` 优先级更高。
 :::
 
-| 参数       | 类型            | 说明                                                                                                                                                                                                                 | 默认值         |
-| :--------- | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------- |
-| primaryKey | `string`        | <Highlight color="red">必输</Highlight> 主键，用于数据标识                                                                                                                                                           | -              |
-| textField  | `string`        | <Highlight color="red">必输</Highlight> 作为主要展示字段                                                                                                                                                             | -              |
-| lovCode    | `string`        | <Highlight color="red">必输</Highlight> 值集编码，用于加载源数据                                                                                                                                                     | -              |
-| read       | `TransportType` | <Highlight color="red">必输</Highlight> 详细配置参见 [Transport](https://open.hand-china.com/choerodon-ui/zh/procmp/dataset/dataset#transport)，优先级高于 `lovCode`                                                 | -              |
-| valueField | `string`        | <Highlight>可选</Highlight> 作为次要展示字段                                                                                                                                                                         | `value`        |
-| lovUrl     | `string`        | <Highlight>可选</Highlight> 加载源数据的接口地址。支持参数有：<br/> - `lov` : 普通值集，内置接口 `/hpfm/v1/lovs/data`<br/> - `sql` : `sql` 值集，内置接口 `/hpfm/v1/lovs/sql/data`<br/> - `string`: 自定义接口 `url` | `lov` 普通值集 |
+| 参数       | 类型            | 说明                                                                                                                                                                  | 默认值       |
+| :--------- | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------- |
+| primaryKey | `string`        | <Highlight color="red">必输</Highlight> 主键，用于数据标识                                                                                                            | -            |
+| textField  | `string`        | <Highlight color="red">必输</Highlight> 作为主要展示字段                                                                                                              | `textField`  |
+| valueField | `string`        | <Highlight>可选</Highlight> 作为次要展示字段                                                                                                                          | `valueField` |
+| lovCode    | `string`        | <Highlight>可选</Highlight> 值集编码，用于加载源数据                                                                                                                  | -            |
+| lookupCode | `string`        | <Highlight>可选</Highlight> 值列表编码，用于加载源数据                                                                                                                | -            |
+| read       | `TransportType` | <Highlight>可选</Highlight> 详细配置参见 [Transport](https://open.hand-china.com/choerodon-ui/zh/procmp/dataset/dataset#transport)，优先级高于 `lovCode` `lookupCode` | -            |
 
 ### TargetProps
 
@@ -111,17 +119,19 @@ export type ConfigProps = {
 :::
 
 ```ts
-/** @description 目标数据源 DS 配置 data 与 read 二选一不能共存 */
+/**
+ * @description 目标数据源 DS 配置 data 与 read 二选一不能共存
+ */
 export type TargetProps = {
   primaryKey?: string; // 仅用于数据筛选, 默认值与 ConfigProps.primaryKey 一致
 } & ({ data?: undefined; read: TransportType } | { data: unknown[]; read?: undefined });
 ```
 
-| 参数       | 类型             | 说明                                                                   | 默认值                               |
-| :--------- | :--------------- | :--------------------------------------------------------------------- | :----------------------------------- |
-| data       | `Array<any>`     | <Highlight color="red">必输</Highlight> 目标数据                       | -                                    |
-| transport  | `TransportProps` | <Highlight color="red">必输</Highlight> 目标数据源配置，仅 `read` 有效 | -                                    |
-| primaryKey | `string`         | <Highlight>可选</Highlight> 仅用于数据匹配                             | 默认与 `ConfigProps.primaryKey` 一致 |
+| 参数       | 类型            | 说明                                       | 默认值                               |
+| :--------- | :-------------- | :----------------------------------------- | :----------------------------------- |
+| primaryKey | `string`        | <Highlight>可选</Highlight> 仅用于数据匹配 | 默认与 `ConfigProps.primaryKey` 一致 |
+| data       | `Array<any>`    | <Highlight>可选</Highlight> 目标数据       | -                                    |
+| read       | `TransportType` | <Highlight>可选</Highlight> 目标数据源配置 | -                                    |
 
 :::caution 注意
 `ConfigProps` 与 `TargetProps` 对返回数据的要求：<br/>
