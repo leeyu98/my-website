@@ -73,12 +73,21 @@ import { Avatar } from 'choerodon-ui';
 import { findDOMNode } from 'react-dom';
 
 export default class AvatarP extends Avatar {
+  constructor(props: AvatarProps, context: AvatarContextValue) {
+    super(props, context);
+    this.state = {
+      scale: 0.99999, // 避免等于1
+      isImgExist: true,
+    };
+  }
+
   // 覆盖原方法：修复图像缩放问题
   setScale = () => {
     // eslint-disable-next-line react/no-find-dom-node
     const avatarNode = findDOMNode(this) as HTMLElement;
     if (avatarNode) {
       const childNode = avatarNode.firstChild as HTMLElement;
+
       const [avatarWidth, childWidth] = [
         avatarNode.offsetWidth || avatarNode?.getBoundingClientRect()?.width,
         childNode.offsetWidth || childNode?.getBoundingClientRect()?.width,
@@ -90,7 +99,7 @@ export default class AvatarP extends Avatar {
         });
       }
     } else {
-      this.setState({ scale: 1 });
+      this.setState({ scale: 0.99999 });
     }
   };
 }
