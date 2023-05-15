@@ -13,7 +13,7 @@ keywords: [TransferProLov, 穿梭框, 穿梭值集]
 ## 特性说明
 
 - 支持 `TransferPro` 所有特性
-- 支持 record 数据绑定
+- 支持 `record` 数据绑定
 
 ## 基本用法
 
@@ -29,8 +29,8 @@ import { TransferProLov } from '@/components';
 import { getDSProps } from './store';
 
 export default () => {
-  const testDS = useDataSet(getDSProps, []);
-  return <TransferProLov name="tenants" record={testDS.current} />;
+  const tenantDS = useDataSet(getDSProps, []);
+  return <TransferProLov name="tenants" record={tenantDS.current} />;
 };
 ```
 
@@ -108,6 +108,12 @@ export const getDSProps = (): DataSetProps => {
 
 ## 在表单中应用
 
+```tsx
+<Form>
+  <TransferProLov name="tenant" record={tenantDS.current} label="租户" />
+</Form>
+```
+
 ## API
 
 | 参数        | 类型                                | 说明                                                                                                                                                 | 默认值 |
@@ -123,3 +129,10 @@ export const getDSProps = (): DataSetProps => {
 ### 为什么不支持 FormFieldProps.dataSet
 
 可以，但没必要。应用场景类似于表单项，`record` 更方便直接取值；其次 `record.dataSet` 也能够获取关联的 `DataSet`。
+
+### 这和 TransferButton 有什么不一样
+
+内部实现不同
+
+- `Button` 更倾向于操作，不涉及回显；所以内部实现时 `Button` 可以在弹窗展开时加载数据；
+- 而 `Lov` 更倾向于回显。故 `Lov` 在一开始就必须 (通过 `record`) 提供回显的数据，值的变更也会自动同步到绑定的 `record` 中，并触发 `dataSet` 的 `update` 事件。
