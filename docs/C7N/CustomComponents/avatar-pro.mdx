@@ -12,16 +12,16 @@ keywords: [AvatarPro]
 
 ## 特性说明
 
-- 支持多彩模式
-- 多词模式支持自动比例缩放 (默认的 `Avatar` 组件存在图像倒置问题)
-- 支持 `Avatar` 所有属性
+- 支持文字多彩模式
+- 修复默认的 `Avatar` 组件缩放比例导致的图像倒置问题
+- 支持 `AvatarProps` 所有属性
 
 ## 基本用法
 
 ```jsx {3} showLineNumbers
 export default () => {
   return (
-    <AvatarPro colorful fontSize={14} size={28}>
+    <AvatarPro colorful size={28} style={{ fontSize: 14 }}>
       长念
     </AvatarPro>
   );
@@ -32,20 +32,7 @@ export default () => {
 
 > 除此以下附加属性外，支持 `Avatar` 默认所有属性 `AvatarProps`
 
-| 参数     | 类型         | 说明                                                                                      | 默认值                 |
-| :------- | :----------- | :---------------------------------------------------------------------------------------- | :--------------------- |
-| fontSize | `number`     | <Highlight color="red">必输</Highlight> 字体大小                                          | 12                     |
-| children | `string`     | <Highlight>可选</Highlight> 文本，仅支持 `string`                                         | -                      |
-| mode     | `AvatarMode` | <Highlight>可选</Highlight> 取字模式，[详见](#avatarmode)                                 | `AvatarMode.FirstChar` |
-| colorful | `boolean`    | <Highlight>可选</Highlight> 是否启用多彩显示                                              | `false`                |
-| size     | `number`     | <Highlight>可选</Highlight> 头像大小。需要参与字体缩放计算，所以不支持 `AvatarProps.Size` | 28                     |
-
-### AvatarMode
-
-```ts
-export enum AvatarMode {
-  FirstChar = 'first_char',
-  LastChar = 'last_char',
-  FullChar = 'full_char',
-}
-```
+| 参数     | 类型      | 说明                                                                               | 默认值  |
+| :------- | :-------- | :--------------------------------------------------------------------------------- | :------ |
+| children | `string`  | <Highlight>可选</Highlight> 文本，仅支持 `string`                                  | -       |
+| colorful | `boolean` | <Highlight>可选</Highlight> 是否启用多彩显示，仅 `children` 为 `string` 类型时有效 | `false` |
