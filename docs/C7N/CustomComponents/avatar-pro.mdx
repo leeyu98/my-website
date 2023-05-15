@@ -57,10 +57,23 @@ export default () => {
 
 > 除此以下附加属性外，支持 `Avatar` 默认所有属性 `AvatarProps`
 
-| 参数     | 类型      | 说明                                                                               | 默认值  |
-| :------- | :-------- | :--------------------------------------------------------------------------------- | :------ |
-| children | `string`  | <Highlight>可选</Highlight> 文本，仅支持 `string`                                  | -       |
-| colorful | `boolean` | <Highlight>可选</Highlight> 是否启用多彩显示，仅 `children` 为 `string` 类型时有效 | `false` |
+| 参数     | 类型         | 说明                                                                               | 默认值      |
+| :------- | :----------- | :--------------------------------------------------------------------------------- | :---------- |
+| children | `string`     | <Highlight>可选</Highlight> 文本，仅支持 `string`                                  | -           |
+| colorful | `boolean`    | <Highlight>可选</Highlight> 是否启用多彩显示，仅 `children` 为 `string` 类型时有效 | `false`     |
+| mode     | `AvatarMode` | <Highlight>可选</Highlight> 文本截取模式，枚举                                     | `full_char` |
+
+### AvatarMode
+
+```ts
+export enum AvatarMode {
+  FirstChar = 'first_char',
+  First2Char = 'first_2char',
+  LastChar = 'last_char',
+  Last2Char = 'last_2char',
+  FullChar = 'full_char',
+}
+```
 
 ## 源代码
 
