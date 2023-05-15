@@ -2,8 +2,8 @@
 title: AvatarPro
 description: 基于 Avatar 组件封装的头像组件。
 sidebar_position: 10
-tags: [AvatarPro]
-keywords: [AvatarPro]
+tags: [头像, AvatarPro]
+keywords: [头像, AvatarPro]
 ---
 
 基于 `Avatar` 组件封装的头像组件。
@@ -15,6 +15,13 @@ keywords: [AvatarPro]
 - 支持文字多彩模式
 - 修复默认的 `Avatar` 组件缩放比例导致的文字倒置问题
 - 支持 `AvatarProps` 所有属性
+
+## 何时使用
+
+- 如果遇到了文字头像倒置的问题 (已知在弹窗中使用 `List` 组件会出现此问题)
+- 如果需要用到多色文字头像
+
+  其他只是 `Avatar` 的简单应用并能实现效果时，不建议使用该组件
 
 ## 基本用法
 
@@ -30,7 +37,7 @@ export default () => {
 
 ## 头像组
 
-> 由于 `Group` 中用到的组件是原始的 `Avatar`，所以也存在倒置问题，建议自定义实现 `Group` 功能。
+> 由于 `Group` 内部头像计数用到的组件是原始的 `Avatar`，所以也存在倒置问题，建议自定义实现 `Group` 功能。
 
 ```tsx
 import { Avatar } from 'choerodon-ui';
@@ -83,7 +90,7 @@ export enum AvatarMode {
 `AvatarP` 组件是为了修复文字缩放倒置问题，也可以导入使用，`AvatarPro` 中就是以修复过后的 `AvatarP` 作为基础组件的。
 :::
 
-```tsx {11-14,18} showLineNumbers title=AvatarP.tsx
+```tsx {22-25,29} showLineNumbers title=AvatarP.tsx
 import { Avatar } from 'choerodon-ui';
 import { findDOMNode } from 'react-dom';
 import { AvatarProps } from 'choerodon-ui/lib/avatar';
@@ -107,7 +114,7 @@ export default class AvatarP extends Avatar {
 
       const [avatarWidth, childWidth] = [
         avatarNode.offsetWidth || avatarNode?.getBoundingClientRect()?.width,
-        childNode.offsetWidth || childNode?.getBoundingClientRect()?.width,
+        childNode?.offsetWidth || childNode?.getBoundingClientRect()?.width,
       ];
 
       if (avatarWidth > 8 && avatarWidth - 8 < childWidth) {
