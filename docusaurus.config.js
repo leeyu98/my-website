@@ -62,13 +62,13 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      image: 'img/social-card.jpg',
+      image: 'img/social-card.png',
       navbar: require('./config/navbar'),
       footer: require('./config/footer'),
       docs: {
         sidebar: {
           hideable: true, // 可收起
-          autoCollapseCategories: true, // 手风琴
+          autoCollapseCategories: false, // 手风琴
         },
       },
       prism: {
