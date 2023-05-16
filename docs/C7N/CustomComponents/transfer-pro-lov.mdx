@@ -120,7 +120,7 @@ export const getDSProps = (): DataSetProps => {
 | :---------- | :----------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :----- |
 | name        | `string`                             | <Highlight color="red">必输</Highlight> 字段名称                                                                                                     | -      |
 | record      | `Record 或 undefined`                | <Highlight color="red">必输</Highlight> 关联的 `record`                                                                                              | -      |
-| configProps | `{data?:any; read?: TransportType }` | <Highlight>可选</Highlight> 源数据加载方式，仅当制定数据或自定义接口时用到                                                                           | -      |
+| configProps | `{data?:any; read?: TransportType }` | <Highlight>可选</Highlight> 源数据加载方式，仅当指定数据或自定义接口时用到                                                                           | -      |
 | modalProps  | `TLovModalProps`                     | <Highlight>可选</Highlight> 支持除 `key` `maskClosable` `children` `onOk` 以外的 `ModalProps` 所有属性                                               | -      |
 | 其他        | `TransferProProps & FormFieldProps`  | 支持 `TransferPro` 除 `configProps` `targetProps` 外所有属性；支持 `FormFieldProps` 除 `dataSet` 所有属性 [[?]](#为什么不支持-formfieldpropsdataset) | -      |
 
