@@ -84,22 +84,22 @@ export default () => {
 
 ```ts
 /**
- * @description lovCode,lookupCode 与 read 三选一
+ * @description lovCode,lookupCode,data 与 read 四选一
  */
-export type ConfigProps =
-  | {
-      primaryKey: string;
-      textField: string;
-      valueField?: string;
-    } & (
-      | { lovCode: string; lookupCode?: undefined; read?: undefined }
-      | { lovCode?: undefined; lookupCode: string; read?: undefined }
-      | { lovCode?: undefined; lookupCode?: undefined; read: TransportType }
-    );
+export type ConfigProps = {
+  primaryKey: string;
+  textField: string;
+  valueField?: string;
+} & (
+  | { lovCode: string; lookupCode?: undefined; read?: undefined; data?: undefined }
+  | { lovCode?: undefined; lookupCode: string; read?: undefined; data?: undefined }
+  | { lovCode?: undefined; lookupCode?: undefined; read: TransportType; data?: undefined }
+  | { lovCode?: undefined; lookupCode?: undefined; read: undefined; data: any }
+);
 ```
 
 :::info 注意
-加载源数据的方式<Emphasis>只能且必须</Emphasis>选择 `lovCode` `lookupCode` 与 `read` 一种：值集 (列表) 的配置更为简洁， `read` 配置更为灵活。<br/>如果使用 `JS/JSX` 可能不会有类型错误提示，同时配置的话 `read` 优先级更高。
+加载源数据的方式<Emphasis>只能且必须</Emphasis>选择 `lovCode` `lookupCode` `data` 与 `read` 一种：值集 (列表) 的配置更为简洁， `read` 配置更为灵活。<br/>如果使用 `JS/JSX` 可能不会有类型错误提示，同时配置的话 `read` 优先级更高。
 :::
 
 | 参数       | 类型            | 说明                                                                                                                                                                  | 默认值       |
@@ -107,6 +107,7 @@ export type ConfigProps =
 | primaryKey | `string`        | <Highlight color="red">必输</Highlight> 主键，用于数据标识                                                                                                            | -            |
 | textField  | `string`        | <Highlight color="red">必输</Highlight> 作为主要展示字段                                                                                                              | `textField`  |
 | valueField | `string`        | <Highlight>可选</Highlight> 作为次要展示字段                                                                                                                          | `valueField` |
+| data       | `any`           | <Highlight>可选</Highlight> 用于初始化源数据                                                                                                                          | -            |
 | lovCode    | `string`        | <Highlight>可选</Highlight> 值集编码，用于加载源数据                                                                                                                  | -            |
 | lookupCode | `string`        | <Highlight>可选</Highlight> 值列表编码，用于加载源数据                                                                                                                | -            |
 | read       | `TransportType` | <Highlight>可选</Highlight> 详细配置参见 [Transport](https://open.hand-china.com/choerodon-ui/zh/procmp/dataset/dataset#transport)，优先级高于 `lovCode` `lookupCode` | -            |
@@ -137,3 +138,9 @@ export type TargetProps = {
 `ConfigProps` 与 `TargetProps` 对返回数据的要求：<br/>
 `Array` 或者 `{ content: Array }`，其他返回结果需要通过配置 `read.transformResponse` 自行格式转换。
 :::
+
+## 更新日志
+
+### 2023-05-16
+
+- 新增 `ConfigProps.data` 支持手动加载源数据
