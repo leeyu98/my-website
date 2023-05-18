@@ -73,6 +73,7 @@ $languages: (
   tsx: 'TSX',
   vue: 'Vue',
   bash: 'Bash',
+  json: 'JSON',
 );
 
 #__docusaurus {
@@ -156,13 +157,14 @@ $languages: (
       }
       .theme-code-block {
         position: relative;
-        padding-top: 6px;
+        padding-top: 4px;
+        margin-top: 24px;
         &::after {
           content: ' ';
           position: absolute;
           font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
           box-shadow: 0 2px 6px 0 rgba(100 114 255 / 20%);
-          top: -10px;
+          top: -12px;
           left: 20px;
           min-width: 50px;
           background-color: rgb(100 114 255);
