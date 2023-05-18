@@ -1,0 +1,26 @@
+---
+title: H0平台相关
+tags: [问题]
+keywords: [H0, HZERO]
+sidebar_position: 10
+---
+
+## 平台模块初次加载 404
+
+**问题详情**
+初次加载模块 404，刷新后恢复正常。
+
+**解决方案**
+
+启用初识加载 `initLoad: true`
+
+> 如果是在其他模块中引用的模块，可以调整正则，在需要时加载
+
+```js title=hzerorc.js
+module.exports = {
+  packages: [
+    { name: 'hzero-front-hiam' },
+    { name: 'hzero-front-hmsg', initLoad: true, registerRegex: '\\/hmsg\\/' },
+  ],
+};
+```
