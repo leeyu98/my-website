@@ -12,7 +12,7 @@ module.exports =
     trailingComma: 'es5',
 
     /** 折行长度 */
-    printWidth: 120,
+    printWidth: 100,
 
     /** TAB 长度 */
     tabWidth: 2,
