@@ -21,16 +21,43 @@ keywords: [头像, AvatarPro]
 - 如果遇到了文字头像倒置的问题 (已知在弹窗中使用 `List` 组件会出现此问题)
 - 如果需要用到多色文字头像
 
-  其他只是 `Avatar` 的简单应用并能实现效果时，不建议使用该组件
+> 其他只是 `Avatar` 的简单应用并能实现效果时，不建议使用该组件
 
 ## 基本用法
 
 ```jsx {3} showLineNumbers
+import { AvatarPro } from 'hscs-common/components';
+
 export default () => {
   return (
-    <AvatarPro colorful size={28} style={{ fontSize: 14 }}>
-      长念
-    </AvatarPro>
+    <>
+      <AvatarPro colorful shape="square" size={48}>
+        你好
+      </AvatarPro>
+      <AvatarPro size={48}>你好</AvatarPro>
+      <AvatarPro colorful size={48}>
+        你好
+      </AvatarPro>
+      <AvatarPro colorful size={48}>
+        Hello
+      </AvatarPro>
+      <AvatarPro colorful size={48}>
+        안녕
+      </AvatarPro>
+      <AvatarPro colorful size={48}>
+        こんにちは
+      </AvatarPro>
+      <AvatarPro colorful size={48}>
+        <span role="img" aria-label="smile">
+          😄
+        </span>
+      </AvatarPro>
+      <AvatarPro colorful size={48}>
+        <span role="img" aria-label="imac">
+          🖥️
+        </span>
+      </AvatarPro>
+    </>
   );
 };
 ```
@@ -64,11 +91,11 @@ export default () => {
 
 > 除此以下附加属性外，支持 `Avatar` 默认所有属性 `AvatarProps`
 
-| 参数     | 类型         | 说明                                                                               | 默认值      |
-| :------- | :----------- | :--------------------------------------------------------------------------------- | :---------- |
-| children | `string`     | <Highlight>可选</Highlight> 文本，仅支持 `string`                                  | -           |
-| colorful | `boolean`    | <Highlight>可选</Highlight> 是否启用多彩显示，仅 `children` 为 `string` 类型时有效 | `false`     |
-| mode     | `AvatarMode` | <Highlight>可选</Highlight> 文本截取模式，枚举                                     | `full_char` |
+| 参数     | 类型                               | 说明                                                                                        | 默认值      |
+| :------- | :--------------------------------- | :------------------------------------------------------------------------------------------ | :---------- |
+| children | `string` 或者 `React.ReactElement` | <Highlight>可选</Highlight> 子节点，递归查找 `string` 类型的子节点并显示 (`Emoji` 字符规范) | -           |
+| colorful | `boolean`                          | <Highlight>可选</Highlight> 是否启用多彩显示，仅 `children` 为 `string` 类型时有效          | `false`     |
+| mode     | `AvatarMode`                       | <Highlight>可选</Highlight> 文本截取模式，枚举                                              | `full_char` |
 
 ### AvatarMode
 
@@ -83,6 +110,8 @@ export enum AvatarMode {
 ```
 
 ## 源代码
+
+### 文字倒置修复
 
 继承 `Avatar` 组件，覆盖 `setScale` 方法修复文字缩放倒置问题。
 
@@ -129,7 +158,23 @@ export default class AvatarP extends Avatar {
 }
 ```
 
+### 多彩文字取色逻辑
+
+```js
+const getAvatarColor = (text = '-') => {
+  const charCode = text?.codePointAt(0) ?? 0;
+  const index = charCode % colorPalette.length;
+  return colorPalette[index];
+};
+```
+
 ## 更新日志
+
+### 2023-05-21
+
+- 舍弃 `pinyin` 取词库，采用 `String.prototype.codePointAt()` 实现
+- 扩展 `children` 类型
+- 优化部分逻辑
 
 ### 2023-05-15
 
