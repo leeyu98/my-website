@@ -13,13 +13,15 @@ keywords: [TransferPro]
 ## 特性说明
 
 - 支持单选、多选，简单搜索
-- 支持 `lovCode` `lookupCode` 值集配置
+- 支持 `lovCode/lookupCode` 值集配置
 - 支持数据手动、自动加载
 - 支持自定义渲染
 
 ## 基本用法
 
-```jsx {3,10} showLineNumbers
+```jsx {5,12} showLineNumbers
+import { TransferPro } from 'hscs-common/components';
+
 export default () => {
   const handleAssign = async ({ originalData, initialData, value, created, deleted }) => {
     console.log(originalData, initialData, value, created, deleted);
@@ -140,6 +142,10 @@ export type TargetProps = {
 :::
 
 ## 更新日志
+
+### 2023-05-21
+
+- 修复 `lovCode/lookupCode` 查询顺序问题
 
 ### 2023-05-16
 
