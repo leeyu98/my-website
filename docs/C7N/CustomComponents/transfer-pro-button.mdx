@@ -17,7 +17,9 @@ keywords: [TransferProButton]
 
 ## 基本用法
 
-```tsx {3,13-15} showLineNumbers
+```tsx {5,15-17} showLineNumbers
+import { TransferProLov } from 'hscs-common/components';
+
 export default () => {
   const handleAssign = async ({ originalData, initialData, value, created, deleted }) => {
     console.log(originalData, initialData, value, created, deleted);
@@ -100,3 +102,9 @@ relation = { tid: 't01', cid: 'c01' };
 
 在为教室分配教师的情况下，穿梭框的数据就是教师，`configProps` 的配置用来加载所有教师数据，`targetProps` 配置用来加载已匹配的关系数据。<br/>
 `originalData` 就是这里的匹配关系原始数据；`initialData` 就是用 `originalData` 中的主键 `tid` 去匹配所有教师，将已包含的教师数据作为穿梭框【已选数据】，剩余部分作为穿梭框【源数据】
+
+## 更新日志
+
+### 0.1.1
+
+- `hscs-front-common@0.1.1` 起支持该组件
