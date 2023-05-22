@@ -2,9 +2,6 @@
 module.exports =
   /** @type {import('prettier').Options} */
   ({
-    /** 与 ESLint 协调, 适应 ESLint 的规则 */
-    eslintIntegration: true,
-
     /** 是否使用单引号 */
     singleQuote: true,
 
