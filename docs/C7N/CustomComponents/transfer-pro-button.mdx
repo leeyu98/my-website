@@ -6,6 +6,8 @@ tags: [Transfer, 穿梭框]
 keywords: [TransferProButton]
 ---
 
+<Author count={2900} publish="2023-05-13 00:51:00" edit="2023-05-23 17:36:00" />
+
 基于 `TransferPro` 实现，将 `Modal.open` 操作内置到组件中，渲染为 `Button` 组件。
 
 ![基本用法](./images/transfer-pro-button-base.png)
@@ -18,7 +20,7 @@ keywords: [TransferProButton]
 ## 基本用法
 
 ```tsx {5,15-17} showLineNumbers
-import { TransferProLov } from 'hscs-common/components';
+import { TransferProButton } from 'hscs-common/components';
 
 export default () => {
   const handleAssign = async ({ originalData, initialData, value, created, deleted }) => {
@@ -27,7 +29,7 @@ export default () => {
   };
 
   return (
-    <TransferProModal
+    <TransferProButton
       buttonProps={{
         funcType: FuncType.link,
         disabled: true,
@@ -55,7 +57,7 @@ export default () => {
       }}
     >
       分配
-    </TransferProModal>
+    </TransferProButton>
   );
 };
 ```
@@ -107,4 +109,4 @@ relation = { tid: 't01', cid: 'c01' };
 
 ### 0.1.1
 
-- `hscs-front-common@0.1.1` 起支持该组件
+- 🎉 `hscs-front-common@0.1.1` 起支持该组件

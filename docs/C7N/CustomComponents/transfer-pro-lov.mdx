@@ -6,6 +6,8 @@ tags: [Transfer, 穿梭框]
 keywords: [TransferProLov, 穿梭框, 穿梭值集]
 ---
 
+<Author count={3600} publish="2023-05-13 00:51:00" edit="2023-05-24 13:55:00" />
+
 基于 `TransferPro` 实现，将 `Modal.open` 操作内置到组件中，渲染为 `TextField` 组件。
 
 ![基本用法](./images/transfer-pro-lov-base.png)
@@ -17,11 +19,8 @@ keywords: [TransferProLov, 穿梭框, 穿梭值集]
 
 ## 基本用法
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 <Tabs>
-  <TabItem value="index" label="Index" default>
+<TabItem value="index" label="Index" default>
 
 ```tsx title=index.tsx
 import { useDataSet } from 'choerodon-ui/pro';
@@ -35,7 +34,7 @@ export default () => {
 ```
 
 </TabItem>
-  <TabItem value="data-set" label="DataSet">
+<TabItem value="data-set" label="DataSet">
 
 ```ts {10,42-45} showLineNumbers title=store/index.ts
 import { DataSetProps } from 'choerodon-ui/dataset/data-set/DataSet';
@@ -103,15 +102,21 @@ export const getDSProps = (): DataSetProps => {
 };
 ```
 
-  </TabItem>
+</TabItem>
 </Tabs>
 
 ## 在表单中应用
 
 ```tsx
-<Form>
-  <TransferProLov name="tenant" record={tenantDS.current} label="租户" />
-</Form>
+import { TransferProLov } from 'hscs-common/components';
+
+export default () => {
+  return (
+    <Form>
+      <TransferProLov name="tenant" record={tenantDS.current} label="租户" />
+    </Form>
+  );
+};
 ```
 
 ## API
@@ -141,10 +146,10 @@ export const getDSProps = (): DataSetProps => {
 
 ### 0.1.1
 
-- `hscs-front-common@0.1.1` 起支持该组件
+- 🎉 `hscs-front-common@0.1.1` 起支持该组件
 
 ### alpha
 
 **2023-05-16**
 
-- 新增 `ConfigProps.data` 支持手动加载源数据
+- 🎉 新增 `ConfigProps.data` 支持手动加载源数据
