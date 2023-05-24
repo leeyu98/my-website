@@ -48,8 +48,10 @@ const Author: React.FC<IProps> = ({ count, publish, edit }) => {
             {name}
           </Link>
           <div className={styles['costing']}>
-            {[time, _publish, _edit].filter(Boolean).map((i) => (
-              <span className={styles.item}>{i}</span>
+            {[time, _publish, _edit].filter(Boolean).map((i, index) => (
+              <span key={index} className={styles.item}>
+                {i}
+              </span>
             ))}
           </div>
         </section>
