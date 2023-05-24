@@ -1,6 +1,7 @@
 ---
 title: 依赖相关
 tags: []
+description: 与依赖相关常见问题总结
 sidebar_position: 100
 ---
 
@@ -38,6 +39,34 @@ sidebar_position: 100
 {
   "resolutions": {
     "@types/node": "18.11.18"
+  }
+}
+```
+
+## Attempted import error: 'createSpin' is not exported from '@hero-front-ui/core'
+
+**详情**
+
+![spin-pro-error](./images/spin-pro-error.png)
+
+**原因**
+
+`@hero-front-ui/core` 与 `@hero-front-ui/c7n-ui` 版本不匹配，`c7n-ui@4.1.2` 版本中组件引入发生了变化
+
+```js
+// @hero-front-ui/c7n-ui@4.1.1
+import { createSpin } from '../Spin';
+
+// @hero-front-ui/c7n-ui@4.1.2
+import { createSpin } from '@hero-front-ui/core';
+```
+
+**解决方案**
+
+```json title=package.json
+{
+  "resolutions": {
+    "@hzero-front-ui/c7n-ui": "4.1.1"
   }
 }
 ```
