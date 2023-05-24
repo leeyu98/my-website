@@ -1,10 +1,12 @@
 import MDXComponents from '@docusaurus/theme-classic/lib/theme/MDXComponents';
-import Highlight from '@site/src/components/Highlight';
-import Emphasis from '@site/src/components/Emphasis';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import * as MyComponents from '@site/src/components';
 
 // 注册 mdx 全局组件
 export default {
   ...MDXComponents,
-  Highlight,
-  Emphasis
+  Tabs,
+  TabItem,
+  ...MyComponents,
 };
