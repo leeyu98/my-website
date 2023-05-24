@@ -86,6 +86,10 @@ const config = {
       },
     }),
   customFields: {
+    author: {
+      name: '长念',
+      readingSpeed: 500, // 阅读速度
+    },
     introduction: ['欢迎来到长念的小站', '我是一名前端开发者'],
   },
 };
