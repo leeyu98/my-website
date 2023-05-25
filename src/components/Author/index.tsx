@@ -22,10 +22,10 @@ interface IProps {
   /**
    * @description 最后修改时间
    */
-  edit: string;
+  update: string;
 }
 
-const Author: React.FC<IProps> = ({ count, publish, edit }) => {
+const Author: React.FC<IProps> = ({ count, publish, update }) => {
   const {
     siteConfig: { customFields },
   } = useDocusaurusContext();
@@ -35,7 +35,7 @@ const Author: React.FC<IProps> = ({ count, publish, edit }) => {
 
   const time = count ? `阅读约 ${Math.ceil(count / readingSpeed)} 分钟` : '';
   const _publish = publish ? `${dayjs(publish).fromNow()}发布` : '';
-  const _edit = edit ? `${dayjs(edit).fromNow()}编辑` : '';
+  const _update = update ? `${dayjs(update).fromNow()}编辑` : '';
 
   return (
     <div className={styles.header}>
@@ -48,7 +48,7 @@ const Author: React.FC<IProps> = ({ count, publish, edit }) => {
             {name}
           </Link>
           <div className={styles['costing']}>
-            {[time, _publish, _edit].filter(Boolean).map((i, index) => (
+            {[time, _publish, _update].filter(Boolean).map((i, index) => (
               <span key={index} className={styles.item}>
                 {i}
               </span>
