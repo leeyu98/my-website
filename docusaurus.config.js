@@ -4,6 +4,8 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const counting = require('./src/plugins/counting');
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: '长念的小站',
@@ -34,6 +36,10 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./config/sidebars'),
+          editUrl: () => {
+            return 'mailto: 2102028233@qq.com';
+          },
+          remarkPlugins: [counting],
         },
         blog: {
           blogTitle: '博客',
