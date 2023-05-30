@@ -39,7 +39,6 @@ const config = {
           editUrl: () => {
             return 'mailto: 2102028233@qq.com';
           },
-          remarkPlugins: [counting],
         },
         blog: {
           blogTitle: '博客',

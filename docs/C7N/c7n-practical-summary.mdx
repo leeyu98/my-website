@@ -1,0 +1,67 @@
+---
+title: C7N 实战总结
+tags: []
+---
+
+## 1. 输入控制
+
+### 使用场景
+
+**1. 文本输入限制：** 不允许键入非法值；<br/>
+**2. 数字精度控制：** 默认的 `precesion` 配置会在输入完成之后对数据进行四舍五入，并默认省去结尾的 `0`。所以以下场景可能会用到：
+
+- 不进行四舍五入，直接截取；
+- 始终保留 `n` 位数字，结尾的 `0` 不可省略；
+- 限制输入 `n` 位后不能输入。
+
+### 实现方式
+
+- 通过自定义 `editor` 自定义渲染实现；
+- 无须指定 `name` 和 `record`，自动值绑定；
+- 在 onInput 和 onChange 事件中自定义逻辑处理。
+
+### 示例
+
+只能输入 `字母、数字、下划线`
+
+```jsx
+{
+  name: 'fieldName',
+  editor: () => {
+    return (
+      <TextField
+        onInput={(event) => {
+          const { currentTarget } = event;
+          const validValue = currentTarget.value.replace(/\W/g, '');
+          currentTarget.value = validValue; // 更新视图
+          // record.set(name as string, validValue); // 存值 (自动更新，不需要)
+        }}
+      />
+    );
+  },
+},
+```
+
+## 2. Lov 的简单配置
+
+### 场景
+
+在不需要回显的时候，就不需要关注 `textField` 字段，就可以通过简单地配置实现。例如：查询条件中的 `Lov`
+
+### 实现方式
+
+通过 `transformRequest` 进行值转换。
+
+### 示例
+
+以公司编码 (`companyCode`) 作为查询条件
+
+```ts
+{
+  name: 'companyCode',
+  type: FieldType.object,
+  lovCode: 'LOV.COMPANY',
+  transformRequest: (value) => value?.companyCode || '',
+},
+
+```
