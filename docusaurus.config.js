@@ -4,8 +4,6 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
-const counting = require('./src/plugins/counting');
-
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: '长念的小站',
@@ -40,13 +38,14 @@ const config = {
             return 'mailto: 2102028233@qq.com';
           },
         },
-        blog: {
-          blogTitle: '博客',
-          blogDescription: '基于 Docusaurus 构建！',
-          blogSidebarTitle: '最新文章',
-          blogSidebarCount: 'ALL',
-          postsPerPage: 'ALL',
-        }, // 禁用博客
+        blog: false,
+        // blog: {
+        //   blogTitle: '博客',
+        //   blogDescription: '基于 Docusaurus 构建！',
+        //   blogSidebarTitle: '最新文章',
+        //   blogSidebarCount: 'ALL',
+        //   postsPerPage: 'ALL',
+        // }, // 禁用博客
         theme: {
           customCss: [require.resolve('./src/global.scss')], // CSS 替换为 SCSS
         },

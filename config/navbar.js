@@ -51,7 +51,7 @@ const navbar =
         docId: 'Other/Intro',
         position: 'left',
       },
-      { to: 'blog', label: '博客', position: 'left' },
+      // { to: 'blog', label: '博客', position: 'left' },
       // 备用站点
       ...getSites(),
     ],

@@ -40,11 +40,11 @@ const Author: React.FC<IProps> = ({ count, publish, update }) => {
   return (
     <div className={styles.header}>
       <section className={styles.avatar}>
-        <Link className={styles.avatar__link} to={'/blog/2023/04/07/about-the-author'}>
+        <Link className={styles.avatar__link} to={'/docs/Author'}>
           <img className={styles.avatar__image} src={avatarImage} alt={name} />
         </Link>
         <section>
-          <Link to="/blog/2023/04/07/about-the-author" className={styles['author']}>
+          <Link to="/docs/Author" className={styles['author']}>
             {name}
           </Link>
           <div className={styles['costing']}>
