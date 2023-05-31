@@ -138,10 +138,10 @@ $languages: (
       min-height: 100vh;
       border-right: none;
       nav.menu {
-        & + button.button {
+        & + button.button[class*='collapseSidebarButton'] {
           border: none;
-          border-top-left-radius: 8px;
-          border-top-right-radius: 8px;
+          border-radius: 8px;
+          margin: 0 20px 10px;
         }
       }
       div[class^='expandButton'] {
@@ -162,7 +162,8 @@ $languages: (
         &::after {
           content: ' ';
           position: absolute;
-          font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+          font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+            monospace;
           box-shadow: 0 2px 6px 0 rgba(100 114 255 / 20%);
           top: -12px;
           left: 20px;

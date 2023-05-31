@@ -40,7 +40,7 @@
       // 排除博客
       main[class^='docMainContainer']:not([itemscope]) {
         background-color: rgba(245, 247, 248, 0.25);
-        box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.02);
+        // box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.02);
         // 面包屑
         nav.theme-doc-breadcrumbs {
           // background: linear-gradient(
