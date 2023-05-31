@@ -4,6 +4,6 @@
     "baseUrl": ".",
     "typeRoots": ["./typings"]
   },
-  "include": ["src", "./typings", "config"],
+  "include": ["./src", "./typings"],
   "exclude": ["node_modules", "**/node_modules/*"]
 }
