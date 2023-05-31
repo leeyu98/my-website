@@ -1,0 +1,98 @@
+---
+title: 网站置灰思考
+description: 通过 CSS 实现公祭日网站灰度效果。
+sidebar_position: 30
+displayed_sidebar: frontendSidebar
+tags:
+  - CSS
+  - 网站灰度
+  - 滤镜
+---
+
+<Author count={1200} publish="2023-2-7 0:29:46" update="2023-2-18 23:49:58" />
+
+## 实现方式
+
+### 滤镜 filter
+
+滤镜会直接影响所有的后代元素，所以可以在 `html` 标签中添加：
+
+```css
+html {
+  filter: grayscale(0.95); /* 可自定义灰色程度 */
+}
+```
+
+### 背景滤镜 backdrop-filter
+
+背景滤镜就像是在整个页面上加一层遮罩，透过这个添加了滤镜的遮罩展示网页。需要注意层级 (`z-index`) 管理。
+
+```css
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  backdrop-filter: grayscale(1);
+  z-index: 99999;
+  pointer-events: none; /* 保证页面原本交互 */
+}
+```
+
+如下图可以看到，指针交互是正常的：
+
+### 混合模式 mix-blend-mode
+
+与背景滤镜相似，添加一个黑色遮罩，通过改变其混合模式实现效果。
+
+```css
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-color: rgb(0, 0, 0);
+  mix-blend-mode: color;
+  z-index: 99999;
+  pointer-events: none;
+}
+```
+
+:::tip
+`mix-blend-mode: color | hue | saturation;` 都可以实现网站置灰的效果。
+:::
+
+## 相关问题
+
+### 为什么建议滤镜加在 html 上
+
+**1. 滤镜对定位的影响**
+
+滤镜会影响绝对定位 (`absolute/fixed`) 计算定位时的参考祖先元素：
+
+1. `fixed` 元素会相对其最近的 `filter` 不为 `none` 的祖先元素定而不是窗口。
+2. `absolute` 元素会相对其最近的 `position` 不为 `static` 或者 `filter `不为 `none` 的祖先元素定位。
+
+:::info 注意
+对定位产生影响的除了 filter 还有 transform、perspective
+:::
+
+**2. html 与 body 的不同**
+
+`html` 的默认高度取决于浏览器窗口的大小，而 `body` 的高度是由其内容决定的。所以加在 `html` 上看起来对 `fixed` 定位元素没什么影响（实际通过调整 `html` 高度大小可以看出影响是存在的：`fixed` 元素位置会随着 `html` 高度变化）。
+所以，建议滤镜加在 `html` 上。
+
+### 实现首屏置灰
+
+采用 `backdrop-filter` 或者 `mix-blend-mode` 方案，将其中遮罩定位调整为 `absolute`，滚动之后非首屏部分恢复颜色。
+
+```css
+html::before {
+  content: '';
+  position: absolute; /* 更改定位 */
+  inset: 0;
+  backdrop-filter: grayscale(1);
+  z-index: 99999;
+  pointer-events: none;
+}
+```
+
+这种方式比较简单，但存在一些问题：比如在滚动过程中，固定定位 (`position: fixed`) 元素能看到明显的颜色交界动态过程，所以，如果想要保证固定元素始终置灰还需要单独设置。
