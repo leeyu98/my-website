@@ -5,7 +5,7 @@ import zhCN from 'dayjs/locale/zh-cn';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import * as React from 'react';
 import styles from './index.module.scss';
-import avatarImage from '/static/img/avatar.jpg';
+import avatarImage from '/static/img/avatar.png';
 
 dayjs.locale(zhCN); // 中文
 dayjs.extend(relativeTime); // 相对时间
