@@ -7,13 +7,14 @@ const getSites = () => {
     /**@type {import('@docusaurus/theme-common').NavbarItem[]} */
     ([
       {
+        id: 'netlify',
         label: 'Netlify',
         href: 'https://changnian.netlify.app/',
         position: 'right',
       },
-      { label: 'Vercel', href: 'https://changnian.vercel.app/', position: 'right' },
+      { id: 'vercel', label: 'Vercel', href: 'https://changnian.vercel.app/', position: 'right' },
     ]);
-  return deploySites.filter((s) => s.label.toLocaleLowerCase() !== process.env.DEPLOY_SITE);
+  return deploySites.filter((s) => s?.id !== process.env.DEPLOY_SITE);
 };
 
 // 侧边导航配置
