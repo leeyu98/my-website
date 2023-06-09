@@ -10,7 +10,7 @@ keywords:
   - AvatarPro
 ---
 
-<Author count={3000} publish="2023-05-11 18:40:00" update="2023-05-23 18:53:00" />
+<Author count={3000} publish="2023-5-11 18:40" update="2023-6-7 11:31" />
 
 基于 `Avatar` 组件封装的头像组件。
 
@@ -125,9 +125,9 @@ export enum AvatarMode {
 `AvatarP` 组件是为了修复文字缩放倒置问题，也可以导入使用，`AvatarPro` 中就是以修复过后的 `AvatarP` 作为基础组件的。
 :::
 
-> 此问题 [(#1530)](https://github.com/open-hand/choerodon-ui/issues/1530) 已得到回复，预计将在后续版本中修复(`1.6.2` 暂未修复)。
+> 此问题 [(#1530)](https://github.com/open-hand/choerodon-ui/issues/1530) 已得到回复，预计将在后续版本 (`>=1.6.3-alpha.3`) 修复。
 
-```tsx {22-25,29} showLineNumbers title=AvatarP.tsx
+```tsx {21,28} showLineNumbers title=AvatarP.tsx
 import { Avatar } from 'choerodon-ui';
 import { findDOMNode } from 'react-dom';
 import { AvatarProps } from 'choerodon-ui/lib/avatar';
@@ -148,12 +148,7 @@ export default class AvatarP extends Avatar {
     const avatarNode = findDOMNode(this) as HTMLElement;
     if (avatarNode) {
       const childNode = avatarNode.firstChild as HTMLElement;
-
-      const [avatarWidth, childWidth] = [
-        avatarNode.offsetWidth || avatarNode?.getBoundingClientRect()?.width,
-        childNode?.offsetWidth || childNode?.getBoundingClientRect()?.width,
-      ];
-
+      const [avatarWidth, childWidth] = [avatarNode?.offsetWidth, childNode?.offsetWidth];
       if (avatarWidth > 8 && avatarWidth - 8 < childWidth) {
         this.setState({
           scale: (avatarWidth - 8) / childWidth,
