@@ -1,0 +1,201 @@
+---
+displayed_sidebar: frontendSidebar
+title: 实用 JS Doc
+description: JS Doc
+tags:
+  - JSDoc
+---
+
+<Author count={1200} publish="2021-6-12 5:55:20" />
+
+## @deprecated
+
+标注为弃用，在使用到时会有 ~~删除线~~ 提示。
+
+**语法**
+
+```
+@deprecated [<text>]
+```
+
+**示例**
+
+```js
+/**
+ * @deprecated since 2.0
+ */
+function getIP() {
+  //...
+}
+```
+
+## @description
+
+别名 `@desc`
+
+添加描述。
+
+**语法**
+
+```
+@description <text>
+@desc <text>
+```
+
+**示例**
+
+```js
+/**
+ * @description since 2.0
+ */
+function getIP() {
+  //...
+}
+```
+
+## @example
+
+添加示例用法。
+
+**示例**
+
+```js
+/**
+ * @example <User />
+ */
+export const User () => {
+  //...
+}
+```
+
+## @param
+
+别名 `@arg` `@argument`
+
+指定参数类型、名称、描述。
+
+**语法**
+
+```
+@param [<type>] <name> [<description>]
+```
+
+**示例**
+
+```js
+/**
+ * @param {string} name - user's name
+ */
+function getAge(name) {
+  //...
+}
+```
+
+## @return
+
+别名 `@returns`
+
+指定返回值类型、描述。
+
+```
+@return [{type}] [description]
+```
+
+**示例**
+
+```js
+/**
+ * @return {string}  user's name
+ */
+function getName() {
+  //...
+}
+```
+
+## @see
+
+链接说明文档
+
+**示例**
+
+```js
+/**
+ * @see https://xxx.com
+ */
+function getName() {
+  //...
+}
+```
+
+## @todo
+
+标注待办事项。
+
+**语法**
+
+```
+@todo text describing thing to do.
+```
+
+**示例**
+
+```js
+/**
+ * @todo correct naem to name
+ */
+function getUser(naem) {
+  //...
+}
+```
+
+## @type
+
+标识类型，支持引入外部类型。
+
+**语法**
+
+```
+@type {typeName}
+```
+
+**示例**
+
+```js
+/// 定义表格列
+const columns = /** @type {import('choerodon-ui/pro/lib/table/Column').ColumnProps[]} */ (
+  [
+    //...
+  ]
+);
+
+// 定义 DataSet Props
+export const getDSProps = () => {
+  return /** @type {import('choerodon-ui/pro/lib/data-set/DataSet').DataSetProps} */ (
+    {
+      //...
+    }
+  );
+};
+```
+
+## @typedef
+
+描述自定义类型，可以被 @type @param 引用。
+
+**语法**
+
+```
+@typedef [<type>] <namepath>
+```
+
+**示例**
+
+```js
+/**
+ * @typedef  {{ name: string }} User
+ * @param {User} user
+ */
+function getUser(user) {
+  //...
+}
+```
