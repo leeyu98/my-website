@@ -1,10 +1,21 @@
+---
+displayed_sidebar: frontendSidebar
+title: JS 获取 IP 地址
+description: JS 通过公用接口获取 IP
+tags:
+  - 原型
+  - 原型链
+---
+
 # 原型链
+
+<Author count={2400} publish="2022-11-12" update="2023-6-12 10:03" />
+
+当一个对象在查找一个属性 (或方法) 的时候，自身没有就会根据 `__proto__` 向它的原型进行查找，如果都没有，则向它的原型的原型继续查找，直到查到`Object.prototype.__proto__`为`null`，这样也就形成了原型链。
 
 :::tip Tips
 在 `JavaScript` 中一切都是对象，在理解原型链时需分为函数 `Function` 和对象 `Object` 两大类。
 :::
-
-当一个对象在查找一个属性 (或方法) 的时候，自身没有就会根据 `__proto__` 向它的原型进行查找，如果都没有，则向它的原型的原型继续查找，直到查到`Object.prototype.__proto__`为`null`，这样也就形成了原型链。
 
 ## 通用规则
 
