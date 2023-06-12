@@ -15,7 +15,7 @@ JS 中并没有直接获取客户端 IP 相应的 API。
 > 搜狐接口返回 `text/json` 的 `JS` 代码，声明一个包含 `IP` 信息的 `returnCitySN` 变量；
 
 ```html
-<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
 <script type="text/javascript">
   document.write(`<p>[搜狐] IP地址:${returnCitySN?.cip} 地址:${returnCitySN?.cname}</p>`);
 </script>
@@ -38,7 +38,7 @@ export const IPAddress = () => {
   return (
     <iframe
       className={styles['get-ip']}
-      srcdoc="<script src='http://pv.sohu.com/cityjson?ie=utf-8'></script>
+      srcdoc="<script src='https://pv.sohu.com/cityjson?ie=utf-8'></script>
       <script type='text/javascript'>
         document.write(`<p style='font-family: Arial, Helvetica, sans-serif;'>[搜狐] IP地址:${returnCitySN?.cip} 地址:${returnCitySN?.cname}</p>`)
       </script>"
