@@ -34,9 +34,6 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./config/sidebars'),
-          editUrl: () => {
-            return 'mailto: 2102028233@qq.com';
-          },
         },
         blog: false,
         // blog: {
