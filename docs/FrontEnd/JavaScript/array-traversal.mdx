@@ -1,0 +1,201 @@
+---
+displayed_sidebar: frontendSidebar
+title: Array的遍历
+description: JS 中数组的遍历方式与终止关键字
+tags:
+  - Array
+  - 数组
+---
+
+<Author count={4200} publish="2021-05-28 13:57:20" update="2023-6-12 13:40" />
+
+## 规律一览表
+
+:::tip tips
+注：`return` 是函数的结束方式，所以不能用在普通 `for` 循环中。
+:::
+
+| 遍历方式        | 返回值      |   continue   |  break   |                return                 |                                 中止条件                                  |
+| :-------------- | :---------- | :----------: | :------: | :-----------------------------------: | :-----------------------------------------------------------------------: |
+| `基础 for 循环` |             | 跳过本次循环 | 结束循环 |                  ❌                   |                                  `break`                                  |
+| `for...in`      |             | 跳过本次循环 | 结束循环 |                  ❌                   |                                  `break`                                  |
+| `for...of`      |             | 跳过本次循环 | 结束循环 |                  ❌                   |                                  `break`                                  |
+| `forEach`       | `undefined` |      ❌      |    ❌    |             跳过本次循环              |                                    ❌                                     |
+| `map`           | `Array`     |      ❌      |    ❌    |             跳过本次循环              |                                    ❌                                     |
+| `filter`        | `Array`     |      ❌      |    ❌    |             跳过本次循环              |                                    ❌                                     |
+| `some`          | `Boolean`   |      ❌      |    ❌    | `true` 终止循环; `false` 结束本次循环 | `Truthy` [真值](https://developer.mozilla.org/zh-CN/docs/Glossary/Truthy) |
+| `every`         | `Boolean`   |      ❌      |    ❌    | `false` 终止循环; `true` 结束本次循环 |  `Falsy` [假值](https://developer.mozilla.org/zh-CN/docs/Glossary/Falsy)  |
+
+```js
+// 声明数组用于遍历
+let arr = ['Today', 'is', 'a', 'nice', 'day'];
+```
+
+## for 循环
+
+- 可以使用 `continue` 跳过当前循环
+- 可以使用 `break` 跳出循环
+- 不能使用 `return`
+
+### 基础 for 循环
+
+遍历数组，通过下标访问数组元素
+
+```js
+for (let index = 0; index < arr.length; index++) {
+  // if (index === 3) continue;
+  if (index === 3) break;
+  console.log(arr[index]);
+}
+
+// Today is a
+```
+
+### for...in
+
+通过下标访问
+
+:::caution 注意
+
+- `for...in` 是为遍历对象属性而产生的，不建议使用 `for...in` 遍历数组。
+- `for...in` 得到的索引会是 `string` 类型。
+
+:::
+
+```js
+for (let index in arr) {
+  // if (index === '3') continue;
+  if (index === '3') break;
+  console.log(arr[index]);
+}
+
+// Today is a
+```
+
+### for...of
+
+访问的是元素，不能获得 `index`
+
+```js
+for (let item of arr) {
+  if (item === 'a') continue;
+  // if (item === 'a') break;
+  console.log(item);
+}
+
+// Today is nice day
+```
+
+## 遍历函数
+
+- 在函数中不能使用 `continue` `break`
+- `return` 可跳过或者终止循环 (具体情况不同)
+
+### forEach()
+
+`forEach((item, index, array) => undefined)`
+
+- `return` 可以跳过本次循环 (类似于 `continue`)
+
+```js
+arr.forEach((item, index, _arr) => {
+  if (index === 3) return;
+  console.log(arr[index]);
+});
+```
+
+### map()
+
+`map((item, index, array) => Array)`
+
+- `return` 可以跳过本次循环 (类似于 `continue`)
+
+```js
+arr.map((item, index, _arr) => {
+  if (index === 3) return;
+  console.log(arr[index]);
+  return item;
+});
+```
+
+### filter()
+
+`filter((item, index, array) => Array)`
+
+- `return` 可以跳过本次循环 (类似于 `continue`)
+
+```js
+/**
+ * @desc filter
+ * @return Array
+ * 不可以使用 continue ,break
+ * 可以使用 return 跳过本次循环
+ */
+arr.filter((item, index, _arr) => {
+  if (index === 3) return;
+  console.log(arr[index]);
+  return item;
+});
+```
+
+### some()
+
+`some((item, index, array) => boolean)`
+
+> 直到返回结果为 `真值` 时才中止循环
+
+- `return false` 结束本次循环，类似 `continue`
+- `return true` 终止循环，类似 `break`
+
+```js
+// 找到真值之前
+arr.some((item, index) => {
+  // return false 相当于执行到这里就直接跳过本次的循环
+  if (index === 3) return false;
+  console.log(arr[index]);
+  // 这里为了完整遍历, 始终返回假值
+  return false;
+});
+```
+
+### every()
+
+`every((item, index, array) => boolean)`
+
+> 直到返回结果为 `假值` 时才中止循环
+
+- `return true` 结束本次循环，类似 `continue`
+- `return false` 终止循环，类似 `break`
+
+```js
+// 找到假值之前
+arr.every((item, index) => {
+  // 同理, return true 相当于执行到这里就直接跳过本次的循环
+  if (index === 3) return true;
+  console.log(arr[index]);
+  // 这里为了完整遍历, 始终返回真值
+  return true;
+});
+```
+
+## Iterator 与 for...of 循环
+
+`keys()` `values()` `entries()` 都会返回一个迭代器 (`Iterator`)
+
+- **`keys()`** 返回 `index` 迭代器
+- **`values()`** 返回 `value` 迭代器
+- **`entries()`** 返回包含 `[index, value]` 迭代器
+
+迭代器都可以结合 `for...of` 循环进行遍历
+
+```js
+for (let index of arr.keys()) {
+  console.log(index);
+}
+for (let item of arr.values()) {
+  console.log(item);
+}
+for (let [index, item] of arr.entries()) {
+  console.log(index, item);
+}
+```
