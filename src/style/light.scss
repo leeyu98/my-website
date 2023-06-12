@@ -34,6 +34,9 @@
           .theme-code-block-highlighted-line {
             background-color: rgb(137 132 255 / 25%);
           }
+          &:hover {
+            box-shadow: 2px 4px 12px -4px rgba(150, 150, 150, 0.245);
+          }
         }
       }
 

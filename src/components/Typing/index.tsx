@@ -14,7 +14,6 @@ const Typings = () => {
   const [word, setWord] = React.useState(introduction[index]);
 
   const handleFinished = () => {
-    console.log(index);
     if (index + 1 < introduction.length) {
       index++;
       setWord(introduction[index]);
