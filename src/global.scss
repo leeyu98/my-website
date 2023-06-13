@@ -154,6 +154,11 @@ $languages: (
         img {
           border-radius: $img-border-radius;
         }
+        .theme-admonition {
+          span[class^='admonitionIcon'] {
+            transform: scale(0.8); // alert 图标大小
+          }
+        }
       }
       .theme-code-block {
         position: relative;
@@ -295,6 +300,21 @@ $languages: (
         &:hover {
           transition: all 0.2s ease;
           transform: translateY(-2px);
+        }
+
+        &--prev {
+          .pagination-nav__label {
+            &::before {
+              content: '← ';
+            }
+          }
+        }
+        &--next {
+          .pagination-nav__label {
+            &::after {
+              content: ' →';
+            }
+          }
         }
       }
     }

@@ -10,33 +10,33 @@ const footer =
         items: [
           {
             label: '介绍',
-            to: '/docs/Intro'
-          }
-        ]
+            to: '/docs/Intro',
+          },
+        ],
       },
       {
         title: '社交',
         items: [
           {
             label: 'CSDN',
-            href: 'https://wentao.blog.csdn.net/'
-          }
-        ]
+            href: 'https://wentao.blog.csdn.net/',
+          },
+        ],
       },
       {
         title: '更多',
         items: [
           {
             label: 'Docusaurus',
-            href: 'https://docusaurus.io/zh-CN/'
+            href: 'https://docusaurus.io/zh-CN/',
           },
           {
             label: 'GitHub',
-            href: 'https://github.com/facebook/docusaurus'
-          }
-        ]
-      }
+            href: 'https://github.com/facebook/docusaurus',
+          },
+        ],
+      },
     ],
-    copyright: `Copyright © ${new Date().getFullYear()} ChangNian's Blog, Inc. Built with Docusaurus.`
+    copyright: `版权所有 © ${new Date().getFullYear()} 长念`,
   });
 module.exports = footer;
