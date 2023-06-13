@@ -9,7 +9,7 @@ tags:
   - 滤镜
 ---
 
-<Author count={1200} publish="2023-2-7 0:29:46" update="2023-2-18 23:49:58" />
+<Author count={1200} publish="2023-2-7 0:29:46" update="2023-6-13 18:02" />
 
 ## 实现方式
 
@@ -70,7 +70,7 @@ html::before {
 2. `absolute` 元素会相对其最近的 `position` 不为 `static` 或者 `filter `不为 `none` 的祖先元素定位。
 
 :::info 注意
-对定位产生影响的除了 filter 还有 transform、perspective
+对定位产生影响的除了 `filter` 还有 `transform` `perspective`，当元素的祖先这些属性不为 `none` 时，就会相对于该祖先元素定位。
 :::
 
 **2. html 与 body 的不同**
