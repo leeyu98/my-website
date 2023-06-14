@@ -1,0 +1,9 @@
+{
+  "label": "Vue",
+  "position": 50,
+  "link": {
+    "type": "generated-index",
+    "slug": "front-end/vue",
+    "description": "5 minutes to learn the most important Docusaurus concepts."
+  }
+}

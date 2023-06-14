@@ -1,0 +1,9 @@
+{
+  "label": "其他",
+  "position": 100,
+  "link": {
+    "type": "generated-index",
+    "slug": "front-end/Other",
+    "description": "其他"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "position": 100,
+  "label": "常见问题",
+  "link": {
+    "type": "generated-index",
+    "slug": "c7n/common-issues",
+    "description": "开发过程中与 HZERO 相关的常见问题"
+  }
+}

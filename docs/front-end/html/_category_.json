@@ -1,0 +1,9 @@
+{
+  "position": 10,
+  "label": "HTML",
+  "link": {
+    "type": "generated-index",
+    "slug": "front-end/html",
+    "description": "5 minutes to learn the most important Docusaurus concepts."
+  }
+}

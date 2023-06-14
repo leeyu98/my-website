@@ -1,0 +1,9 @@
+{
+  "label": "React",
+  "position": 40,
+  "link": {
+    "type": "generated-index",
+    "slug": "front-end/react",
+    "description": "5 minutes to learn the most important Docusaurus concepts."
+  }
+}

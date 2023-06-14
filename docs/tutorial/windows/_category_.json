@@ -1,0 +1,9 @@
+{
+  "label": "Windows",
+  "position": 20,
+  "link": {
+    "type": "generated-index",
+    "slug": "tutorial/windows",
+    "description": "5 minutes to learn the most important Docusaurus concepts."
+  }
+}
