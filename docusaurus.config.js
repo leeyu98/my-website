@@ -88,7 +88,7 @@ const config = {
       announcementBar: {
         id: 'arc_invitation_code',
         content:
-          '🌟 Arc 浏览器邀请码！每周只有 5 个名额，仅限 Mac 用户！ <a style="color:var(--ifm-color-primary);" href="https://arc.net/gift/60b7a4b3"><b>戳我</b><a>',
+          '🌟 Arc 浏览器邀请码 <a style="color:var(--ifm-color-primary);" href="https://arc.net/gift/60b7a4b3"><b>戳我</b></a> ！每周 5 个名额，仅限 Mac 用户！',
         backgroundColor: 'var(--background-color)',
         textColor: 'var(--ifm-heading-color)',
         isCloseable: false,
