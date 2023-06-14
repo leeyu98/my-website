@@ -75,6 +75,11 @@ console.log([...res]);
 //   ['<h2>Second</h2>', 'Second', index: 20, input: '\n  <h2>First</h2>\n  <h2>Second</h2>\n  ', groups: undefined]
 // ];
 
+// 注意： Iterator 只能被迭代一次，此处为示例
 const titles = [...res].map((r) => r[1]);
 // Output: ['First', 'Second']
 ```
+
+:::caution 注意
+迭代器只能被迭代一次。如上示例，执行 `console.log([...res])` 之后，后面再迭代 `[..res]` 已经没有可迭代的数据了。
+:::
