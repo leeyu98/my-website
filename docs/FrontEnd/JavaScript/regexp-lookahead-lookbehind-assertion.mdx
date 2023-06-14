@@ -4,10 +4,10 @@ title: 正则表达式前瞻与后顾
 description: 前瞻匹配与后顾匹配
 ---
 
-<Author count={1200} publish="2023-6-12 4:53" update="2023-6-13 18:16" />
+<Author count={1200} publish="2023-6-12 4:53" update="2023-6-14 10:22" />
 
 :::warning 注意
-`Safari` 版本低于 `16.3` 不支持零宽断言，谨慎使用！
+`Safari` 版本低于 `16.3` 不支持零宽断言，谨慎使用！或使用[替代方案](#替代方案)
 :::
 
 ## 前瞻
@@ -41,4 +41,40 @@ str.match(/(?<=inter)net/);
 
 str.match(/(?<!inter)net/);
 // ['net', index: 0, input: 'netlify internet', groups: undefined]
+```
+
+## 替代方案
+
+可以使用分组匹配，然后只获取我们期望的匹配组。
+
+匹配 `lify` 前面的所有非空白字符
+
+```js
+const str = 'netlify';
+const res = str.match(/(\S*)lify/);
+// Output: ['netlify', 'net', index: 0, input: 'netlify', groups: undefined]
+
+const matched = res[1];
+// Output: net
+```
+
+匹配所有 `<h2>` 和 `</h2>` 中间的所有非空白字符，即解析 `html` 中的二级标题。`global` 匹配，注意 `matchAll` 返回的是迭代器 `Iterator`。
+
+```js
+const html = `
+  <h2>First</h2>
+  <h2>Second</h2>
+`;
+
+const res = html.matchAll(/<h2>(\S*)<\/h2>/g);
+// Output: RegExpStringIterator {}
+
+console.log([...res]);
+// Output: [
+//   ['<h2>First</h2>', 'First', index: 3, input: '\n  <h2>First</h2>\n  <h2>Second</h2>\n  ', groups: undefined]
+//   ['<h2>Second</h2>', 'Second', index: 20, input: '\n  <h2>First</h2>\n  <h2>Second</h2>\n  ', groups: undefined]
+// ];
+
+const titles = [...res].map((r) => r[1]);
+// Output: ['First', 'Second']
 ```
