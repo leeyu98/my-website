@@ -151,10 +151,10 @@ export default class Parent extends React.Component {
 
   render() {
     return (
-      <Reaact.Fragment>
+      <React.Fragment>
         <ChildCmp ref={this.setChildRef} />
         <button onClick={this.handleClick}>Trigger Child Event</button>
-      </Reaact.Fragment>
+      </React.Fragment>
     );
   }
 }
@@ -212,10 +212,10 @@ const Parent = () => {
     childRef.current.sendMessage();
   };
   return (
-    <Reaact.Fragment>
+    <React.Fragment>
       <Child ref={childRef} />
       <button onClick={handleClick}>Trigger Child Event</button>
-    </Reaact.Fragment>
+    </React.Fragment>
   );
 };
 
@@ -262,10 +262,10 @@ const Parent = () => {
     childRef.current.sendMessage();
   };
   return (
-    <Reaact.Fragment>
+    <React.Fragment>
       <Child onRef={childRef} />
       <button onClick={handleClick}>Trigger Child Event</button>
-    </Reaact.Fragment>
+    </React.Fragment>
   );
 };
 
