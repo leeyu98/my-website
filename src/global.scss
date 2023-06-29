@@ -71,9 +71,12 @@ $languages: (
   jsx: 'JSX',
   ts: 'TS',
   tsx: 'TSX',
-  vue: 'Vue',
+  vue: 'VUE',
   bash: 'Bash',
   json: 'JSON',
+  git: 'Git',
+  nginx: 'Nginx',
+  yaml: 'YAML',
 );
 
 #__docusaurus {
@@ -151,6 +154,11 @@ $languages: (
     }
     main {
       .markdown {
+        // 行内代码块样式
+        code:not([class*='codeBlockLines']) {
+          padding-left: 4px;
+          padding-right: 4px;
+        }
         img {
           border-radius: $img-border-radius;
         }
@@ -258,9 +266,9 @@ $languages: (
 
       // 右侧导航目录
       .theme-doc-toc-desktop {
-        overflow-y: visible;
         ul.table-of-contents {
           overflow-x: visible;
+          margin-left: 4px;
           a.toc-highlight {
             display: flex;
             align-items: center;
@@ -268,7 +276,7 @@ $languages: (
               &::before {
                 content: '';
                 position: absolute;
-                left: 0px;
+                left: 4px;
                 transform: translateX(-3.5px);
                 width: 4px;
                 height: 4px;
