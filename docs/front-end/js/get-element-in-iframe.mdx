@@ -1,0 +1,28 @@
+---
+displayed_sidebar: frontendSidebar
+title: 获取 iframe 中的元素
+description: 获取 iframe 中的元素
+tags:
+  - iframe
+---
+
+<Author count={400} publish="2023-6-29 10:25" />
+
+```html
+<iframe id="frame" src="" style="width: 500;height: 500;"></iframe>
+```
+
+:::info 问题引导
+在页面中已显示的元素，通过 `document.getElementById()` `document.querySelector()` 等方法获取不到元素，审查元素之后才能获取到。
+:::
+
+审查元素之后会发现不能获取的的元素位于 `iframe` 中。
+
+## 获取 iframe 中的元素
+
+```js
+// 方法一
+document.querySelector('#frame').contentWindow.document.querySelector('.child');
+// 方法二
+document.frames['frame'].document.querySelector('.child');
+```
