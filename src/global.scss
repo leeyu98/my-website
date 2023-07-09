@@ -76,6 +76,7 @@ $languages: (
   json: 'JSON',
   git: 'Git',
   nginx: 'Nginx',
+  yml: 'YML',
   yaml: 'YAML',
 );
 
@@ -272,6 +273,8 @@ $languages: (
           a.toc-highlight {
             display: flex;
             align-items: center;
+            white-space: pre-wrap;
+            word-break: break-word;
             &.table-of-contents__link--active {
               &::before {
                 content: '';
@@ -291,14 +294,14 @@ $languages: (
     }
 
     // 博客
-    main[itemscope] {
-      // & > article[itemprop='blogPost'] {
-      //   :is(h2, h3, h4, h5, h6).anchor {
-      //     margin-top: -60px;
-      //     padding-top: 60px;
-      //   }
-      // }
-    }
+    // main[itemscope] {
+    // & > article[itemprop='blogPost'] {
+    //   :is(h2, h3, h4, h5, h6).anchor {
+    //     margin-top: -60px;
+    //     padding-top: 60px;
+    //   }
+    // }
+    // }
 
     // 上/下一个导航
     .pagination-nav {
