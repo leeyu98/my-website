@@ -2,52 +2,73 @@
 title: tsconfig 配置解析
 ---
 
-`tsconfig.json` 文件是 `TypeScript` 项目的配置文件，它包含了编译器的配置选项。常用的配置属性如下
+`tsconfig.json` 文件是 `TypeScript` 项目的配置文件，它包含了编译器的配置选项。常用的配置属性如下：
 
-| 配置项                         | 说明                                                                  | 默认值 |
-| ------------------------------ | --------------------------------------------------------------------- | ------ |
-| compilerOptions                | 编译器的选项，如语言版本、目标 JavaScript 版本、生成的 sourcemap 等。 |
-| include                        | 指定需要编译的文件路径或文件夹路径。                                  |        |
-| exclude                        | 指定不需要编译的文件路径或文件夹路径。                                |        |
-| files                          | 指定需要编译的文件列表。                                              |        |
-| extends                        | 指定继承自另一个 tsconfig.json 文件。                                 |        |
-| compileOnSave                  | 指定是否在保存时编译文件。                                            |        |
-| buildOnSave                    | 指定是否在保存时编译文件。                                            |        |
-| target                         | 编译目标 JavaScript 版本，可以是 "ES3"，"ES5" 或 "ES2015" 等。        |        |
-| module                         | 指定模块系统，可以是 "CommonJS"，"AMD" 或 "System" 等。               |        |
-| sourceMap                      | 是否生成 sourcemap 文件。                                             |        |
-| outDir                         | 编译输出目录。                                                        |        |
-| rootDir                        | 设置项目的根目录。                                                    |        |
-| strict                         | 是否开启严格类型检查。                                                |        |
-| noImplicitAny                  | 是否禁止隐式 any 类型。                                               |
-| lib                            | 指定要包含在编译中的库文件，如 "es2015"。                             |        |
-| paths                          | 指定模块路径别名。                                                    |        |
-| baseUrl                        | 指定基础目录。                                                        |        |
-| jsx                            | 指定 JSX 的处理方式。                                                 |        |
-| allowJs                        | 是否允许编译 JavaScript 文件。                                        |        |
-| checkJs                        | 是否检查 JavaScript 文件。                                            |        |
-| declaration                    | 是否生成声明文件。                                                    |        |
-| declarationMap                 | 是否生成声明文件的 sourcemap。                                        |        |
-| emitDecoratorMetadata          | 是否支持装饰器。                                                      |        |
-| experimentalDecorators         | 是否支持实验性装饰器。                                                |        |
-| listEmittedFiles               | 是否列出所有输出的文件。                                              |        |
-| listFiles                      | 是否列出所有编译过的文件。                                            |        |
-| locale                         | 指定本地化语言。                                                      |        |
-| mapRoot                        | 指定 sourcemap 文件的根目录。                                         |        |
-| moduleResolution               | 指定模块解析策略。                                                    |        |
-| noEmit                         | 是否禁止输出 JavaScript 代码。                                        |        |
-| noEmitHelpers                  | 是否禁止输出辅助函数。                                                |        |
-| noEmitOnError                  | 是否在发生错误时禁止输出 JavaScript 代码。                            |        |
-| noImplicitReturns              | 是否禁止隐式返回。                                                    |        |
-| noUnusedLocals                 | 是否检查未使用的局部变量。                                            |        |
-| noUnusedParameters             | 是否检查未使用的参数。                                                |        |
-| preserveConstEnums             | 是否保留 const 枚举。                                                 |        |
-| pretty                         | 是否格式化输出的 JavaScript 代码。                                    |        |
-| removeComments                 | 是否移除注释。                                                        |        |
-| skipLibCheck                   | 是否跳过检查库文件。                                                  |        |
-| sourceRoot                     | 指定源文件的根目录。                                                  |        |
-| suppressExcessPropertyErrors   | 是否禁止过多属性错误。                                                |        |
-| suppressImplicitAnyIndexErrors | 是否禁止隐式 any 类型索引错误。                                       |        |
-| typeRoots                      | 指定类型声明文件的根目录。                                            |        |
-| types                          | 指定需要包含在编译中的类型声明文件。                                  |        |
-| watch                          | 是否监视文件变化并重新编译。                                          |        |
+## compilerOptions
+
+编译器的选项。
+
+| 配置项                         | 说明                                                           | 默认值 |
+| ------------------------------ | -------------------------------------------------------------- | ------ |
+| target                         | 编译目标 JavaScript 版本，可以是 "ES3"，"ES5" 或 "ES2015" 等。 |        |
+| module                         | 指定模块系统，可以是 "CommonJS"，"AMD" 或 "System" 等。        |        |
+| sourceMap                      | 是否生成 sourcemap 文件。                                      |        |
+| outDir                         | 编译输出目录。                                                 |        |
+| rootDir                        | 设置项目的根目录。                                             |        |
+| strict                         | 是否开启严格类型检查。                                         |        |
+| noImplicitAny                  | 是否禁止隐式 any 类型。                                        |
+| lib                            | 指定要包含在编译中的库文件，如 "es2015"。                      |        |
+| paths                          | 指定模块路径别名。                                             |        |
+| baseUrl                        | 指定基础目录。                                                 |        |
+| jsx                            | 指定 JSX 的处理方式。                                          |        |
+| allowJs                        | 是否允许编译 JavaScript 文件。                                 |        |
+| checkJs                        | 是否检查 JavaScript 文件。                                     |        |
+| declaration                    | 是否生成声明文件。                                             |        |
+| declarationMap                 | 是否生成声明文件的 sourcemap。                                 |        |
+| emitDecoratorMetadata          | 是否支持装饰器。                                               |        |
+| experimentalDecorators         | 是否支持实验性装饰器。                                         |        |
+| listEmittedFiles               | 是否列出所有输出的文件。                                       |        |
+| listFiles                      | 是否列出所有编译过的文件。                                     |        |
+| locale                         | 指定本地化语言。                                               |        |
+| mapRoot                        | 指定 sourcemap 文件的根目录。                                  |        |
+| moduleResolution               | 指定模块解析策略。                                             |        |
+| noEmit                         | 是否禁止输出 JavaScript 代码。                                 |        |
+| noEmitHelpers                  | 是否禁止输出辅助函数。                                         |        |
+| noEmitOnError                  | 是否在发生错误时禁止输出 JavaScript 代码。                     |        |
+| noImplicitReturns              | 是否禁止隐式返回。                                             |        |
+| noUnusedLocals                 | 是否检查未使用的局部变量。                                     |        |
+| noUnusedParameters             | 是否检查未使用的参数。                                         |        |
+| preserveConstEnums             | 是否保留 const 枚举。                                          |        |
+| pretty                         | 是否格式化输出的 JavaScript 代码。                             |        |
+| removeComments                 | 是否移除注释。                                                 |        |
+| skipLibCheck                   | 是否跳过检查库文件。                                           |        |
+| sourceRoot                     | 指定源文件的根目录。                                           |        |
+| suppressExcessPropertyErrors   | 是否禁止过多属性错误。                                         |        |
+| suppressImplicitAnyIndexErrors | 是否禁止隐式 any 类型索引错误。                                |        |
+| typeRoots                      | 指定类型声明文件的根目录。                                     |        |
+| types                          | 指定需要包含在编译中的类型声明文件。                           |        |
+| watch                          | 是否监视文件变化并重新编译。                                   |        |
+
+## extends
+
+指定继承自另一个 tsconfig.json 文件。
+
+## include
+
+指定需要编译的文件路径或文件夹路径。
+
+## exclude
+
+指定不需要编译的文件路径或文件夹路径。
+
+## files
+
+指定需要编译的文件列表。
+
+## compileOnSave
+
+指定是否在保存时编译文件。
+
+## buildOnSave
+
+指定是否在保存时编译文件。
