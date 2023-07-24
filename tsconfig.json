@@ -4,6 +4,12 @@
     "baseUrl": ".",
     "typeRoots": ["./typings"]
   },
-  "include": ["./src", "./typings"],
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./docs/**/demo/**/*.ts",
+    "./docs/**/demo/**/*.tsx",
+    "./typings/*.ts"
+  ],
   "exclude": ["node_modules", "**/node_modules/*"]
 }
