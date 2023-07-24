@@ -142,7 +142,7 @@ export default () => {
 
 ### 这和 TransferButton 有什么不一样
 
-内部实现不同
+内部实现不同：
 
 - `Button` 更倾向于操作，不涉及回显；所以内部实现时 `Button` 可以在弹窗展开时加载数据；
 - 而 `Lov` 更倾向于回显。故 `Lov` 在一开始就必须 (通过 `record`) 提供回显的数据，值的变更也会自动同步到绑定的 `record` 中，并触发 `dataSet` 的 `update` 事件。

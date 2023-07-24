@@ -9,7 +9,7 @@ keywords:
   - TransferPro
 ---
 
-<Author count={6000} publish="2023-04-18 23:35:00" update="2023-05-23 13:55:00" />
+<Author count={6000} publish="2023-04-18 23:35:00" update="2023-7-24 10:50" />
 
 基于 `SelectBox` 组件封装的符合现行 `UED` 规范的简单易用的穿梭框组件。
 
@@ -101,7 +101,7 @@ export type ConfigProps = {
   | { lovCode: string; lookupCode?: undefined; read?: undefined; data?: undefined }
   | { lovCode?: undefined; lookupCode: string; read?: undefined; data?: undefined }
   | { lovCode?: undefined; lookupCode?: undefined; read: TransportType; data?: undefined }
-  | { lovCode?: undefined; lookupCode?: undefined; read: undefined; data: any }
+  | { lovCode?: undefined; lookupCode?: undefined; read?: undefined; data: any }
 );
 ```
 
@@ -147,6 +147,12 @@ export type TargetProps = {
 :::
 
 ## 更新日志
+
+> 注：版本号对应 `hscs-front-common` 版本
+
+### 0.1.18 (2023-7-21)
+
+- 🐞 修复 `ConfigProps` 中 `read/data` 属性限制不完全问题
 
 ### 0.1.1
 
