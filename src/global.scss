@@ -60,8 +60,8 @@
   -webkit-box-shadow: #fff;
 }
 // h1
-.markdown > header > h1:first-child {
-  --ifm-h1-font-size: 2.6rem;
+header > h1 {
+  --ifm-h1-font-size: 2.6rem !important;
 }
 
 .code__link {
