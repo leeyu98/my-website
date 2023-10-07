@@ -36,23 +36,31 @@ $ yarn build
 
 该命令可以更方便地将静态资源部署到 GitHub Pages 并推送到 `gh-pages` 分支。
 
-使用 SSH:
+使用 `SSH`:
 
 ```bash
 $ USE_SSH=true yarn deploy
 ```
 
-不使用 SSH:
+不使用 `SSH`:
 
 ```bash
 $ GIT_USER=<Your GitHub username> yarn deploy
 ```
 
 ### 2. Netlify
-Netlify 提供 Docusaurus 部署模版。
+`Netlify` 提供 `Docusaurus` 部署模版。
 
 ### 3. Vercel
 
 > 缺点：国内无法访问。
 
-Vercel 提供 Docusaurus 部署模版。
+`Vercel` 提供 `Docusaurus` 部署模版。
+
+## 书写规范说明
+**标签（tags）**
+- 采用无序列表形式
+- 全小写
+
+**其他**
+- 表格中使用竖线符号 `&#124;`
