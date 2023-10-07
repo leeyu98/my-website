@@ -1,5 +1,9 @@
 ---
 title: tsconfig 配置解析
+description: tsconfig.json 文件配置说明
+tags:
+  - ts
+  - tsconfig
 ---
 
 `tsconfig.json` 文件是 `TypeScript` 项目的配置文件，它包含了编译器的配置选项。常用的配置属性如下：
@@ -51,19 +55,28 @@ title: tsconfig 配置解析
 
 ## extends
 
-指定继承自另一个 tsconfig.json 文件。
+指定继承自另一个 `tsconfig.json` 文件。
 
 ## include
 
-指定需要编译的文件路径或文件夹路径。
+指定需要编译的文件路径或文件夹路径，如果指定了 `files`，默认值为 `[]`，否则默认值为 `**/*`。
 
 ## exclude
 
 指定不需要编译的文件路径或文件夹路径。
 
+:::tip
+include 和 exclude 支持通配符：
+
+- `*` 匹配零个或多个字符（不包括目录分隔符）
+- `?` 匹配任何一个字符（不包括目录分隔符）
+- `**/` 匹配嵌套到任何级别的任何目录
+
+:::
+
 ## files
 
-指定需要编译的文件列表。
+指定需要编译的文件列表，如果制定的文件找不到时会报错。当项目中只有一小部分 `TS` 文件时使用，如果文件较多建议使用 `include`
 
 ## compileOnSave
 
