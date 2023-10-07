@@ -1,26 +1,35 @@
 .highlight {
   border-radius: 4px;
   padding: 2px 4px;
+  color: #fff;
 }
 
 :root[data-theme='light'] {
   .green {
-    color: #fff;
     background-color: var(--ifm-color-primary);
   }
   .red {
-    color: #fff;
     background-color: #e05935;
+  }
+  .gray {
+    background-color: #9a9a9a;
+  }
+  .sky-blue {
+    background-color: #6eb5ff;
   }
 }
 
 :root[data-theme='dark'] {
   .green {
-    color: #fff;
     background-color: rgb(18 124 66);
   }
   .red {
-    color: #fff;
     background-color: #ae4023;
+  }
+  .gray {
+    background-color: #707070;
+  }
+  .sky-blue {
+    background-color: #5e97d3;
   }
 }
