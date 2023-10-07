@@ -9,10 +9,17 @@ const getSites = () => {
       {
         id: 'netlify',
         label: 'Netlify',
+        title: '国内站点',
         href: 'https://changnian.netlify.app/',
         position: 'right',
       },
-      { id: 'vercel', label: 'Vercel', href: 'https://changnian.vercel.app/', position: 'right' },
+      {
+        id: 'vercel',
+        label: 'Vercel',
+        title: '国外站点',
+        href: 'https://changnian.vercel.app/',
+        position: 'right',
+      },
     ]);
   return deploySites.filter((s) => s?.id !== process.env.DEPLOY_SITE);
 };
