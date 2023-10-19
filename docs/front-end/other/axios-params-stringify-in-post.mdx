@@ -87,20 +87,6 @@ pets[].age: 2
 
 以上几种场景都可以把数据传输到后端，不过如果前后端格式不对应就可能导致接口报错，那么前端该如何控制传输的格式呢？
 
-测试数据
-
-```js
-const userData = {
-  name: 'Jack',
-  age: 18,
-  hobbies: ['swimming', 'singing'],
-  pets: [
-    { breed: 'cat', age: 2 },
-    { breed: 'dog', age: 3 },
-  ],
-};
-```
-
 ## 关于 qs
 
 在使用 `axios` 时，更推荐使用 `qs` 进行数据处理，`querystring` 在处理复杂对象或数组时存在一些问题([已知问题](https://github.com/nodejs/node-v0.x-archive/issues/1665))。<br />
@@ -192,7 +178,6 @@ pets[0][breed]: cat
 pets[0][age]: 2
 pets[1][breed]: dog
 pets[1][age]: 3
-
 ```
 
 </TabItem>
@@ -209,7 +194,6 @@ pets[0].breed: cat
 pets[0].age: 2
 pets[1].breed: dog
 pets[1].age: 3
-
 ```
 
 </TabItem>
@@ -241,7 +225,6 @@ pets[][breed]: cat
 pets[][age]: 2
 pets[][breed]: dog
 pets[][age]: 3
-
 ```
 
 </TabItem>
@@ -289,7 +272,6 @@ pets[breed]: cat
 pets[age]: 2
 pets[breed]: dog
 pets[age]: 3
-
 ```
 
 </TabItem>
