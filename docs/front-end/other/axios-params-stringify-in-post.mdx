@@ -1,0 +1,351 @@
+---
+title: POST 请求中表单数据的字符串化
+description: axios 中 application/x-www-form-urlencoded 格式中复杂对象和数组的字符串化问题
+sidebar_position: 10
+tags:
+  - HTTP
+  - x-www-form-urlencoded
+  - axios
+  - qs
+  - arrayFormat
+  - allowDots
+keywords:
+  - HTTP
+  - x-www-form-urlencoded
+  - axios
+  - qs
+  - arrayFormat
+  - allowDots
+---
+
+<Author cost={5} publish="2023-10-19 15:58" />
+
+`POST` 请求常用的传参方式包括：
+
+- `application/json`： 支持上传完整的 `JSON` 数据，也是最常使用的方式；
+- `application/x-www-form-urlencoded`：字符串拼接格式，在有时上传表单数据时用到（现较多出现在老系统中）
+- `multipart/form-data`：较多在上传附件时用到；
+- `text/plain`：纯文本格式，较少用到。
+- ……
+
+本文主要讨论 `application/x-www-form-urlencoded` 格式中复杂对象和数组的字符串化问题。
+
+:::caution 注意
+文中实践基于主流 `HTTP` 请求库 `axios` 和工具库 `qs`
+:::
+
+## 情景再现
+
+不知道在使用 `application/x-www-form-urlencoded` 时是否遇到过一下场景呢？
+
+:::tip
+为了便于观察，以下为模拟浏览器解码之后的数据视图。
+:::
+
+<Tabs>
+<TabItem value="first" label="情景 1" default>
+
+```bash
+name: Jack
+age: 18
+pets[0][breed]: cat
+pets[0][age]: 2
+```
+
+</TabItem>
+<TabItem value="second" label="情景 2" >
+
+```bash
+name: Jack
+age: 18
+pets[0].breed: cat
+pets[0].age: 2
+```
+
+</TabItem>
+<TabItem value="third" label="情景 3" >
+
+```bash
+name: Jack
+age: 18
+pets[][breed]: cat
+pets[][age]: 2
+```
+
+</TabItem>
+<TabItem value="forth" label="情景 4" >
+
+```bash
+name: Jack
+age: 18
+pets[].breed: cat
+pets[].age: 2
+```
+
+</TabItem>
+</Tabs>
+
+以上几种场景都可以把数据传输到后端，不过如果前后端格式不对应就可能导致接口报错，那么前端该如何控制传输的格式呢？
+
+测试数据
+
+```js
+const userData = {
+  name: 'Jack',
+  age: 18,
+  hobbies: ['swimming', 'singing'],
+  pets: [
+    { breed: 'cat', age: 2 },
+    { breed: 'dog', age: 3 },
+  ],
+};
+```
+
+## 关于 qs
+
+在使用 `axios` 时，更推荐使用 `qs` 进行数据处理，`querystring` 在处理复杂对象或数组时存在一些问题([已知问题](https://github.com/nodejs/node-v0.x-archive/issues/1665))。<br />
+以下是 `qs.stringify()` 中的部分配置：
+
+### arrayFormat
+
+```js
+// example data
+const arr = ['hello', 'world'];
+```
+
+数组格式化配置，支持以下值：
+
+| 属性值     | 作用               | 示例                        | 其他         |
+| ---------- | ------------------ | --------------------------- | ------------ |
+| `indices`  | 索引形式           | `arr[0]=hello&arr[1]=world` | 默认处理方式 |
+| `brackets` | 方括号`[]` 形式    | `arr[]=hello&arr=world`     |              |
+| `repeat`   | 重复数组中的每一项 | `arr=hello&arr=world`       |              |
+| `comma`    | 以逗号 `,` 分割    | `arr=hello,world`           |              |
+
+### indices
+
+`boolean` 类型，表示是否启用索引形式。在不指定 `arrayFormat` 时生效，效果同 `arrayFormat: repeat`。
+
+### allowDots
+
+`boolean` 类型，表示是否启用点 `.` 运算符。默认情况下对象属性会转成方括号 `[]` 的形式，如果启用 `allowDots` 则会转成点运算符形式。
+
+```js
+// example data
+const obj = { name: 'Jack', age: 18 };
+
+qs.stringify(obj); // [default] allowDots: false
+// obj[name]=Jack&obj[age]=18
+
+qs.stringify(obj, { allowDots: true }); // allowDots: true
+// obj.name=Jack&obj[age]=18
+```
+
+## 对象与数组的转换
+
+模拟 `arrayFormat` 不同配置下数组对象的转换情况。
+
+:::caution 注意
+默认情况下 `encode: true` 会把字符进行编码，此处为便于观察取消了编码，即 `encode: false`
+:::
+
+```js
+// example data
+const userData = {
+  name: 'Jack',
+  age: 18,
+  address: {
+    province: 'zhejiang',
+    city: 'hangzhou',
+  },
+  hobbies: ['swimming', 'singing'],
+  pets: [
+    { breed: 'cat', age: 2 },
+    { breed: 'dog', age: 3 },
+  ],
+};
+```
+
+### indices
+
+索引形式，也是默认处理方式。
+
+```js
+qs.stringify(userData, { encode: false });
+// name=Jack&age=18&address[province]=zhejiang&address[city]=hangzhou&hobbies[0]=swimming&hobbies[1]=singing&pets[0][breed]=cat&pets[0][age]=2&pets[1][breed]=dog&pets[1][age]=3
+
+qs.stringify(userData, { encode: false, allowDots: true });
+// name=Jack&age=18&address.province=zhejiang&address.city=hangzhou&hobbies[0]=swimming&hobbies[1]=singing&pets[0].breed=cat&pets[0].age=2&pets[1].breed=dog&pets[1].age=3
+```
+
+<Tabs>
+<TabItem value="default" label="默认" default>
+
+```bash
+name: Jack
+age: 18
+address[province]: zhejiang
+address[city]: hangzhou
+hobbies[0]: swimming
+hobbies[1]: singing
+pets[0][breed]: cat
+pets[0][age]: 2
+pets[1][breed]: dog
+pets[1][age]: 3
+
+```
+
+</TabItem>
+<TabItem value="allowDots" label="启用 allowDots" default>
+
+```bash
+name: Jack
+age: 18
+address.province: zhejiang
+address.city: hangzhou
+hobbies[0]: swimming
+hobbies[1]: singing
+pets[0].breed: cat
+pets[0].age: 2
+pets[1].breed: dog
+pets[1].age: 3
+
+```
+
+</TabItem>
+</Tabs>
+
+### brackets
+
+方括号形式，会省略数组的 index。
+
+```js
+qs.stringify(userData, { encode: false, arrayFormat: 'brackets' });
+// name=Jack&age=18&address[province]=zhejiang&address[city]=hangzhou&hobbies[]=swimming&hobbies[]=singing&pets[][breed]=cat&pets[][age]=2&pets[][breed]=dog&pets[][age]=3
+
+qs.stringify(userData, { encode: false, arrayFormat: 'brackets', allowDots: true });
+// name=Jack&age=18&address.province=zhejiang&address.city=hangzhou&hobbies[]=swimming&hobbies[]=singing&pets[].breed=cat&pets[].age=2&pets[].breed=dog&pets[].age=3
+```
+
+<Tabs>
+<TabItem value="default" label="默认" default>
+
+```bash
+name: Jack
+age: 18
+address[province]: zhejiang
+address[city]: hangzhou
+hobbies[]: swimming
+hobbies[]: singing
+pets[][breed]: cat
+pets[][age]: 2
+pets[][breed]: dog
+pets[][age]: 3
+
+```
+
+</TabItem>
+<TabItem value="allowDots" label="启用 allowDots" default>
+
+```bash
+name: Jack
+age: 18
+address.province: zhejiang
+address.city: hangzhou
+hobbies[]: swimming
+hobbies[]: singing
+pets[].breed: cat
+pets[].age: 2
+pets[].breed: dog
+pets[].age: 3
+```
+
+</TabItem>
+</Tabs>
+
+### repeat
+
+重复形式，会省略数组的索引和方括号。
+
+```js
+qs.stringify(userData, { encode: false, arrayFormat: 'repeat' });
+// name=Jack&age=18&address[province]=zhejiang&address[city]=hangzhou&hobbies=swimming&hobbies=singing&pets[breed]=cat&pets[age]=2&pets[breed]=dog&pets[age]=3
+
+qs.stringify(userData, { encode: false, arrayFormat: 'repeat', allowDots: true });
+// name=Jack&age=18&address.province=zhejiang&address.city=hangzhou&hobbies=swimming&hobbies=singing&pets.breed=cat&pets.age=2&pets.breed=dog&pets.age=3
+```
+
+<Tabs>
+<TabItem value="default" label="默认" default>
+
+```bash
+name: Jack
+age: 18
+address[province]: zhejiang
+address[city]: hangzhou
+hobbies: swimming
+hobbies: singing
+pets[breed]: cat
+pets[age]: 2
+pets[breed]: dog
+pets[age]: 3
+
+```
+
+</TabItem>
+<TabItem value="allowDots" label="启用 allowDots" default>
+
+```bash
+name: Jack
+age: 18
+address.province: zhejiang
+address.city: hangzhou
+hobbies: swimming
+hobbies: singing
+pets.breed: cat
+pets.age: 2
+pets.breed: dog
+pets.age: 3
+```
+
+</TabItem>
+</Tabs>
+
+### comma
+
+逗号分隔，不适用对象数组，会丢失信息
+
+```js
+qs.stringify(userData, { encode: false, arrayFormat: 'comma' });
+// name=Jack&age=18&address[province]=zhejiang&address[city]=hangzhou&hobbies=swimming,singing&pets=[object Object],[object Object]
+
+qs.stringify(userData, { encode: false, arrayFormat: 'comma' });
+// name=Jack&age=18&address.province=zhejiang&address.city=hangzhou&hobbies=swimming,singing&pets=[object Object],[object Object]
+```
+
+<Tabs>
+<TabItem value="default" label="默认" default>
+
+```bash
+name: Jack
+age: 18
+address[province]: zhejiang
+address[city]: hangzhou
+hobbies: swimming,singing
+pets: [object Object],[object Object]
+```
+
+</TabItem>
+<TabItem value="allowDots" label="启用 allowDots" default>
+
+```bash
+name: Jack
+age: 18
+address.province: zhejiang
+address.city: hangzhou
+hobbies: swimming,singing
+pets: [object Object],[object Object]
+```
+
+</TabItem>
+</Tabs>
