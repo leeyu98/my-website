@@ -12,7 +12,12 @@ dayjs.extend(relativeTime); // 相对时间
 
 interface IProps {
   /**
+   * @description 阅读预估时长
+   */
+  cost?: number;
+  /**
    * @description 文章字数
+   * @deprecated 目前并没有较好的字数统计方式
    */
   count?: number;
   /**
@@ -25,7 +30,7 @@ interface IProps {
   update: string;
 }
 
-const Author: React.FC<IProps> = ({ count, publish, update }) => {
+const Author: React.FC<IProps> = ({ cost, count, publish, update }) => {
   const {
     siteConfig: { customFields },
   } = useDocusaurusContext();
@@ -33,7 +38,7 @@ const Author: React.FC<IProps> = ({ count, publish, update }) => {
   const { author } = customFields as { author: any };
   const { name, readingSpeed } = author;
 
-  const time = count ? `阅读约 ${Math.ceil(count / readingSpeed)} 分钟` : '';
+  const time = cost || count ? `阅读约 ${cost || Math.ceil(count / readingSpeed)} 分钟` : '';
   const _publish = publish ? `${dayjs(publish).fromNow()}发布` : '';
   const _update = update ? `${dayjs(update).fromNow()}编辑` : '';
 
