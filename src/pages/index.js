@@ -52,7 +52,7 @@ export default function Home() {
               除此之外，还有其他语言如 <code>Python</code> 及其他相关教程。
             </span>
             <div style={{ marginTop: '2.5rem' }}>
-              <Link className="button button--primary" to="/docs/Intro" style={{ marginRight: 16 }}>
+              <Link className="button button--primary" to="/docs/Intro" style={{ marginRight: 20 }}>
                 开始探索
               </Link>
               <Link class="button button--outline button--secondary" to="/docs/Author">
