@@ -1,0 +1,9 @@
+{
+  "label": "韩语",
+  "position": 50,
+  "link": {
+    "type": "generated-index",
+    "slug": "tutorial/korean",
+    "description": "韩语入门"
+  }
+}
