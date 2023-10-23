@@ -35,7 +35,7 @@ export default function Home() {
               不止步于前端
             </span>{' '}
             <br />
-            <span style={{ color: 'grey', fontSize: 14 }}>
+            <span style={{ color: 'grey', fontSize: 14, lineHeight: 1.8 }}>
               包括前端基础技能 <code>HTML</code> <code>CSS</code> <code>JavaScript (ES6+)</code>{' '}
               以及 <code>TypeScript</code>
               ，构建工具 <code>Webpack</code> <code>Vite</code> <code>Rollup</code> 等，热门框架{' '}
@@ -55,7 +55,7 @@ export default function Home() {
               <Link className="button button--primary" to="/docs/Intro" style={{ marginRight: 20 }}>
                 开始探索
               </Link>
-              <Link class="button button--outline button--secondary" to="/docs/Author">
+              <Link class="button button--outline button--secondary" to="/docs/author">
                 关于
               </Link>
             </div>
