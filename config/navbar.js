@@ -41,6 +41,12 @@ const navbar =
         docId: 'front-end/intro',
         position: 'left',
       },
+      // {
+      //   label: '后端',
+      //   type: 'doc',
+      //   docId: 'back-end/intro',
+      //   position: 'left',
+      // },
       {
         label: '猪齿鱼',
         type: 'doc',
@@ -53,13 +59,13 @@ const navbar =
         docId: 'tutorial/intro',
         position: 'left',
       },
-      {
-        label: '其他',
-        type: 'doc',
-        docId: 'other/intro',
-        position: 'left',
-      },
-      // { to: 'blog', label: '博客', position: 'left' },
+      // {
+      //   label: '其他',
+      //   type: 'doc',
+      //   docId: 'other/intro',
+      //   position: 'left',
+      // },
+      { to: 'blog', label: '博客', position: 'left' },
       // 备用站点
       ...getSites(),
     ],

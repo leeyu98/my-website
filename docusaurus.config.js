@@ -36,14 +36,14 @@ const config = {
           sidebarPath: require.resolve('./config/sidebars'),
           remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
         },
-        blog: false,
-        // blog: {
-        //   blogTitle: '博客',
-        //   blogDescription: '基于 Docusaurus 构建！',
-        //   blogSidebarTitle: '最新文章',
-        //   blogSidebarCount: 'ALL',
-        //   postsPerPage: 'ALL',
-        // }, // 禁用博客
+        // blog: false,
+        blog: {
+          blogTitle: '只言片语',
+          blogDescription: '基于 Docusaurus 构建！',
+          blogSidebarTitle: '最新发布',
+          blogSidebarCount: 'ALL',
+          postsPerPage: 'ALL',
+        },
         theme: {
           customCss: [require.resolve('./src/global.scss')], // CSS 替换为 SCSS
         },
