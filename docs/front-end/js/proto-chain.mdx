@@ -1,17 +1,15 @@
 ---
 displayed_sidebar: frontendSidebar
-title: 原型链
+title: 原型与原型链
 description: JS 的原型与原型链
 tags:
   - 原型
   - 原型链
 ---
 
-# 原型链
+<Author cost={5} publish="2022-11-12" update="2023-10-27 23:27" />
 
-<Author count={2400} publish="2022-11-12" update="2023-6-12 10:03" />
-
-当一个对象在查找一个属性 (或方法) 的时候，自身没有就会根据 `__proto__` 向它的原型进行查找，如果都没有，则向它的原型的原型继续查找，直到查到`Object.prototype.__proto__`为`null`，这样也就形成了原型链。
+当一个对象在查找一个属性 (或方法) 的时候，自身没有就会根据 `__proto__` 向它的原型进行查找，如果都没有，则向它的原型的原型继续查找，直到查到 `Object.prototype.__proto__` 为 `null`，这样也就形成了原型链。
 
 :::tip Tips
 在 `JavaScript` 中一切都是对象，在理解原型链时需分为函数 `Function` 和对象 `Object` 两大类。
@@ -19,19 +17,17 @@ tags:
 
 ## 通用规则
 
-在默认`__proto__`没有被修改的情况下：
-
+在默认 `__proto__` 没有被修改的情况下：<br/>
 `__proto__` 是对象 `obj` 的属性，指向该对象构造函数的 `prototype` (即`obj.constructor.prototype`)
 `prototype` 是函数 `func` 的属性，指向一个对象 `func.prototype`
 
 ## 关于 prototype
 
-函数的`__proto__` 指向该函数构造函数的 `prototype`，那 `prototype` 到底是什么呢？
-
+函数的 `__proto__` 指向该函数构造函数的 `prototype`，那 `prototype` 到底是什么呢？<br/>
 `prototype` 是在函数生成的时候系统自动创建的对象。默认包含 `2` 个属性：
 
 - `constructor` 构造函数指向该函数本身
-- `__proto__`指向`Object.prototype`，即这个对象是由 `Object` 生成的。
+- `__proto__` 指向 `Object.prototype`，即这个对象是由 `Object` 生成的。
 
 ```js
 function Foo() {}
@@ -131,7 +127,7 @@ Object.prototype.__proto__;
 
 #### 继承与原型
 
-在发生类的继承时，子类的 `prototype.__proto__` 会指向父类的 `prototype`
+在发生类的继承时，子类的 `prototype.__proto__` 会指向父类的 `prototype`。
 
 ```js
 // 父类
@@ -172,8 +168,8 @@ Function.prototype.__proto__ === Object.prototype;
 // true
 ```
 
-如果按照一般规则把 `Function.prototype` 看成函数的话，那么应该有 `Function.prototype.__proto__ === Function.prototype`那又会出现像 `Object` 中一样的循环引用问题，所以 JavaScript 规定`Function.prototype.__proto__ === Object.prototype`，这样就使原型链有了唯一的终点 `null`。
+如果按照一般规则把 `Function.prototype` 看成函数的话，那么应该有 `Function.prototype.__proto__ === Function.prototype` 就又会出现像 `Object` 中一样的循环引用问题，所以 JavaScript 规定 `Function.prototype.__proto__ === Object.prototype`，这样就使原型链有了唯一的终点 `null`。
 
 ## 附-原型链图
 
-![原型链](./images/proto-chain.jpg)
+![原型链](./images/proto-chain.svg)
