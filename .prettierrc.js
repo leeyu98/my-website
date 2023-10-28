@@ -1,7 +1,7 @@
 // @ts-check
 module.exports =
-  /** @type {import('prettier').Options} */
-  ({
+  ///** @type {import('prettier').Options} */
+  {
     /** 是否使用单引号 */
     singleQuote: true,
 
@@ -21,4 +21,4 @@ module.exports =
     jsxSingleQuote: false,
 
     overrides: [],
-  });
+  };
