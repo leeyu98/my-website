@@ -1,12 +1,18 @@
 ---
+title: 父级选择器
 sidebar_position: 20
 displayed_sidebar: frontendSidebar
-title: 父级选择器
-description: 实现父子反向选择与兄弟反向选择。
-tags: [父级选择器, CSS, has选择器]
+description: 实现父子元素反向选择与兄弟元素反向选择。
+tags:
+  - CSS
+  - 父级选择器
+  - has 选择器
+keywords:
+  - 父级选择器
+  - has 选择器
 ---
 
-<Author count={1000} publish="2023-4-18 23:35:00" />
+<Author cost={2} publish="2023-4-18 23:35:00" update="2023-10-28 15:4" />
 
 ## 基本用法
 
@@ -86,20 +92,21 @@ p ~ span {
 ```
 
 :::info 速记
-
 简单总结来说，其实写法上元素的相对位置关系并没有改变，依旧是 <Emphasis>父级元素在前，子级元素在后</Emphasis> 或者 <Emphasis>兄元素在前，弟元素在后</Emphasis>，只不过 `has` 选择器选择的对象变了。
 :::
 
 ## 浏览器支持
 
-截至 `2023-04-13`，`PC` 端浏览器支持情况[(在 CanIUse 中查看)](https://caniuse.com/?search=%3Ahas)如下：
+截至 2023-04-13，PC 端浏览器支持情况如下 [(在 CanIUse 中查看)](https://caniuse.com/?search=%3Ahas) ：
+
+<BrowserList
+  versions={{
+    chrome: 105,
+    edge: 105,
+    firefox: 103,
+    safari: 15.4,
+    opera: 91,
+  }}
+/>
 
 > `Firefox` 默认不支持，可以通过设置 `layout.css.has-selector.enabled` 开启。
-
-| 浏览器  | 最低版本 |
-| ------- | :------- |
-| Chrome  | 105      |
-| Edge    | 105      |
-| Firefox | 103      |
-| Safari  | 15.4     |
-| Opera   | 91       |
