@@ -3,24 +3,27 @@ sidebar_position: 30
 displayed_sidebar: frontendSidebar
 title: 正则匹配选择器
 description: 在不清楚具体选择器名称时，通过模糊匹配选择。
+tags:
+  - CSS
+  - 正则
 ---
 
-<Author count={1200} publish="2023-5-10 18:47:00" />
+<Author cost={2} publish="2023-5-10 18:47" update="2023-10-29 15:31" />
 
 | 符号 | 作用                                                   | 说明                                               |
 | :--: | :----------------------------------------------------- | :------------------------------------------------- |
 |  ^   | 匹配开始字符(串)                                       | 开始位置包含相应字符(串)                           |
 |  $   | 匹配结束字符(串)                                       | 结束位置包含相应字符(串)                           |
 |  \*  | 匹配任意位置                                           | 任意位置包含相应字符(串)                           |
-|  g   | 全局匹配                                               |                                                    |
-|  i   | 不区分大小写                                           |                                                    |
 |  ~   | 匹配<Emphasis>单词</Emphasis>，仅支持 `ASCII` 字符     | 任意位置包含相应单词(单词之间需要有空格或者分隔符) |
 |  \|  | 匹配开始<Emphasis>单词</Emphasis>，仅支持 `ASCII` 字符 | 以相应单词开始(单词之间需要有空格或者分隔符)       |
+|  g   | 全局匹配                                               |                                                    |
+|  i   | 不区分大小写                                           |                                                    |
 
 ## ^ 匹配开始字符(串)
 
 ```css
-/* attr: 匹配 name 属性以 blog 开始 */
+/* attr: 匹配 name 属性值以 blog 开始 */
 div[name^='blog']
 
 /* class: 匹配类名以 blog 开始 */
@@ -31,7 +34,7 @@ div[class^='blog']
 ## $ 匹配结束字符(串)
 
 ```css
-/* attr: 匹配 name 属性以 blog 结尾 */
+/* attr: 匹配 name 属性值以 blog 结尾 */
 div[name$='blog']
 
 /* class: 匹配类名以 blog 结尾 */
@@ -42,10 +45,10 @@ div[class$='blog']
 ## \* 匹配任意位置
 
 ```css
-/* attr: 匹配 name 属性以 blog 结尾 */
+/* attr: 匹配 name 属性值中包含 blog */
 div[name*='blog']
 
-/* class: 匹配类名以 blog 结尾 */
+/* class: 匹配类名中包含 blog */
 div[class*='blog']
 
 ```
@@ -58,7 +61,6 @@ div[name~='blog']
 
 /* class: 匹配类名包含单词 blog */
 div[class~='blog']
-
 /* 能够匹配 'blog','my-blog-name','my blog name', 但不能匹配 'blogname' */
 
 ```
