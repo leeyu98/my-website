@@ -30,7 +30,7 @@ keywords:
 
 本文主要讨论 `application/x-www-form-urlencoded` 格式中复杂对象和数组的字符串化问题。
 
-:::caution 注意
+:::warning 注意
 文中实践基于主流 `HTTP` 请求库 `axios` 和工具库 `qs`
 :::
 
@@ -131,7 +131,7 @@ qs.stringify(obj, { allowDots: true }); // allowDots: true
 
 模拟 `arrayFormat` 不同配置下数组对象的转换情况。
 
-:::caution 注意
+:::warning 注意
 默认情况下 `encode: true` 会把字符进行编码，此处为便于观察取消了编码，即 `encode: false`
 :::
 

@@ -141,7 +141,7 @@ export type TargetProps = {
 | data       | `Array<any>`    | <Highlight>可选</Highlight> 目标数据       | -                                    |
 | read       | `TransportType` | <Highlight>可选</Highlight> 目标数据源配置 | -                                    |
 
-:::caution 注意
+:::warning 注意
 `ConfigProps` 与 `TargetProps` 对返回数据的要求：<br/>
 `Array` 或者 `{ content: Array }`，其他返回结果需要通过配置 `read.transformResponse` 自行格式转换。
 :::
