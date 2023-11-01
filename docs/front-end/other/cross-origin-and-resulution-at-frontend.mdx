@@ -4,7 +4,7 @@ description: 为什么存在跨域，前端是如何解决的？
 sidebar_position: 10
 ---
 
-<Author count={2800} publish="2023-4-8 0:30" update="2023-5-30 14:36" />
+<Author cost={6} publish="2023-4-8 0:30" update="2023-11-1 23:40" />
 
 ## 关于跨域问题
 
@@ -74,7 +74,7 @@ Access-Control-Max-Age: 86400
 
 通过 `node` 中间件实现代理来转发我们的请求，由于 `node` 本身不受浏览器的限制，所以可以和服务器正常通讯。简单示意图如下：
 
-![代理示意图](./images/proxy-server.png)
+![代理示意图](./images/proxy-server.svg)
 
 **webpack-dev-server**
 
@@ -142,7 +142,7 @@ app.all('*', function (req, res, next) {
 
 前端分离项目部署通常也都需要解决跨域问题，因为前后端项目部署在不同的端口，甚至不同的服务器上。通过 `Nginx` 转发请求，不会触发同源策略。
 
-```bash
+```nginx
 {
    server {
     listen 3000;
