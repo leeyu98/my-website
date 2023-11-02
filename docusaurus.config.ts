@@ -1,10 +1,12 @@
 import type * as Preset from '@docusaurus/preset-classic';
 import type { Config } from '@docusaurus/types';
 import type { PluginOptions } from '@easyops-cn/docusaurus-search-local';
+import { themes } from 'prism-react-renderer';
+import footer from './config/footer';
+import navbar from './config/navbar';
 
-const { themes } = require('prism-react-renderer');
-const lightCodeTheme = themes.github;
-const darkCodeTheme = themes.dracula;
+const lightTheme = themes.github;
+const darkTheme = themes.dracula;
 
 const config: Config = {
   title: '长念的小站',
@@ -65,8 +67,8 @@ const config: Config = {
   ],
   themeConfig: {
     image: 'img/social-card.png',
-    navbar: require('./config/navbar'),
-    footer: require('./config/footer'),
+    navbar,
+    footer,
     docs: {
       sidebar: {
         hideable: true, // 可收起
@@ -74,14 +76,15 @@ const config: Config = {
       },
     },
     prism: {
-      theme: lightCodeTheme,
-      darkTheme: darkCodeTheme,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       defaultLanguage: 'javascript',
       additionalLanguages: [
         'bash',
         'css',
         'diff',
         'git',
+        'http',
         'jsdoc',
         'json',
         'less',
