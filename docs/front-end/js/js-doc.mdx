@@ -6,7 +6,7 @@ tags:
   - JSDoc
 ---
 
-<Author cost={3} publish="2023-6-12 5:55:20" update="2023-10-23 20:59" />
+<Author cost={3} publish="2023-6-12 5:55:20" update="2023-11-2 11:48" />
 
 ## @deprecated
 
@@ -14,7 +14,7 @@ tags:
 
 **语法**
 
-```
+```jsdoc
 @deprecated [<text>]
 ```
 
@@ -35,7 +35,7 @@ function getIP() {
 
 **语法**
 
-```
+```jsdoc
 @description <text>
 @desc <text>
 ```
@@ -44,7 +44,7 @@ function getIP() {
 
 ```js
 /**
- * @description since 2.0
+ * @description get user client IP
  */
 function getIP() {
   //...
@@ -72,7 +72,7 @@ export const User () => {
 
 **语法**
 
-```
+```jsdoc
 @param [<type>] <name> [<description>]
 ```
 
@@ -91,7 +91,7 @@ function getAge(name) {
 
 指定返回值类型、描述，别名 `@returns`。
 
-```
+```jsdoc
 @return [{type}] [description]
 ```
 
@@ -127,7 +127,7 @@ function getName() {
 
 **语法**
 
-```
+```jsdoc
 @todo text describing thing to do.
 ```
 
@@ -144,11 +144,11 @@ function getUser(naem) {
 
 ## @type
 
-标识类型，支持引入外部类型。
+标识类型，支持引入外部类型，可以在 `JS` 中得到更好的语法提示。
 
 **语法**
 
-```
+```jsdoc
 @type {typeName}
 ```
 
@@ -178,7 +178,7 @@ export const getDSProps = () => {
 
 **语法**
 
-```
+```jsdoc
 @typedef [<type>] <namepath>
 ```
 
