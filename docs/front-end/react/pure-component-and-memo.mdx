@@ -1,0 +1,59 @@
+---
+title: PureComponent 与 memo()
+description: React 性能优化 PureComponent 与 memo() 的区别
+tags:
+  - React
+  - PureComponent
+  - memo
+---
+
+<Author cost={2} publish="2022-5-16 12:00" update="2023-11-2 23:50" />
+
+二者的作用是相似的：`PureComponent` 用在 Class 组件，`memo()` 用在 Function 组件。
+
+## React.PureComponent
+
+> 即纯组件，与 `React.Component` 十分相似。
+
+`PureComponent` 实现了 `shouldComponentUpdate` 对 `props` 和 `state` 对象的浅层对比，所以存在一定程度上的优化性能。
+
+但是也要注意，只是实现了对象的<Emphasis>浅层对比</Emphasis>，所以只有 `props` 和 `state` 结构较为简单的时候推荐使用，以免导致无法更新 (或是在深层数据发生变化时使用 `forceUpdate()` 强制更新)。
+
+**用法示例**
+
+```jsx
+class Hello extends React.PureComponent {
+  ...
+}
+```
+
+## React.memo()
+
+> 是一个高阶组件，只能用于函数组件
+
+<Emphasis>只会检查对比 `props` 的变更</Emphasis>
+，所以第一个参数应该是 `纯函数组件`，第二个参数是自定义实现的对比函数。如果没有对比函数，默认情况下其只会对复杂对象做浅层对比。
+
+如果函数组件被 `React.memo` 包裹，且其实现中拥有 [useState](https://zh-hans.reactjs.org/docs/hooks-state.html 'useState')，[useReducer](https://zh-hans.reactjs.org/docs/hooks-reference.html#usereducer 'useReducer') 或 [useContext](https://zh-hans.reactjs.org/docs/hooks-reference.html#usecontext 'useContext') 的 Hook，当 state 或 context 发生变化时，它仍会重新渲染。
+
+**用法示例**
+
+```jsx
+// function component
+const Hello = (props) => {
+  // render with props
+  ...
+}
+
+// compare function
+const areEqual = (prevProps, nextProps) => {
+  // compare props
+})
+
+export default React.memo(Hello, areEqual)
+```
+
+:::warning 注意两者对比函数返回值的区别
+如果 `props` 相等，`areEqual` 会返回 `true`；如果 `props` 不相等，则返回 `false`。
+这与 `shouldComponentUpdate` 方法的返回值相反。
+:::
