@@ -1,0 +1,114 @@
+---
+title: 数字索引和字符串索引的区别
+description: JS 中使用数组数字索引和字符串索引的区别
+displayed_sidebar: frontendSidebar
+tags:
+  - 数组
+  - 索引
+keywords:
+  - 数组
+  - 索引
+---
+
+<Author cost={3} publish="2022-4-19 12:00" update="2023-11-2 23:18" />
+
+## 数字索引
+
+:::tip
+`JavaScript` 中数组下标的取值范围是 `0 ~ 2^32 - 1` 之间的整数。
+:::
+
+### 合法数字索引
+
+正常存取数组，同时改变数组的长度。数组的长度会被更新为 <Highlight>索引 + 1</Highlight>，即使当前数组没有这么多元素 (稀疏数组)。
+
+```js
+let arr = [];
+
+arr[5] = 5;
+arr.length; // 5
+```
+
+### 非法数字索引
+
+可以存取数组 (就像操作对象一样)，但不会改变数组的长度，数组的方法对这些元素也不再适用；可以通过 `Object.keys()` 等方式访问；
+
+- `for...of` 无法访问非法索引位置的元素
+- `for...in` 可以访问到非法数字索引
+
+```js
+let arr = [];
+
+arr[-1] = 'apple';
+arr[-1]; // apple
+arr.length; // 0
+Object.keys(arr); // ['-1']
+
+for (let i = -1; i < arr.length; i++) {
+  console.log(arr[i]); // apple
+}
+for (const i in arr) {
+  console.log(i); // -1
+}
+for (const item of arr)) {
+  console.log(item); // 无输出
+}
+```
+
+## 字符串索引
+
+### 数字字符串
+
+如果是在数组索引范围内，则能被正确解析，同[合法数字索引](#合法数字索引)。但有一点需要特别注意，参见[关于索引](#关于索引)。
+
+```js
+let arr = [];
+
+arr['1'] = 'apple';
+arr[1]; // apple
+arr.length; // 1
+```
+
+如果是非法索引，同[非法数字索引](#非法数字索引)。
+
+```js
+let arr = [];
+
+arr['-1'] = 'apple';
+arr['-1']; // apple
+arr.length; // 0
+```
+
+### 其他字符串
+
+数组以其他字符串作为下标时，情况和[非法数字索引](#非法数字索引)一致)。
+
+```js
+let arr = [];
+
+arr['name'] = 'banana';
+arr['name']; // banana
+arr.length; // 0
+```
+
+## 关于索引
+
+- `JavaScript` 中以数字开头的属性都不能通过点号 `.` 引用，必须使用方括号 `[]`；
+- 数字类型的索引其实会被 `JavaScript` 解释器调用 `toString` 方法隐式转为字符类型；所以数字类型的索引和字符串类型的索引语法表现基本一致 (注意特例)。
+
+> 特例：数字索引 `1` 和 字符串索引 `'1'` 是等价的，但是和 `'01'` 就是完全不同的。
+
+```js
+let arr = [];
+arr[1] = 'apple';
+arr['1'] = 'banana';
+arr['01'] = 'apple';
+
+arr[1] === arr['1']; // true
+arr['1'] !== arr['01']; // true
+```
+
+## 总结
+
+- 如果索引为合法数字索引或可以转换为合法数字索引，表现为正常的数组特性；
+- 其他情况表现为对象特性；
