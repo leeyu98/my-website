@@ -1,8 +1,7 @@
 {
   "extends": "@docusaurus/tsconfig",
   "compilerOptions": {
-    "baseUrl": ".",
-    "typeRoots": ["./typings"]
+    "baseUrl": "."
   },
   "include": [
     "./src/**/*.ts",

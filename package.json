@@ -31,12 +31,12 @@
     "sass": "^1.59.3"
   },
   "devDependencies": {
-    "@types/react": "^18.2.29",
     "@docusaurus/eslint-plugin": "^2.4.1",
-    "@docusaurus/module-type-aliases": "3.0.0",
-    "@docusaurus/types": "3.0.0",
-    "@docusaurus/tsconfig": "3.0.0",
-    "typescript": "~5.2.2"
+    "@docusaurus/module-type-aliases": "^3.0.0",
+    "@docusaurus/tsconfig": "^3.0.0",
+    "@docusaurus/types": "^3.0.0",
+    "@types/react": "^18.2.29",
+    "typescript": "^5.2.2"
   },
   "browserslist": {
     "production": [
