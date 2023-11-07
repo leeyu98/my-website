@@ -13,12 +13,7 @@ export default function Home() {
   return (
     <Layout title={`${siteConfig.title}`} description="长念-前端开发工程师" noFooter>
       <div className={clsx(styles.main__home)}>
-        <div
-          className={clsx(styles.home__content, 'row')}
-          style={{
-            marginTop: '-6rem',
-          }}
-        >
+        <div className={clsx(styles.home__content, 'row')}>
           <div className="col col--1"></div>
           <aside
             className="col col--7"
