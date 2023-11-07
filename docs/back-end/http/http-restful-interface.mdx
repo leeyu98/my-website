@@ -1,0 +1,89 @@
+---
+title: HTTP RESTful 接口规范
+description: axios 中 application/x-www-form-urlencoded 格式中复杂对象和数组的字符串化问题
+sidebar_position: 10
+tags:
+  - HTTP
+  - RESTful
+keywords:
+  - HTTP
+  - RESTful
+---
+
+<Author cost={5} publish="2023-11-7 21:32" />
+REST (Representational State Transfer，简称 REST，直译为表现层状态转换) 是<Emphasis>
+  一种软件架构风格、设计风格，而不是标准，只是提供了一组设计原则和约束条件
+</Emphasis>。它主要用于客户端和服务器交互类的软件。基于这个风格设计的软件可以更简洁，更有层次，更易于实现缓存等机制。
+
+## RESTful 六大原则 (约束)
+
+- 统一接口：通过一定原则设计接口降低耦合，简化系统架构，这是 RESTful 设计的基本出发点。
+- 客户端-服务端：更专注客户端和服务端的分离，服务端独立可更好服务于前端、安卓、IOS 等客户端设备。
+- 无状态：服务端不保存客户端状态，客户端保存状态信息每次请求携带状态信息。
+- 可缓存：服务端需回复是否可以缓存以让客户端甄别是否缓存提高效率。
+- 分层系统：客户端无法直接知道连接的到终端还是中间设备，分层允许你灵活的部署服务端项目。
+- 按需代码 (可选)：按需代码允许我们灵活的发送一些看似特殊的代码给客户端例如 JavaScript 代码。
+
+## 统一接口说明
+
+HEAD OPTIONS GET PUT DELETE 是幂等操作，POST 和 PATCH 不是。
+
+> 幂等指的是多次同样的操作而不改变结果，这里结果指的是数据的最终存储结果，而不是请求拿到的响应结果。
+
+### GET
+
+请求服务端资源，不会影响资源的内容。
+
+- `GET /users` 获取用户列表
+- `GET /users/{userId}` 获取单个用户信息
+
+### POST
+
+用来创建或更新资源，更新时只需要提交要更新的部分。
+
+- `POST /users`
+
+### PUT
+
+用来更新或创建资源，更新时需要客户端提供完整的资源，服务端会使用该资源替换目标资源，如果目标资源不存在，服务器可根据需要创建它。
+
+- `PUT /users/{userId}`
+
+### PATCH
+
+用于资源部分修改。
+
+### DELETE
+
+用于删除指定的资源。
+
+- `DELETE /users/{userId}` 删除单个用户信息
+
+### HEAD
+
+用于请求资源元数据，而不返回资源的实际内容，可用于检查资源是否真实存在。
+:::info
+元数据：描述资源的结构、特征和其他的信息。如：`Content-Type` (资源类型)、`Content-Length` (资源大小) 和 `Last-Modified` (最后修改时间)。
+:::
+
+### OPTIONS
+
+用于获取目的资源所支持的通信选项：当前域名是否在服务器白名单中、服务器支持的请求方式和头信息。在跨域的情况下的发送非简单请求之前会先发送 `OPTIONS` 请求 (`withCredentials: true` 时不会发送)。
+
+#### 简单请求
+
+**1.** `HTTP` 请求方法是 `GET` `POST` 或者 `HEAD`；
+
+**2.** `HTTP` 的头信息不超出以下几种：
+
+- Accept
+- Accept-Language
+- Content-Language
+- Content-Type (注意值的限制，参见第 3 点)
+- DPR
+- Downlink
+- Save-Data
+- Viewport-Width
+- Width
+
+**3.** `Content-Type` 的值仅限于 `text/plain` `multipart/form-data` 或 `application/x-www-form-urlencoded`
