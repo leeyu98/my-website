@@ -15,10 +15,6 @@
     .main-wrapper {
       main {
         .theme-code-block {
-          //代码高亮行
-          .theme-code-block-highlighted-line {
-            background-color: rgb(97 76 249 / 41%);
-          }
           &:hover {
             box-shadow: 2px 4px 12px -4px #000000b6;
           }

@@ -95,6 +95,22 @@ const config: Config = {
         'sql',
         'typescript',
       ],
+      magicComments: [
+        // default highlight
+        {
+          className: 'theme-code-block-highlighted-line',
+          line: 'highlight-next-line',
+          block: { start: 'highlight-start', end: 'highlight-end' },
+        },
+        {
+          className: 'code__error',
+          line: 'code-error-next-line',
+          block: {
+            start: 'code-error-start',
+            end: 'code-error-end',
+          },
+        },
+      ],
     },
     colorMode: {
       disableSwitch: false, // 禁用主题切换
