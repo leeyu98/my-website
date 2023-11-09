@@ -229,27 +229,43 @@ $languages: (
           &::after {
             content: ' ';
             position: absolute;
-            top: 0;
+            transform: translateY(-100%);
             right: 0;
             display: inline-flex;
             width: 4px;
+            height: 100%;
             overflow: hidden;
             background-color: var(--highlighted-code-line-color);
           }
         }
-        // 错误代码高亮
-        .token-line.code__error {
-          background-color: var(--code-error-color-bg);
-          position: relative;
-          &::after {
-            content: ' ';
-            position: absolute;
-            top: 0;
-            right: 0;
-            display: inline-flex;
-            width: 4px;
-            overflow: hidden;
-            background-color: var(--code-error-color);
+        pre.prism-code {
+          & > code[class*='codeBlockLines_'] {
+            // 错误代码高亮
+            & > .token-line.code__error {
+              background-color: var(--code-error-color-bg);
+              position: relative;
+              &::after {
+                content: ' ';
+                position: absolute;
+                top: 0;
+                right: 0;
+                display: inline-flex;
+                width: 4px;
+                height: 100%;
+                overflow: hidden;
+                background-color: var(--code-error-color);
+              }
+            }
+          }
+          // 没有行号的代码
+          & > code:not([class*='codeBlockLinesWithNumbering_']) {
+            & > .token-line.code__error {
+              display: block;
+              margin-left: -16px;
+              margin-right: -16px;
+              padding-left: 16px;
+              padding-right: 16px;
+            }
           }
         }
       }
