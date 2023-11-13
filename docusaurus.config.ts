@@ -1,5 +1,6 @@
 import type * as Preset from '@docusaurus/preset-classic';
 import type { Config } from '@docusaurus/types';
+import { MDX1CompatOptions } from '@docusaurus/types/src/config';
 import type { PluginOptions } from '@easyops-cn/docusaurus-search-local';
 import { themes } from 'prism-react-renderer';
 import footer from './config/footer';
@@ -141,7 +142,7 @@ const config: Config = {
       comments: true,
       admonitions: true,
       headingIds: true,
-    },
+    } satisfies MDX1CompatOptions,
   },
 };
 
