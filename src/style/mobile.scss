@@ -1,5 +1,9 @@
 //移动端
 @media screen and (max-width: 996px) {
+  :root {
+    --button-close-icon: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMzg0IDUxMiI+PHBhdGggZD0iTTM0Mi42IDE1MC42YzEyLjUtMTIuNSAxMi41LTMyLjggMC00NS4zcy0zMi44LTEyLjUtNDUuMyAwTDE5MiAyMTAuNyA4Ni42IDEwNS40Yy0xMi41LTEyLjUtMzIuOC0xMi41LTQ1LjMgMHMtMTIuNSAzMi44IDAgNDUuM0wxNDYuNyAyNTYgNDEuNCAzNjEuNGMtMTIuNSAxMi41LTEyLjUgMzIuOCAwIDQ1LjNzMzIuOCAxMi41IDQ1LjMgMEwxOTIgMzAxLjMgMjk3LjQgNDA2LjZjMTIuNSAxMi41IDMyLjggMTIuNSA0NS4zIDBzMTIuNS0zMi44IDAtNDUuM0wyMzcuMyAyNTYgMzQyLjYgMTUwLjZ6Ii8+PC9zdmc+');
+  }
+
   #__docusaurus {
     // 修复移动端侧边导航栏样式问题
     .navbar-sidebar__backdrop {
@@ -8,6 +12,58 @@
     .navbar {
       .navbar-sidebar {
         min-height: 100vh;
+        .navbar-sidebar__item.menu {
+          // hide-scrollbar
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none; /* Firefox */
+          &::-webkit-scrollbar {
+            display: none; /* Chrome, MSEdge, Safari and Opera */
+          }
+        }
+        // close button
+        & > .navbar-sidebar__brand {
+          button.clean-btn.navbar-sidebar__close {
+            &::after {
+              content: ' ';
+              display: inline-block;
+              width: 1rem;
+              height: 1rem;
+              background-image: var(--button-close-icon);
+              background-size: 1.4rem 1.4rem;
+              background-repeat: no-repeat;
+              background-position: center;
+              opacity: 0.6;
+              filter: var(--ifm-menu-link-sublist-icon-filter);
+            }
+            & > svg {
+              display: none;
+            }
+          }
+        }
+        ul.theme-doc-sidebar-menu.menu__list {
+          & > li.theme-doc-sidebar-item-category {
+            & > .menu__list-item-collapsible {
+              & > button.clean-btn.menu__caret {
+                padding-right: 8px;
+                padding-left: 8px;
+                &::before {
+                  background-size: 1.4rem 1.4rem;
+                  opacity: 0.6;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // table of contents
+    .theme-doc-toc-mobile {
+      button.clean-btn {
+        &::after {
+          background-size: 1.4rem 1.4rem;
+          opacity: 0.6;
+        }
       }
     }
   }
