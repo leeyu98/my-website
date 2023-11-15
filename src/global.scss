@@ -21,6 +21,7 @@
   --docusaurus-highlighted-code-line-bg: rgb(137 132 255 / 25%); // 代码高亮背景色
   --ifm-menu-link-sublist-icon: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNDQ4IDUxMiI+PHBhdGggZD0iTTIwMS40IDEzNy40YzEyLjUtMTIuNSAzMi44LTEyLjUgNDUuMyAwbDE2MCAxNjBjMTIuNSAxMi41IDEyLjUgMzIuOCAwIDQ1LjNzLTMyLjggMTIuNS00NS4zIDBMMjI0IDIwNS4zIDg2LjYgMzQyLjZjLTEyLjUgMTIuNS0zMi44IDEyLjUtNDUuMyAwcy0xMi41LTMyLjggMC00NS4zbDE2MC0xNjB6Ii8+PC9zdmc+');
   --ifm-paragraph-margin-bottom: 0.1rem;
+  --ifm-table-cell-padding: 0.5rem; // table 间距
 
   --background-color: rgba(245, 247, 248, 0.5);
   --mobile-search-background: #f8f8f8;
@@ -77,6 +78,24 @@
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
     display: none; /* Chrome, MSEdge, Safari and Opera */
+  }
+}
+
+// 自定义无头表格
+.table__no-header {
+  & + table {
+    & > thead {
+      display: none;
+    }
+  }
+}
+
+table {
+  & > thead {
+    & > tr {
+      border-bottom-width: 1px;
+      box-shadow: 0 1px 2px 0 var(--ifm-table-border-color);
+    }
   }
 }
 
