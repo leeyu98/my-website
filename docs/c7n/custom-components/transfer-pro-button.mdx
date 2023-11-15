@@ -9,7 +9,7 @@ keywords:
   - TransferProButton
 ---
 
-<Author count={2200} publish="2023-05-13 00:51:00" update="2023-05-26 00:02:00" />
+<Author count={5} publish="2023-05-13 00:51:00" update="2023-11-16 00:42" />
 
 基于 `TransferPro` 实现，将 `Modal.open` 操作内置到组件中，渲染为 `Button` 组件。
 
@@ -81,13 +81,13 @@ export default () => {
 
 `onOk` 回调中会注入以下参数：
 
-| 参数         | 说明                                                                             |
-| :----------- | :------------------------------------------------------------------------------- |
-| originalData | <Highlight>数组</Highlight> 原始数据，目标数据源接口的返回数据                   |
-| initialData  | <Highlight>数组</Highlight> 初始化数据，由 `originalData` 与源数据匹配之后的数据 |
-| value        | <Highlight>数组</Highlight> 当前已选择的所有值                                   |
-| created      | <Highlight>数组</Highlight> `value` 与 `initialData` 对比，新增的数据            |
-| deleted      | <Highlight>数组</Highlight> `value` 与 `initialData` 对比，删除的数据            |
+| 参数         | 类型        | 说明                                                 |
+| :----------- | :---------- | :--------------------------------------------------- |
+| originalData | `unknown[]` | 原始数据，目标数据源接口的返回数据                   |
+| initialData  | `unknown[]` | 初始化数据，由 `originalData` 与源数据匹配之后的数据 |
+| value        | `unknown[]` | 当前已选择的所有值                                   |
+| created      | `unknown[]` | `value` 与 `initialData` 对比，新增的数据            |
+| deleted      | `unknown[]` | `value` 与 `initialData` 对比，删除的数据            |
 
 ## Q & A
 
