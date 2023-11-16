@@ -1,21 +1,20 @@
 ---
-title: H0平台相关
-tags: [问题]
-keywords: [H0, HZERO]
+title: HZERO 平台相关
+tags:
+  - HZERO
 description: HZERO 平台相关常见问题总结
 sidebar_position: 10
 ---
 
+<Author publish="2023-5-18 11:45" update="2023-11-16 22:40" />
+
 ## 平台模块初次加载 404
 
-**问题详情**
 初次加载模块 `404`，刷新后恢复正常。
 
-**解决方案**
+**解决方案：** 启用初始化加载 `initLoad: true`
 
-启用初始化加载 `initLoad: true`
-
-> 如果是在其他模块中引用的模块，可以调整正则，在需要时加载
+> 如果是在其他模块中引用的模块，可以调整正则，在需要时加载。
 
 ```js title="hzerorc.js"
 module.exports = {
