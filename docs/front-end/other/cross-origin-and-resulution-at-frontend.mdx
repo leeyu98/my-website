@@ -4,7 +4,7 @@ description: 为什么存在跨域，前后端是如何解决的？
 sidebar_position: 10
 ---
 
-<Author cost={6} publish="2023-4-8 0:30" update="2023-11-16 21:15" />
+<Author cost={6} publish="2023-4-8 0:30" update="2023-11-16 23:15" />
 
 ## 关于跨域问题
 
@@ -36,7 +36,7 @@ sidebar_position: 10
 
 :::
 
-**⭐️ 跨域发生在什么时候？**
+### 跨域发生在什么时候
 
 <Emphasis>在浏览器接收到服务器响应之后。</Emphasis>
 默认情况下，浏览器发送的跨域请求，实际上服务器接收并响应了，只不过响应结果被浏览器拦截了，因为同源策略。细分的话有两种情况：
@@ -77,7 +77,7 @@ Access-Control-Max-Age: 86400
 `proxy` 只是解决本地开发的跨域访问问题。如果在生产环境上发生跨域问题的话，可以将类似的配置转移到 `Nginx` 容器上。
 :::
 
-#### 1. webpack-dev-server 配置
+#### webpack-dev-server 配置
 
 前端基于 `webpack` 进行打包的项目都会以 `webpack-dev-server` 来运行，前端可以在开发环境设置代理解决跨域问题：
 
@@ -96,7 +96,7 @@ devServer: {
 需要注意的是，代理只是将目标服务器返回的数据传递到前端。所以你在浏览器上看到的请求地址还是 `http://localhost:8000/api/xxx`。
 即浏览器访问代理服务器，代理将请求发往服务器，并将收到的结果传递给浏览器。
 
-#### 2. vite 配置
+#### vite 配置
 
 `vite` 与 `webpack` 的写法略有不同，更多写法可参考 [Vite 官方中文文档](https://cn.vitejs.dev/config/server-options.html#server-proxy)
 
