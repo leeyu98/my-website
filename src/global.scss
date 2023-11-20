@@ -221,15 +221,16 @@ $languages: (
           }
         }
         & > ul.menu__list {
-          // 展开/收起按钮
+          // 高亮样式
+          li.menu__list-item {
+            & > .menu__link.menu__link--active {
+              background-color: var(--highlighted-background-color);
+            }
+          }
+          // 文件夹高亮样式
           li.theme-doc-sidebar-item-category {
             & > .menu__list-item-collapsible.menu__list-item-collapsible--active {
               background-color: var(--highlighted-background-color);
-            }
-            .menu__list-item {
-              & > .menu__link.menu__link--active {
-                background-color: var(--highlighted-background-color);
-              }
             }
             button.clean-btn.menu__caret {
               padding-right: 4px;
