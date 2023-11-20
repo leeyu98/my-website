@@ -31,6 +31,7 @@
   --highlighted-code-line-color: rgb(157 94 255); // 代码高亮色
   --menu-collapse-icon: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHBhdGggZD0iTTQxLjQgMjMzLjRjLTEyLjUgMTIuNS0xMi41IDMyLjggMCA0NS4zbDE2MCAxNjBjMTIuNSAxMi41IDMyLjggMTIuNSA0NS4zIDBzMTIuNS0zMi44IDAtNDUuM0wxMDkuMyAyNTYgMjQ2LjYgMTE4LjZjMTIuNS0xMi41IDEyLjUtMzIuOCAwLTQ1LjNzLTMyLjgtMTIuNS00NS4zIDBsLTE2MCAxNjB6bTM1Mi0xNjBsLTE2MCAxNjBjLTEyLjUgMTIuNS0xMi41IDMyLjggMCA0NS4zbDE2MCAxNjBjMTIuNSAxMi41IDMyLjggMTIuNSA0NS4zIDBzMTIuNS0zMi44IDAtNDUuM0wzMDEuMyAyNTYgNDM4LjYgMTE4LjZjMTIuNS0xMi41IDEyLjUtMzIuOCAwLTQ1LjNzLTMyLjgtMTIuNS00NS4zIDB6Ii8+PC9zdmc+');
   --highlighted-background-color: #e9f5e7;
+  --hash-link-icon: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNjQwIDUxMiI+PHN0eWxlPnN2Z3tmaWxsOiMzNTk5NjJ9PC9zdHlsZT48cGF0aCBkPSJNNTc5LjggMjY3LjdjNTYuNS01Ni41IDU2LjUtMTQ4IDAtMjA0LjVjLTUwLTUwLTEyOC44LTU2LjUtMTg2LjMtMTUuNGwtMS42IDEuMWMtMTQuNCAxMC4zLTE3LjcgMzAuMy03LjQgNDQuNnMzMC4zIDE3LjcgNDQuNiA3LjRsMS42LTEuMWMzMi4xLTIyLjkgNzYtMTkuMyAxMDMuOCA4LjZjMzEuNSAzMS41IDMxLjUgODIuNSAwIDExNEw0MjIuMyAzMzQuOGMtMzEuNSAzMS41LTgyLjUgMzEuNS0xMTQgMGMtMjcuOS0yNy45LTMxLjUtNzEuOC04LjYtMTAzLjhsMS4xLTEuNmMxMC4zLTE0LjQgNi45LTM0LjQtNy40LTQ0LjZzLTM0LjQtNi45LTQ0LjYgNy40bC0xLjEgMS42QzIwNi41IDI1MS4yIDIxMyAzMzAgMjYzIDM4MGM1Ni41IDU2LjUgMTQ4IDU2LjUgMjA0LjUgMEw1NzkuOCAyNjcuN3pNNjAuMiAyNDQuM2MtNTYuNSA1Ni41LTU2LjUgMTQ4IDAgMjA0LjVjNTAgNTAgMTI4LjggNTYuNSAxODYuMyAxNS40bDEuNi0xLjFjMTQuNC0xMC4zIDE3LjctMzAuMyA3LjQtNDQuNnMtMzAuMy0xNy43LTQ0LjYtNy40bC0xLjYgMS4xYy0zMi4xIDIyLjktNzYgMTkuMy0xMDMuOC04LjZDNzQgMzcyIDc0IDMyMSAxMDUuNSAyODkuNUwyMTcuNyAxNzcuMmMzMS41LTMxLjUgODIuNS0zMS41IDExNCAwYzI3LjkgMjcuOSAzMS41IDcxLjggOC42IDEwMy45bC0xLjEgMS42Yy0xMC4zIDE0LjQtNi45IDM0LjQgNy40IDQ0LjZzMzQuNCA2LjkgNDQuNi03LjRsMS4xLTEuNkM0MzMuNSAyNjAuOCA0MjcgMTgyIDM3NyAxMzJjLTU2LjUtNTYuNS0xNDgtNTYuNS0yMDQuNSAwTDYwLjIgMjQ0LjN6Ii8+PC9zdmc+');
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -50,6 +51,7 @@
   --code-error-color-bg: rgba(195, 38, 38, 0.6);
   --highlighted-code-line-color: rgb(148 80 255);
   --highlighted-background-color: #153909;
+  --hash-link-icon: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNjQwIDUxMiI+PHN0eWxlPnN2Z3tmaWxsOiMxZmE1ODh9PC9zdHlsZT48cGF0aCBkPSJNNTc5LjggMjY3LjdjNTYuNS01Ni41IDU2LjUtMTQ4IDAtMjA0LjVjLTUwLTUwLTEyOC44LTU2LjUtMTg2LjMtMTUuNGwtMS42IDEuMWMtMTQuNCAxMC4zLTE3LjcgMzAuMy03LjQgNDQuNnMzMC4zIDE3LjcgNDQuNiA3LjRsMS42LTEuMWMzMi4xLTIyLjkgNzYtMTkuMyAxMDMuOCA4LjZjMzEuNSAzMS41IDMxLjUgODIuNSAwIDExNEw0MjIuMyAzMzQuOGMtMzEuNSAzMS41LTgyLjUgMzEuNS0xMTQgMGMtMjcuOS0yNy45LTMxLjUtNzEuOC04LjYtMTAzLjhsMS4xLTEuNmMxMC4zLTE0LjQgNi45LTM0LjQtNy40LTQ0LjZzLTM0LjQtNi45LTQ0LjYgNy40bC0xLjEgMS42QzIwNi41IDI1MS4yIDIxMyAzMzAgMjYzIDM4MGM1Ni41IDU2LjUgMTQ4IDU2LjUgMjA0LjUgMEw1NzkuOCAyNjcuN3pNNjAuMiAyNDQuM2MtNTYuNSA1Ni41LTU2LjUgMTQ4IDAgMjA0LjVjNTAgNTAgMTI4LjggNTYuNSAxODYuMyAxNS40bDEuNi0xLjFjMTQuNC0xMC4zIDE3LjctMzAuMyA3LjQtNDQuNnMtMzAuMy0xNy43LTQ0LjYtNy40bC0xLjYgMS4xYy0zMi4xIDIyLjktNzYgMTkuMy0xMDMuOC04LjZDNzQgMzcyIDc0IDMyMSAxMDUuNSAyODkuNUwyMTcuNyAxNzcuMmMzMS41LTMxLjUgODIuNS0zMS41IDExNCAwYzI3LjkgMjcuOSAzMS41IDcxLjggOC42IDEwMy45bC0xLjEgMS42Yy0xMC4zIDE0LjQtNi45IDM0LjQgNy40IDQ0LjZzMzQuNCA2LjkgNDQuNi03LjRsMS4xLTEuNkM0MzMuNSAyNjAuOCA0MjcgMTgyIDM3NyAxMzJjLTU2LjUtNTYuNS0xNDgtNTYuNS0yMDQuNSAwTDYwLjIgMjQ0LjN6Ii8+PC9zdmc+');
 }
 
 *::selection {
@@ -285,7 +287,17 @@ $languages: (
           }
         }
         .anchor {
-          a.hash-link {
+          & > a.hash-link {
+            &::before {
+              display: inline-flex;
+              color: transparent;
+              background-image: var(--hash-link-icon);
+              background-size: 100% 100%;
+              background-repeat: no-repeat;
+              background-position: center;
+              opacity: 1;
+              transform: rotateZ(75deg);
+            }
             &:hover {
               text-decoration: none !important;
             }
