@@ -192,6 +192,10 @@ $languages: (
   }
   // 内容区
   .main-wrapper {
+    .theme-admonition {
+      border-width: 1px;
+    }
+
     // 左侧
     aside.theme-doc-sidebar-container {
       min-height: 100vh;
@@ -441,13 +445,13 @@ $languages: (
               &::before {
                 content: '';
                 position: absolute;
-                left: 4px;
-                transform: translateX(-3.5px);
+                left: 0;
+                transform: translateX(2.5px);
                 width: 4px;
-                height: 4px;
-                background-color: var(--background-color);
-                border-radius: 10px;
-                border: 2px solid var(--ifm-color-primary);
+                height: 20px;
+                border-radius: 2px;
+                background-color: var(--ifm-color-primary);
+                transition: all 0.2s ease;
               }
             }
           }
