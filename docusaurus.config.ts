@@ -11,7 +11,7 @@ const darkTheme = themes.dracula;
 
 const config: Config = {
   title: '长念的小站',
-  tagline: '持续构建中...',
+  tagline: '知识分享',
   favicon: 'img/favicon.ico',
   url: 'https://changnian.netlify.app/',
   baseUrl: '/',

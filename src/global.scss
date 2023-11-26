@@ -93,6 +93,36 @@
   }
 }
 
+// 自定义无线表格
+.table__no-border {
+  & + table {
+    & > thead {
+      background-color: unset;
+      tr {
+        box-shadow: none;
+      }
+      :is(tr, th) {
+        border-width: 0;
+      }
+    }
+    & > tbody {
+      :is(tr, td) {
+        border-width: 0;
+        background-color: unset;
+      }
+    }
+  }
+}
+
+// 紧凑表格
+.table__compact {
+  & + table {
+    :is(th, td) {
+      padding: 0 4px;
+    }
+  }
+}
+
 table {
   & > thead {
     & > tr {
@@ -194,6 +224,9 @@ $languages: (
   .main-wrapper {
     .theme-admonition {
       border-width: 1px;
+      & > div[class^='admonitionHeading_'] {
+        font-size: 1rem; // title
+      }
     }
 
     // 左侧
