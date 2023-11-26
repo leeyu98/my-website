@@ -1,30 +1,30 @@
 ---
+title: Array 的遍历
 displayed_sidebar: frontendSidebar
-title: Array的遍历
 description: JS 中数组的遍历方式与终止关键字
 tags:
   - Array
   - 数组
 ---
 
-<Author count={4200} publish="2021-05-28 13:57:20" update="2023-6-12 13:40" />
+<Author count={4200} publish="2021-05-28 13:57:20" update="2023-11-26 23:14" />
 
 ## 规律一览表
 
-:::tip tips
-注：`return` 是函数的结束方式，所以不能用在普通 `for` 循环中。
+:::tip 提示
+`return` 是函数的结束方式，所以不能用在普通 `for` 循环中。
 :::
 
-| 遍历方式        | 返回值      |   continue   |  break   |                return                 |                                 中止条件                                  |
-| :-------------- | :---------- | :----------: | :------: | :-----------------------------------: | :-----------------------------------------------------------------------: |
-| `基础 for 循环` |             | 跳过本次循环 | 结束循环 |                  ❌                   |                                  `break`                                  |
-| `for...in`      |             | 跳过本次循环 | 结束循环 |                  ❌                   |                                  `break`                                  |
-| `for...of`      |             | 跳过本次循环 | 结束循环 |                  ❌                   |                                  `break`                                  |
-| `forEach`       | `undefined` |      ❌      |    ❌    |             跳过本次循环              |                                    ❌                                     |
-| `map`           | `Array`     |      ❌      |    ❌    |             跳过本次循环              |                                    ❌                                     |
-| `filter`        | `Array`     |      ❌      |    ❌    |             跳过本次循环              |                                    ❌                                     |
-| `some`          | `Boolean`   |      ❌      |    ❌    | `true` 终止循环; `false` 结束本次循环 | `Truthy` [真值](https://developer.mozilla.org/zh-CN/docs/Glossary/Truthy) |
-| `every`         | `Boolean`   |      ❌      |    ❌    | `false` 终止循环; `true` 结束本次循环 |  `Falsy` [假值](https://developer.mozilla.org/zh-CN/docs/Glossary/Falsy)  |
+| 遍历方式        | 返回值      |   continue   |  break   |                  return                   |                                 中止条件                                  |
+| :-------------- | :---------- | :----------: | :------: | :---------------------------------------: | :-----------------------------------------------------------------------: |
+| `基础 for 循环` |             | 跳过本次循环 | 结束循环 |                    ❌                     |                                  `break`                                  |
+| `for...in`      |             | 跳过本次循环 | 结束循环 |                    ❌                     |                                  `break`                                  |
+| `for...of`      |             | 跳过本次循环 | 结束循环 |                    ❌                     |                                  `break`                                  |
+| `forEach`       | `undefined` |      ❌      |    ❌    |               跳过本次循环                |                                    ❌                                     |
+| `map`           | `Array`     |      ❌      |    ❌    |               跳过本次循环                |                                    ❌                                     |
+| `filter`        | `Array`     |      ❌      |    ❌    |               跳过本次循环                |                                    ❌                                     |
+| `some`          | `Boolean`   |      ❌      |    ❌    | `true` 终止循环;<br/>`false` 结束本次循环 | `Truthy` [真值](https://developer.mozilla.org/zh-CN/docs/Glossary/Truthy) |
+| `every`         | `Boolean`   |      ❌      |    ❌    | `false` 终止循环;<br/>`true` 结束本次循环 |  `Falsy` [假值](https://developer.mozilla.org/zh-CN/docs/Glossary/Falsy)  |
 
 ```js
 // 声明数组用于遍历
