@@ -132,10 +132,6 @@ table {
   }
 }
 
-h1 {
-  --ifm-h1-font-size: 2.6rem !important;
-}
-
 .code__link {
   font-family: var(--ifm-font-family-monospace);
 }
@@ -167,6 +163,25 @@ $languages: (
   $img-border-radius: 6px;
 
   height: 100%;
+
+  h1 {
+    font-size: 2.5rem;
+  }
+  h2 {
+    font-size: 2rem;
+  }
+  h3 {
+    font-size: 1.75rem;
+  }
+  h4 {
+    font-size: 1.5rem;
+  }
+  h5 {
+    font-size: 1.25rem;
+  }
+  h6 {
+    font-size: 1rem;
+  }
 
   // 导航栏
   nav.navbar {
