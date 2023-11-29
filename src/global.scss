@@ -491,17 +491,25 @@ $languages: (
             white-space: pre-wrap;
             word-break: break-word;
             flex-wrap: wrap;
-            &.table-of-contents__link--active {
+            &.table-of-contents__link {
               &::before {
                 content: '';
                 position: absolute;
                 left: 0;
-                transform: translateX(2.5px);
+                transform: translateX(2.5px) rotateX(60deg);
                 width: 4px;
                 height: 20px;
                 border-radius: 2px;
                 background-color: var(--ifm-color-primary);
-                transition: all 0.2s ease;
+                transition: all 0.2s ease-in;
+                opacity: 0;
+              }
+
+              &--active {
+                &::before {
+                  opacity: 1;
+                  transform: translateX(2.5px) rotateX(0);
+                }
               }
             }
           }
