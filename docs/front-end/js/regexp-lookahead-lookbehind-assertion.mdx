@@ -2,17 +2,19 @@
 displayed_sidebar: frontendSidebar
 title: 正则表达式前瞻与后顾
 description: 前瞻匹配与后顾匹配
+tags:
+  - 正则表达式
 ---
 
-<Author count={1200} publish="2023-6-12 4:53" update="2023-6-14 10:22" />
+<Author cost={3} publish="2023-6-12 4:53" update="2023-12-3 15:10" />
 
-:::warning 注意
+:::danger 特别注意
 `Safari` 版本低于 `16.3` 不支持零宽断言，谨慎使用！或使用[替代方案](#替代方案)
 :::
 
 ## 前瞻
 
-`exp(?=exp1)` 匹配后面是 `exp1` 的 `exp`。
+`exp(?=pattern)` 匹配后面是 `pattern` 的 `exp`。
 
 全称<Emphasis>零宽正向先行断言</Emphasis>。从匹配的位置 `向右`
 看，匹配一些字符，但是并不包含匹配模式，只是确定是否匹配，也就是所谓的零宽。将其中的等号 `=`
@@ -20,10 +22,10 @@ description: 前瞻匹配与后顾匹配
 
 ## 后顾
 
-`(?<=exp1)exp` 匹配前面是 `exp1` 的 `exp`。
+`(?<=pattern)exp` 匹配前面是 `pattern` 的 `exp`。
 
 全称<Emphasis>零宽正向后行断言</Emphasis>。从匹配的位置 `向左` 看，是否满足期望匹配规则。将其中的等号 `=` 替换为感叹号 `!` 即为<Emphasis>
-零宽负正向先行断言</Emphasis>。
+零宽负正向后行断言</Emphasis>。
 
 ## 示例
 
