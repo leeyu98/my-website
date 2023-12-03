@@ -50,7 +50,7 @@ const BrowserList: React.FC<IProps> = ({ versions = {} }) => {
         <tr>
           {list.map(({ Icon, name }) => (
             <td key={name} style={{ textAlign: 'center', minWidth: 100 }}>
-              <Icon style={{ width: 24 }} />
+              <Icon style={{ width: 32 }} />
               <br />
               <b>{name}</b>
             </td>
