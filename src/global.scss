@@ -8,6 +8,7 @@
 @import './style/mobile.scss';
 @import './style/light.scss';
 @import './style/dark.scss';
+@import './style/custom.scss';
 
 :root {
   --ifm-color-primary: #2e8555;
@@ -81,45 +82,6 @@
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
     display: none; /* Chrome, MSEdge, Safari and Opera */
-  }
-}
-
-// 自定义无头表格
-.table__no-header {
-  & + table {
-    & > thead {
-      display: none;
-    }
-  }
-}
-
-// 自定义无线表格
-.table__no-border {
-  & + table {
-    & > thead {
-      background-color: unset;
-      tr {
-        box-shadow: none;
-      }
-      :is(tr, th) {
-        border-width: 0;
-      }
-    }
-    & > tbody {
-      :is(tr, td) {
-        border-width: 0;
-        background-color: unset;
-      }
-    }
-  }
-}
-
-// 紧凑表格
-.table__compact {
-  & + table {
-    :is(th, td) {
-      padding: 0 4px;
-    }
   }
 }
 

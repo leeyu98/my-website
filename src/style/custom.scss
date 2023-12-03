@@ -1,0 +1,49 @@
+// 自定义无头表格
+.table {
+  &__no-header {
+    & + table {
+      & > thead {
+        display: none;
+      }
+    }
+  }
+
+  // 自定义无线表格
+  &__no-border {
+    & + table {
+      & > thead {
+        background-color: unset;
+        tr {
+          box-shadow: none;
+        }
+        :is(tr, th) {
+          border-width: 0;
+        }
+      }
+      & > tbody {
+        :is(tr, td) {
+          border-width: 0;
+          background-color: unset;
+        }
+      }
+    }
+  }
+
+  // 紧凑表格
+  &__compact {
+    & + table {
+      :is(th, td) {
+        padding: 0 4px;
+      }
+    }
+    &--header {
+      & + table {
+        thead {
+          th {
+            border-bottom-width: 2px;
+          }
+        }
+      }
+    }
+  }
+}
