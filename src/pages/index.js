@@ -50,7 +50,7 @@ export default function Home() {
               <Link className="button button--primary" to="/docs/Intro" style={{ marginRight: 20 }}>
                 开始探索
               </Link>
-              <Link class="button button--outline button--secondary" to="/blog/author">
+              <Link className="button button--outline button--secondary" to="/blog/author">
                 关于
               </Link>
             </div>
