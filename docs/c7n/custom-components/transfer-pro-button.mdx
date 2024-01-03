@@ -46,13 +46,12 @@ export default () => {
         textField: 'tenantName',
         valueField: 'tenantNum',
         lovCode: 'HPFM.TENANT_PAGING',
-        lovUrl: 'sql',
       }}
       targetProps={{
         primaryKey: 'assignTenantId',
         read: ({ data }) => {
           return {
-            url: `${IPFM_API_PREFIX_BASE}/model-assigns`,
+            url: `${API_PREFIX}/model-assigns`,
             method: 'GET',
             data: { ...data, modelId: record?.get('modelId') },
           };
