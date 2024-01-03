@@ -1,0 +1,160 @@
+---
+displayed_sidebar: frontendSidebar
+title: 稀疏数组中的空位
+description: 稀疏数组中的空位是什么，和 undefined 有什么不同，数组的方法又是如何处理空位的。
+tags:
+  - 数组
+  - 数组空位
+keywords:
+  - 稀疏数组
+  - 数组空位
+---
+
+<Author cost={5} publish="2024-1-3 23:15" update="" />
+
+下面的这句代码执行之后，arr 的值是怎样的？
+
+```js
+const arr = Array(5).map((i) => 5);
+```
+
+在 Chrome 中输出的结果是 `[空 x 5]` (或者英文输出 `[empty x 5]`)，展开之后发现并没有任何值。
+为什么会出现这种结果呢，就是和 JS 中数组的空位有关。<Emphasis>这种包含空位的数组就称为稀疏数组</Emphasis>，反之为密集数组。
+
+## 什么是数组空位
+
+可以理解为数组该位置并没有任何值，以下几种方式都可以产生数组空位：
+
+```js
+// 1. 构造函数创建数组
+const arr = Array(3); // [empty x 3]
+
+// 2. 直接构建空数组
+const arr = [, , ,]; // [empty x 3] 注意空位数量与,数量一致，而不是 4
+
+// 3. 指定数组的长度
+const arr = [1];
+arr.length = 3; // [1, empty x 2]
+
+// 4. 通过 delete 移除数组项
+const arr = [1, 2, 3, 4, 5];
+delete arr[0]; //[empty, 2, 3, 4, 5]
+```
+
+## 空位和 undefined 一样吗
+
+<Emphasis>不一样。</Emphasis>在浏览器中访问空位元素时会输出
+`undefined`，在很多特性上表现也一致，但实际上他们并不等价。
+
+```js
+const arr = [1, , undefined];
+arr[1]; // undefined
+arr[2]; // undefined
+arr[1] === arr[2]; // true
+typeof arr[1]; // 'undefined'
+```
+
+可以通过关键字 `in` 来判断数组空位和 `undefined`
+
+```js
+const emptyArr = [, ,];
+const undefinedArr = [undefined, undefined];
+
+0 in emptyArr; // false
+0 in undefinedArr; // true
+```
+
+## 数组方法对空位的处理
+
+数组的方法在处理空位时的情况并不统一。
+
+### 保留空位并保留值
+
+`slice()` `splice()` `sort()` `reverse()`
+
+```js
+[1, , 3].slice(1); // [empty, 3]
+
+arr = [1, , 3];
+arr.splice(1, 0, 2); // [1, 2, empty, 3]
+
+[1, , 3].sort(); // [1, 3, empty]
+[1, , 3].reverse(); // [3, empty, 1]
+```
+
+### 跳过空位但保留值
+
+`map()`
+
+```js
+[1, , 3].map((item) => {
+  console.log(item);
+  return item + 1;
+}); // 只会输出 1 3，最终结果为 [2, empty, 4];
+```
+
+### 跳过空位并抛弃值
+
+`forEach()` `filter()` `every()` `some()` `reduce()` `reduceRight()`
+
+```js
+[1, , 3].forEach((item) => console.log(item)); // 1 3
+
+[1, , 3].filter((item) => true); // [1, 3]
+
+[1, , 3].every((item) => typeof item === 'number'); // true
+
+[1, , 3].some((item) => typeof item !== 'number'); // false
+
+[1, , 3].reduce((prev, item) => {
+  console.log(item);
+  return prev + item;
+}, 0); // 只会输出 1 3，最终结果为 4
+```
+
+### 视为 undefined
+
+`join()` `toString()` `keys()` `values()` `entries()` `find()` `findIndex()` `includes()` `toSpliced()` `toSorted()` `toReversed()` `with()` 以及 `Array.from()` `for...of` 和展开运算符。
+
+```js
+[1, , 3].join(); // 1,,3
+[1, , null, undefined, 3].join(); // 1,,,,3
+
+[1, , 3].toString(); //1,,3
+[1, , null, undefined, 3].toString(); // 1,,,,3
+
+[...[1, , 3].keys()]; // [0,1,2]
+[...[1, , 3].values()]; // [1, undefined, 3]
+[...[1, , 3].entries()]; // [[0, 1], [1, undefined], [2, 3]];
+
+[1, , 3].find((__, index) => {
+  console.log(index);
+  return index === 1;
+}); // 只会输出 0 1，最终结果为 undefined
+
+[1, , 3].findIndex((__, index) => {
+  console.log(index);
+  return index === 1;
+}); // 只会输出 0 1，最终结果为 1
+
+[1, , 3].includes(undefined); // true
+
+[1, , 3].toSpliced(1, 0, 2); // [1, 2, undefined, 3]
+[1, , 3].toSorted(); // [1, 3, undefined]
+[1, , 3].toReversed(); // [3, undefined, 1]
+[1, , 3].with(0, 2); // [2, undefined, 3]
+
+Array.from([1, , 3]); // [1, undefined, 3]
+
+for (const item of [1, , 3]) {
+  console.log(item);
+} // 1 undefined 3
+
+[...[1, , 3]]; // [1, undefined, 3];
+```
+
+除此之外，`fill()` 能够正常填补空位 (也可以理解为将空位视为 undefined)
+
+```js
+[1, , 3].fill(2, 1, 2); // [1,2,3]
+```
