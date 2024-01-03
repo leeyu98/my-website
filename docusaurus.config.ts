@@ -119,7 +119,7 @@ const config: Config = {
     },
     tableOfContents: {
       minHeadingLevel: 2,
-      maxHeadingLevel: 5,
+      maxHeadingLevel: 4,
     },
     // announcementBar: {
     //   id: 'arc_invitation_code',
