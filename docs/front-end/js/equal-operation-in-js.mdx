@@ -5,7 +5,7 @@ description: 抽象相等 ==, 严格相等 === 和 Object.is()
 draft: true
 ---
 
-<Author count={1200} publish="2023-6-6 18:30" />
+<Author count={1200} publish="2023-6-6 18:30" update="2024-1-3 23:30" />
 
 `JavaScript` 提供三种不同的值比较操作：严格相等、抽象 (非严格) 相等还有 `Object.is()`。
 
@@ -58,17 +58,17 @@ draft: true
 :::
 
 ```js
-Date.prototype[Symbol['toPrimitive']];
+Date.prototype[Symbol.toPrimitive];
 // ƒ [Symbol.toPrimitive]() { [native code] }
 
 const date = new Date(1686131708577);
-date[Symbol['toPrimitive']]('default');
+date[Symbol.toPrimitive]('default');
 // 'Wed Jun 07 2023 17:55:08 GMT+0800 (中国标准时间)'
 
-date[Symbol['toPrimitive']]('string');
+date[Symbol.toPrimitive]('string');
 // 'Wed Jun 07 2023 17:55:08 GMT+0800 (中国标准时间)'
 
-date[Symbol['toPrimitive']]('number');
+date[Symbol.toPrimitive]('number');
 // 1686131708577
 ```
 

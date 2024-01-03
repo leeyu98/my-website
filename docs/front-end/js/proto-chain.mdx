@@ -7,7 +7,7 @@ tags:
   - 原型链
 ---
 
-<Author cost={5} publish="2022-11-12" update="2023-10-27 23:27" />
+<Author cost={5} publish="2022-11-12" update="2024-1-3 23:30" />
 
 当一个对象在查找一个属性 (或方法) 的时候，自身没有就会根据 `__proto__` 向它的原型进行查找，如果都没有，则向它的原型的原型继续查找，直到查到 `Object.prototype.__proto__` 为 `null`，这样也就形成了原型链。
 
@@ -137,22 +137,22 @@ class Animal {
   }
 }
 
-console.log(Animal.prototype.__proto__ === Object.prototype); // true
+Animal.prototype.__proto__ === Object.prototype; // true
 
 // 父类实例
 const animal = new Animal('Animal');
-console.log(animal.__proto__ === Animal.prototype); // true
+animal.__proto__ === Animal.prototype; // true
 
 //子类
 class Cat extends Animal {}
 
-console.log(Cat.prototype.__proto__ === Object.prototype); //false
+Cat.prototype.__proto__ === Object.prototype; //false
 // There is the difference
-console.log(Cat.prototype.__proto__ === Animal.prototype); //true
+Cat.prototype.__proto__ === Animal.prototype; //true
 
 // 子类实例
 const cat = new Cat('Cat');
-console.log(cat.__proto__ === Cat.prototype); // true
+cat.__proto__ === Cat.prototype; // true
 ```
 
 ### Function()
