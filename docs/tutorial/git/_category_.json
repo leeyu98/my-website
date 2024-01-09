@@ -1,0 +1,9 @@
+{
+  "label": "Git",
+  "position": 10,
+  "link": {
+    "type": "generated-index",
+    "slug": "tutorial/git",
+    "description": "Git 常用操作"
+  }
+}

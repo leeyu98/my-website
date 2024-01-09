@@ -1,0 +1,45 @@
+---
+title: 大小写不敏感问题
+sidebar_position: 20
+tags:
+  - 大小写不敏感
+---
+
+<Author cost={3} publish="2024-1-10 0:6" update="" />
+
+不知道你是否遇到这种情况，假如一开始把 README.md 错误地命名为 readme.md 并提交到了远程，后来你想要修正文件名称为 README.md 却发现本地 Git 并没有检测到变更，这是为什么呢？
+
+> 因为默认情况下，Git 是大小写不敏感的，所以并不能检测到文件名称大小写的变化。
+
+## 大小写敏感配置
+
+可以通过以下命令查看当前的配置：
+
+```Bash
+git config --get core.ignoreCase
+# true
+
+```
+
+### 启用大小写敏感
+
+可以通过以下命令设置：
+
+```Bash
+# 设置大小写敏感
+git config core.ignoreCase false
+```
+
+直接更改会在 git 记录中看到 README.md 的新增，而且在更改文件内容时候，会出现 README.md 和 readme.md 两者同步更新；
+在推送到远程时两个文件同时存在。
+
+## 建议操作
+
+1. 将 readme.md 备份好之后，执行 `git rm readme.md`；
+2. 再将备份的 readme.md 重命名为 README.md，执行 `git add README.md`；
+3. 这样 git 中就能看到 ~~readme.md~~ 的移除与 README.md 的新增。
+
+```Bash
+git rm readme.md
+git add README.md
+```
