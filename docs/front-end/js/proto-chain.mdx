@@ -7,7 +7,7 @@ tags:
   - 原型链
 ---
 
-<Author cost={5} publish="2022-11-12" update="2024-1-3 23:30" />
+<Author cost={5} publish="2022-11-12" update="2024-1-9 23:30" />
 
 当一个对象在查找一个属性 (或方法) 的时候，自身没有就会根据 `__proto__` 向它的原型进行查找，如果都没有，则向它的原型的原型继续查找，直到查到 `Object.prototype.__proto__` 为 `null`，这样也就形成了原型链。
 
@@ -157,13 +157,13 @@ cat.__proto__ === Cat.prototype; // true
 
 ### Function()
 
-`Function` 特殊的地方在于 `Function.prototype`是一个函数：
+`Function` 特殊的地方在于 `Function.prototype` 是一个函数：
 
 ```js
 typeof Function.prototype;
 // "function"
 
-// 这里适用通用规则(把 Function.prototype 直接看成一个 {对象} 去理解哦！)
+// 这里适用通用规则(把 Function.prototype 当作“对象”去理解哦！)
 Function.prototype.__proto__ === Object.prototype;
 // true
 ```
