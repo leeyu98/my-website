@@ -1,0 +1,102 @@
+---
+title: git stash 贮藏
+sidebar_position: 30
+tags:
+  - stash
+---
+
+<Author cost={3} publish="2024-1-10 0:9" update="" />
+
+贮藏：将工作区的所有改动贮藏到暂存区（新建的未被 git 追踪的文件无法贮藏，需要 git add 之后才行）
+
+## 应用场景
+
+在需要切换分支时，当前分支有一些未完成的修改，不想提交或者放弃，就可以通过 git stash 先将修改贮藏。
+
+## 常用命令
+
+### save
+
+> save 命令将废弃，使用 push 命令替代
+
+```Bash
+# 默认会自动指定贮藏消息
+git stash
+
+# 自定义贮藏消息
+git stash save 'add login page'
+```
+
+### list
+
+查看所有的贮藏
+
+```Bash
+git stash list
+```
+
+### show
+
+查看某次贮藏的改动信息（索引是从 0 开始的）
+
+```Bash
+# 默认展示最近的一条
+git stash show
+
+# 指定索引查看某次贮藏的变动
+git stash show stash@{2}
+```
+
+### pop
+
+弹出并应用某次贮藏
+
+```Bash
+# 默认弹出并应用最近的一条
+git stash pop
+
+# 指定弹出并应用某次贮藏
+git stash pop stash@{2}
+```
+
+### apply
+
+应用某次贮藏（与 pop 的区别就是：不会将应用的贮藏从贮藏列表中移除）
+
+```Bash
+# 默认应用最近的一条
+git stash apply
+
+# 指定应用某次贮藏
+git stash apply stash@{2}
+```
+
+### drop
+
+移除某次贮藏
+
+```Bash
+# 默认移除最近的一条
+git stash drop
+
+# 指定移除某次贮藏
+git stash drop stash@{2}
+```
+
+### clear
+
+清空贮藏列表
+
+```Bash
+git stash clear
+```
+
+## 常见问题
+
+### git stash pop 弹出有冲突怎么撤销
+
+```Bash
+git reset --hard
+```
+
+执行该命令可以撤销 `git stash pop` 操作，将分支恢复到弹出贮藏之前的状态，而且也会把该次贮藏重新放入贮藏区，不会丢失。
