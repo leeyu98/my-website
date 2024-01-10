@@ -1,0 +1,38 @@
+---
+title: 插槽的模板与 JSX 写法
+sidebar_position: 30
+displayed_sidebar: frontendSidebar
+---
+
+<Author cost={2} publish="2024-1-10 14:50" update="" />
+
+简单以 Element UI 中 Button 组建为例：
+
+## template 中插槽的写法
+
+```html
+<template>
+  <el-button loading>
+    <template #default> Custom Button Text </template>
+    <template #loading> 🐳 </template>
+  </el-button>
+</template>
+```
+
+## JSX 中插槽写法
+
+```jsx
+import { defineComponent } from 'vue';
+
+export default defineComponent(() => {
+  return () => (
+    <el-button
+      loading
+      v-slots={{
+        default: () => 'Custom Button Text',
+        loading: () => '🐳',
+      }}
+    />
+  );
+});
+```
