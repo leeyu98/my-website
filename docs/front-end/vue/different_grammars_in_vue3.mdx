@@ -1,0 +1,191 @@
+---
+title: Vue3 的几种不同的语法
+sidebar_position: 40
+displayed_sidebar: frontendSidebar
+---
+
+<Author cost={2} publish="2024-1-10 17:20" update="" />
+
+## 选项式
+
+### 兼容 Vue2 的写法
+
+```html title="Greeting.vue"
+<template>
+  <p>{{ msg }}</p>
+  <p>{{ greeting }}</p>
+  <button @click="sayHello">Say Hello</button>
+</template>
+
+<script>
+  export default {
+    name: 'Greeting',
+    props: {
+      msg: String,
+    },
+    data() {
+      return {
+        greeting: 'Hello',
+      };
+    },
+    mounted() {
+      console.log('mounted');
+    },
+    methods: {
+      sayHello() {
+        this.greeting = '你好';
+      },
+    },
+  };
+</script>
+```
+
+### 结合 defineComponent 选项式
+
+```html title="Greeting.vue"
+<template>
+  <p>{{ msg }}</p>
+  <p>{{ greeting }}</p>
+
+  <button @click="sayHello">Say Hello</button>
+</template>
+
+<script>
+  import { defineComponent } from 'vue';
+
+  export default defineComponent({
+    name: 'Greeting',
+    props: {
+      msg: String,
+    },
+    data() {
+      return {
+        greeting: 'Hello',
+      };
+    },
+    mounted() {
+      console.log('mounted');
+    },
+    methods: {
+      sayHello() {
+        this.greeting = '你好';
+      },
+    },
+  });
+</script>
+```
+
+## 组合式
+
+### setup()
+
+```html
+<template>
+  <p>{{ msg }}</p>
+  <p>{{ greeting }}</p>
+
+  <button @click="sayHello">Say Hello</button>
+</template>
+
+<script>
+  import { defineComponent, ref } from 'vue';
+
+  export default defineComponent({
+    name: 'Greeting',
+    props: {
+      msg: String,
+    },
+    setup(props, context){
+      console.log(props.msg); // 访问 props
+      console.log(context); // 包括 attrs, slots, emit, expose
+
+      const greeting = ref('Hello');
+
+      const sayHello = () =>{
+        greeting.value = '你好';
+      },
+
+      return {
+        greeting,
+        sayHello
+      };
+    },
+
+    mounted() {
+      console.log('mounted');
+    },
+
+  });
+</script>
+```
+
+### script setup
+
+`<script setup>` 是 `setup()` 的语法糖，会自动返回模板中用到的变量；在访问 props emits slots 等时需要通过一些编译器宏如 defineProps defineEmits defineSlots 等。
+
+```html title="Greeting.vue"
+<template>
+  <p>{{ msg }}</p>
+  <p>{{ greeting }}</p>
+
+  <button @click="sayHello">Say Hello</button>
+</template>
+
+<script setup>
+  import { ref, defineProps, onMounted } from 'vue';
+
+  const props = defineProps({
+    msg: String,
+  });
+  //const emit = defineEmits(['change', 'delete'])
+
+  const greeting = ref('Hello');
+
+  const sayHello = () => {
+    greeting.value = '你好';
+  };
+  onMounted(() => {
+    console.log('mounted');
+  });
+</script>
+```
+
+### defineComponent 函数式
+
+函数式支持 TSX/JSX，可以直接返回 JSX 元素，不再编写 tempalte，对熟悉 JSX 的 React 开发者来说相对友好。
+
+```jsx
+import { defineComponent } from 'vue';
+
+export default defineComponent(
+  (props, context) => {
+    const greeting = 'Hello';
+    const { msg } = props;
+
+    onMounted(() => {
+      console.log(context);
+    });
+
+    const sayHello = () => {
+      greeting.value = '你好';
+    };
+
+    return () => {
+      // 返回渲染函数 h() 或 JSX
+      return (
+        <>
+          <p>{{ msg }}</p>
+          <p>{{ greeting }}</p>
+          <button onClick={sayHello}>Say Hello</button>
+        </>
+      );
+    };
+  },
+  {
+    props: {
+      msg: String,
+    },
+    // emits: ['greeting'],
+  }
+);
+```
