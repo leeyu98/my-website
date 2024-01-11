@@ -1,0 +1,84 @@
+---
+sidebar_position: 15
+displayed_sidebar: frontendSidebar
+title: 水平垂直居中
+description: 水平垂直居中的实现方式。
+tags:
+  - CSS
+  - 居中
+---
+
+<Author count={400} publish="2024-1-10 16:4" update="" />
+
+大体来说，下面 5 种方式都可以实现（细分的话可以算 8 种）。
+示例 HTML 结构如下：
+
+```html
+<div class="parent">
+  <div class="child"></div>
+</div>
+```
+
+## 绝对定位 + 平移变换
+
+`transform: translate(x, y)` 当 `x` `y` 为百分比时，是相对自身的长度和宽度计算的。
+
+```CSS
+.child {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+```
+
+## flex 布局
+
+```CSS
+.parent {
+  display: flex; /* 使用 display: grid; 效果一致 */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+```
+
+## flex + margin
+
+```CSS
+.parent {
+  display: flex; /* 使用 display: grid; 效果一致 */
+  height: 100vh;
+}
+.child {
+  margin: auto;
+}
+```
+
+## grid 布局
+
+```CSS
+.parent {
+  display: grid;
+  height: 100vh;
+}
+.child {
+  align-self: center;
+  justify-self: center; /* 也可以换成 margin: auto; */
+}
+```
+
+## table-cell
+
+```CSS
+.parent {
+  display: table-cell;
+  text-align: center; /* 子元素必须是 inline 类型元素 */
+  vertical-align: middle;
+  height: 100vh;
+  width: 100vw;
+}
+.child {
+  display: inline-block;
+}
+```
