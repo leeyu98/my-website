@@ -1,0 +1,126 @@
+---
+title: useEventSource
+description: 基于原生 EventSource 封装的自定义 Hook。
+sidebar_position: 2
+displayed_sidebar: frontendSidebar
+tags:
+  - EventSource
+  - React
+keywords:
+  - useEventSource
+  - EventSource
+---
+
+<Author cost={7} publish="2024-1-11 14: 57" update="" />
+
+EventSource 基于 HTTP 协议建立一个持久化的连接，以 `text/event-stream` 格式发送事件，此连接会一直保持开启直到通过调用 `EventSource.close()` 关闭。
+
+:::tip 当客户端关闭连接时，服务端知道吗？
+客户端通过向服务器发送一个 `HTTP` 请求，该请求保持打开状态，并在有新事件可用时接收服务器发送的事件。<br/>
+当客户端关闭连接时，服务器无法立即察觉到连接已关闭，会在下一次尝试发送事件时发现连接已关闭。此时，服务器可以通过捕获发送事件的异常或检测到无法向客户端发送数据的错误来确定连接已关闭。
+:::
+
+## 源代码
+
+```ts showLineNumbers title="useEventSource.ts"
+import React, { useEffect } from 'react';
+
+type EventSourceCallbacks = {
+  onOpen?: (event: Event, count: number) => void;
+  onMessage?: (event: MessageEvent) => void;
+  onError?: (event: Event) => void;
+  onClose?: (event: CloseEvent) => void;
+};
+
+export function useEventSource(
+  url: string,
+  callbacks: EventSourceCallbacks
+): {
+  closeEs: () => void;
+} {
+  const countRef = React.useRef<number>(0); // 创建连接次数
+  const esRef = React.useRef<EventSource | null>(null);
+
+  useEffect(() => {
+    if (!url) {
+      return () => null;
+    }
+    esRef.current = new EventSource(url);
+    const { onOpen, onMessage, onError, onClose } = callbacks;
+
+    esRef.current.onopen = (event) => {
+      console.log('[EventSource] New Connection:', countRef.current);
+
+      countRef.current++;
+      onOpen && onOpen(event, countRef.current);
+    };
+
+    // 当服务端的响应没有包含 event 时默认触发 message；否则需要监听响应中对应的事件
+    esRef.current.onmessage = (event: MessageEvent) => {
+      onMessage && onMessage(event);
+    };
+
+    esRef.current.onerror = (event) => {
+      onError && onError(event);
+      esRef.current?.close();
+    };
+
+    const handleClose = (event) => {
+      onClose && onClose(event);
+      esRef.current?.close();
+    };
+
+    esRef.current.addEventListener('close', handleClose);
+
+    return () => {
+      if (esRef.current) {
+        esRef.current.close();
+        esRef.current.removeEventListener('close', handleClose);
+      }
+    };
+  }, [url]);
+
+  const closeEs = () => {
+    if (esRef.current) {
+      esRef.current.close();
+    }
+  };
+
+  return { closeEs };
+}
+```
+
+## 用法
+
+```tsx
+export default () => {
+  const [esUrl, setEsUrl] = React.useState<string>('');
+
+  // 默认消息处理
+  const onMessage = (event: MessageEvent) => {
+    const { data } = event;
+    try {
+      const msg = JSON.parse(data);
+      // ...
+    } catch (e) {
+      // ...
+    }
+  };
+
+  const esOnOpen = (__event: Event, count: number) => {
+    if (count === 1) {
+      // console.log('首次连接')
+    }
+  };
+
+  const esOnError = (e) => {
+    console.log('event source closed.');
+  };
+
+  const { closeEs } = useEventSource(esUrl, {
+    onOpen: esOnOpen,
+    onMessage,
+    onError: esOnError,
+  });
+};
+```

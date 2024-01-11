@@ -1,0 +1,142 @@
+---
+title: useWebSocket
+description: 基于原生 WebSocket 封装的自定义 Hook。
+sidebar_position: 1
+displayed_sidebar: frontendSidebar
+tags:
+  - WebSocket
+  - React
+keywords:
+  - useWebSocket
+  - WebSocket
+---
+
+<Author cost={7} publish="2024-1-11 14:55" update="" />
+
+基于原生 WebSocket API 封装实现。
+WebSocket 是一种可以在用户的浏览器和服务器之间打开交互式通信会话的先进技术。此 API 可以向服务器发送消息并接收事件驱动的响应，无需通过轮询服务器的方式以获得响应。
+
+## 源代码
+
+```ts showLineNumbers title="useWebSocket.ts"
+import React, { useEffect, useRef, useState } from 'react';
+
+interface WebSocketCallbacks {
+  onOpen?: (event: Event) => void;
+  onClose?: (event: CloseEvent, count: number) => void;
+  onMessage?: (event: MessageEvent) => void;
+  onError?: (event: Event, count: number) => void;
+}
+
+interface WebSocketState {
+  readyState: number | null;
+}
+
+export const useWebSocket = (
+  url: string,
+  callbacks: WebSocketCallbacks = {}
+): WebSocketState & {
+  send: (message: any) => void;
+  close: (code?: number, reason?: string) => void;
+  reconnect: () => void;
+} => {
+  const [readyState, setReadyState] = useState<number | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const countRef = React.useRef<number>(0);
+  const [connect, setConnect] = React.useState<number>(0);
+
+  useEffect(() => {
+    if (!url) {
+      return () => null;
+    }
+    const { onOpen, onClose, onMessage, onError } = callbacks;
+    wsRef.current = new WebSocket(url);
+
+    wsRef.current.onopen = (event: Event) => {
+      setReadyState(wsRef.current!.readyState);
+      countRef.current++; // socket 连接失败时不会执行
+      onOpen && onOpen(event);
+    };
+
+    wsRef.current.onclose = (event: CloseEvent) => {
+      setReadyState(wsRef.current!.readyState);
+      onClose && onClose(event, countRef.current);
+    };
+
+    wsRef.current.onmessage = (event: MessageEvent) => {
+      onMessage && onMessage(event);
+    };
+
+    wsRef.current.onerror = (event: Event) => {
+      onError && onError(event, countRef.current);
+    };
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, [url, connect]);
+
+  const send = (message: any) => {
+    if (wsRef.current) {
+      wsRef.current.send(JSON.stringify(message));
+    }
+  };
+  const close = (code?: number, reason?: string) => {
+    if (wsRef.current) {
+      wsRef.current.close(code, reason);
+    }
+  };
+
+  const reconnect = () => setConnect((c) => c + 1);
+
+  return { send, close, reconnect, readyState };
+};
+```
+
+## 用法
+
+```ts
+export default () => {
+  // 消息处理
+  const onMessage = (event: MessageEvent) => {
+    const { data } = event;
+    try {
+      const msg = JSON.parse(data);
+      // ...
+    } catch (e) {
+      // ...
+    }
+  };
+
+  // 建立连接
+  const onOpen = () => {
+    // ...
+  };
+
+  // 断开连接
+  const onClose = (event: CloseEvent, count: number) => {
+    if (count > 0) {
+      console.log(event.code);
+    } else {
+      console.log('socket closed', count);
+    }
+  };
+
+  const { send, readyState, reconnect, close } = useWebSocket(
+    `${SOCKET_AI_PREFIX}/chat?ai_token=${ai_token}&session_id=${session_id}`,
+    {
+      onMessage,
+      onError: (__event, count) => {
+        if (count === 0) {
+          // WebSocket 连接失败，尝试 EventSource
+          // ...
+        }
+      },
+      onOpen,
+      onClose,
+    }
+  );
+};
+```
