@@ -1,0 +1,78 @@
+---
+title: useAutoHeight
+description: 自动高度计算。
+sidebar_position: 10
+tags:
+  - 头像
+  - AvatarPro
+keywords:
+  - 头像
+  - AvatarPro
+---
+
+<Author cost={5} publish="2024-1-11 18:40" update="" />
+
+基于原生 `requireAnimationFrame` 实现的元素高度自动计算 `Hook`。
+
+## 特性说明
+
+- 根据屏幕高度，自动计算可填充高度
+- 支持监听屏幕和自定义元素变化，重新计算
+
+## 基本用法
+
+```jsx showLineNumbers
+import { useAutoHeight } from 'hscs-front-ipfm/lib/hooks';
+
+export default () => {
+  const height = useAutoHeight(
+    {
+      selector: '.table__body',
+      parentSelector: '.table_wrapper',
+      minHeight: 100,
+      diff: 24,
+      depSelectors: [],
+    },
+    []
+  );
+  return (
+    <div className="table_wrapper">
+      <Table
+        className="table__body"
+        style={{ height }}
+        // ...other props
+      />
+    </div>
+  );
+};
+```
+
+## 参数
+
+> 除此以下附加属性外，支持 `Avatar` 默认所有属性 `AvatarProps`
+
+| 参数           | 类型       | 说明                                                                                        | 默认值                                      | 默认值说明                                                         |
+| :------------- | :--------- | :------------------------------------------------------------------------------------------ | :------------------------------------------ | ------------------------------------------------------------------ |
+| parentSelector | `string`   | <Highlight color="red">必输</Highlight> 父级选择器 (必须提供且应全局唯一)限定选择器所在范围 | -                                           |
+| selector       | `string`   | <Highlight>可选</Highlight> 目标选择器（需要使用 css 标准选择器）                           | `'.c7n-pro-table-body'`                     |
+| diffSelectors  | `string[]` | <Highlight>可选</Highlight> 相关元素的高度会被减去，并自动监听高度变化                      | `[]`                                        |
+| depSelectors   | `string[]` | <Highlight>可选</Highlight> 影响自动高度计算的元素选择器，关联的元素变动会重新计算高度      | `['.c7n-pro-table-professional-query-bar']` | 表格 professionalBar                                               |
+| diff           | `number`   | <Highlight>可选</Highlight> 需要额外减去高度                                                | `40`                                        | 底部分页器的高度                                                   |
+| minHeight      | `number`   | <Highlight>可选</Highlight> 最小高度, 避免小屏展示过于拥挤                                  | `376`                                       | 10 条数据的高度。表头高度 + (2 \* 边框高度), 即 34 \* 11 + 2 = 376 |
+
+### diffSelectors 和 depSelectors 有什么不同
+
+- diffSelectors 元素高度参与计算，并自动监听高度变化，重新计算；
+- depSelectors 元素高度变化会引起重新计算，但不参与计算。
+
+## 返回值
+
+返回一个 `number` 类型的数字，为计算高度和给定最小高度中的较大值 `(Math.max(height, minHeight))`。
+
+## 更新日志
+
+### alpha
+
+**2023-11-07**
+
+- 🍋 重构 `useAutoHeight`；
