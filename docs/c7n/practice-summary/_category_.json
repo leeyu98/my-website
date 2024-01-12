@@ -1,0 +1,9 @@
+{
+  "position": 50,
+  "label": "实践总结",
+  "link": {
+    "type": "generated-index",
+    "slug": "c7n/practice-summary",
+    "description": "Choerodon UI 开发实践总结！"
+  }
+}

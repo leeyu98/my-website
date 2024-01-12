@@ -1,0 +1,84 @@
+---
+title: Lov 值集视图
+description: Lov 值集视图相关的实践方案。
+sidebar_position: 20
+tags:
+  - Lov
+---
+
+<Author cost={4} publish="2024-1-11 23:25" update="" />
+
+## 如何保证 Lov 配置正确加载
+
+当以 Lov 作为数据源时，必须保证值集视图配置与数据的加载顺序。`Stores.LovCodeStore.fetchConfig` 默认从缓存中读取配置，否则发送网络请求。
+
+:::tip
+与 `Lookup` 不同，`Lov` 相关配置 (首次) 需要发送网络请求获取，不能保证一定存在缓存，所以 `fetchConfig` 是异步操作。
+:::
+
+<Tabs>
+<TabItem value="index" label="Index" default>
+
+```js
+import { Stores } from 'choerodon-ui/pro';
+
+export default () => {
+  const lovDS = useDataSet(getLovDSProps, []);
+  const getLovData = async () => {
+    // 1. 从缓存（之前已请求并配置该值集）或者发送请求获取并设置 lov 配置
+    await Stores.LovCodeStore.fetchConfig('LOV_CODE');
+    // 2. 请求值集数据
+    cosnt lovData = await lovDS.getField('lov')?.options?.query(1);
+    return lovData;
+  };
+  //...
+}
+
+```
+
+</TabItem>
+<TabItem value="data-set" label="DataSet">
+
+```js
+export const getLovDSProps = () => {
+  return {
+    fields: [
+      {
+        name: 'lov',
+        type: 'object',
+        lovCode: 'LOV_CODE',
+        optionsProps: { pageSize: 99999 },
+      },
+    ],
+  };
+};
+```
+
+</TabItem>
+</Tabs>
+
+## 查询条件中的简单写法
+
+在一下不需要回显的场景下，可以通过 `transformRequest` 转换参数结构，简化值集绑定等配置。
+
+```js
+export const getDSProps = () => {
+  return {
+    queryFields: [
+      {
+        name: 'unitCode',
+        type: 'object',
+        lovCode: 'LOV_UNIT',
+        transformRequest: (value) => value?.code,
+      },
+      {
+        name: 'unitCodeList',
+        type: 'object',
+        lovCode: 'LOV_UNIT',
+        transformRequest: (value) => (value || []).map((val) => val?.code),
+        multiple: true,
+      },
+    ],
+  };
+};
+```

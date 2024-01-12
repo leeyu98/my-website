@@ -1,0 +1,89 @@
+---
+title: Modal 弹窗
+description: Modal 弹窗相关的实践方案。
+sidebar_position: 30
+tags:
+  - Modal
+---
+
+<Author cost={4} publish="2024-1-11 23:35" update="" />
+
+## 切换路由时关闭弹窗
+
+官方文档有说明这种情况，在应用的最外层使用 ModalProvider 并传入 location 即可。
+
+```js
+import { ModalProvider } from 'choerodon-ui/pro';
+import { useLocation } from 'dva';
+
+export default () => {
+  const _location = useLocation();
+  return <ModalProvider location={_location}>{/** ... */}</ModalProvider>;
+};
+```
+
+## 在限定的区域内渲染
+
+官方文档有说明这种情况，<Emphasis>但一定要注意使用 useModal 才会生效</Emphasis>。设定 `ModalProvider` 的 `getContainer` 属性限定弹窗的渲染范围。
+
+```tsx
+import { ModalProvider, useModal } from 'choerodon-ui/pro';
+
+export default () => {
+  const modalRef = React.useRef<HTMLDivElement | null>(null);
+  const Modal = useModal();
+
+  const handleOpenModal = () => {
+    Modal.open({
+      // ...
+    });
+  };
+
+  return (
+    <div ref={modalRef}>
+      <ModalProvider getContainer={modalRef.current || false}>{/** children...*/}</ModalProvider>
+      <Button onClick={handleOpenModal}>Open</Button>
+    </div>
+  );
+};
+```
+
+### 针对旧版 Class 组件的解决方案
+
+针对一些旧的写法需要做适配的情况，通过 Function 组件传递。
+
+```tsx
+class OldClassCmp {
+  handleOpenModal = () => {
+    const { Modal } = this.props;
+    Modal.open({
+      //...
+    });
+  };
+}
+
+export default observer((props) => {
+  // Has to use Modal from `useModal()`  when rendering a inner modal...oops
+  const Modal = useModal();
+  return <OldClassCmp {...props} Modal={Modal} />;
+});
+```
+
+## 可导航的全屏渲染
+
+默认情况下，弹窗挂载在单独的节点，在弹窗中需要进行跳转、导航到其他路由等操作时弹窗始终展示。<br/>
+可以通过 ModalProvider 将弹窗挂载到指定页面容器内，并通过样式设定“伪装”全屏。
+最终效果可以实现跳转后新 TAB 页面不会展示弹窗，且交互不受影响，返回时原页面弹窗状态保留。
+
+```tsx
+Modal.open({
+  maskClassName: 'mask__fake-fullscreen',
+});
+```
+
+```less
+.mask__fake-fullscreen {
+  position: fixed !important; // treat as a fullscreen modal mask.
+  height: auto !important;
+}
+```
