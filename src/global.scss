@@ -203,6 +203,7 @@ $languages: (
   .main-wrapper {
     .theme-admonition {
       border-width: 1px;
+      padding: 0.5rem 0.75rem 0.75rem;
       & > div[class^='admonitionHeading_'] {
         font-size: 1rem; // title
       }
@@ -292,8 +293,9 @@ $languages: (
         --ifm-h2-vertical-rhythm-top: 1.2; // h2 matgin-top
         // 行内代码块样式
         code:not([class*='codeBlockLines']) {
-          padding-left: 4px;
-          padding-right: 4px;
+          padding-left: 2px;
+          padding-right: 2px;
+          border-color: rgb(0 0 0 / 1%);
         }
         img {
           border-radius: $img-border-radius;
@@ -323,21 +325,22 @@ $languages: (
       }
       .theme-code-block {
         position: relative;
-        padding-top: 4px;
-        margin-top: 24px;
+        padding-top: 0.25rem;
+        margin-top: 1.5rem;
         box-shadow: none;
         &::after {
           content: ' ';
           position: absolute;
           font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
             monospace;
+          font-size: 0.875rem;
           box-shadow: 0 2px 6px 0 rgba(100 114 255 / 20%);
-          top: -12px;
-          left: 20px;
-          min-width: 50px;
+          top: -0.75rem;
+          left: 1.25rem;
+          min-width: 2rem;
           background-color: rgb(100 114 255);
-          border-radius: 4px;
-          padding: 0 4px;
+          border-radius: 0.25rem;
+          padding: 0 0.25rem;
           color: #fff;
           text-align: center;
           opacity: 0;
