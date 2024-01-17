@@ -1,0 +1,199 @@
+---
+title: 对象转原始类型规则
+description: 对象转换为原始类型的规则
+sidebar_position: 60
+displayed_sidebar: frontendSidebar
+---
+
+<Author cost={8} publish="2024-1-6 18:30" update="" />
+
+对象转换为原始类型时，按照如下规则 (2, 3 顺序不固定)：
+
+1. 调用该对象的 `@@toPrimitive(hint)` 方法；
+2. 调用该对象的 `valueOf()` 方法；
+3. 调用该对象的 `toString()` 方法。
+
+:::tip
+
+目前 `JS` 内置对象只有 `Date` 和 `Symbol` 实现了该方法：
+
+- `Date.prototype[@@toPrimitive]()` 将 "string" 视为 "default" hint；
+- `Symbol.prototype[@@toPrimitive]()` 忽略 hint 并始终返回一个 symbol。
+
+:::
+
+## 默认原始值转换
+
+默认原始值转换用于得到一个期望的原始值，单对于实际的类型并没有强烈的偏好，以 default 作为 hint 。
+
+> 转换顺序：`[@@toPrimitive]("default")` → `valueOf()` → `toString()`
+
+### Date() 构造函数
+
+当 `Date()` 构造函数的参数不是一个 `Date` 实例对象时 (这里指的是参数是对象但不是 `Date` 的实例)，会强制转换该对象为原始值；
+
+- 如果得到 `String` 类型则作为 `dateString` 解析；
+- 如果得到 `Number` 类型则作为 `timestamp` 解析；
+
+#### 实现了 toPrimitive 方法
+
+:::danger 重要
+如果实现了 `@@toPrimitive` 方法就必须返回要原始值，否则会触发 `TypeError`。
+:::
+
+```js
+// 自定义一个对象并实现 [Symbol.toPrimitive] valueOf toString 方法
+const dateObj = {
+  [Symbol.toPrimitive]: function (hint) {
+    return (
+      {
+        default: '2023-01-01',
+        number: 1704038400000, // 2024-01-01 00:00:00
+        string: '2025-01-01',
+      }[hint] || undefined
+    );
+  },
+  valueOf: function () {
+    return '2026-01-01';
+  },
+  toString: function () {
+    return '2027-01-01';
+  },
+};
+
+dateObj[Symbol.toPrimitive]('default'); // 2023-01-01
+new Date(dateObj); // Sun Jan 01 2023 08:00:00 GMT+0800 (中国标准时间)
+```
+
+#### 未实现 toPrimitive 方法
+
+数组 `[]` 和对象 `{}` 都没有实现 toPrimitive 方法，所以会按照 `valueOf()` `toString()` 的顺序转换为原始值；
+
+```js
+// 相当于 new Date('2024')
+new Date([2024]); // Mon Jan 01 2024 08:00:00 GMT+0800 (中国标准时间)
+
+// [object Object] 转换为合法 date 值
+new Date({}); // Invalid Date
+```
+
+但是上述示例最终看到的都是 toString() 的转换结果，下面通过自定义对象的方式验证调用顺序。
+
+```js
+// 移除 toPrimitive 方法
+Reflect.deleteProperty(dateObj, Symbol.toPrimitive);
+new Date(dateObj); // Thu Jan 01 2026 08:00:00 GMT+0800 (中国标准时间)
+
+// 移除 valueOf 方法
+Reflect.deleteProperty(dateObj, 'valueOf');
+new Date(dateObj); // Fri Jan 01 2027 08:00:00 GMT+0800 (中国标准时间)
+
+// 移除 toString 方法
+Reflect.deleteProperty(dateObj, 'toString');
+new Date(dateObj); // Invalid Date
+```
+
+移除 `valueOf()` 方法实现之后会调用 `Object.prototype.valueOf()` → `dateObj.toString()` 进行转换；<br/>
+移除 `toString()` 方法实现之后会调用 `Object.prototype.valueOf()` → `Object.prototype.toString()` 进行转换；最终转换为 `[object Object]`。
+
+### \+ 运算符
+
+如果运算对象其中一个为字符串，执行字符串串联；否则，执行数值相加（这里指的是 2 个操作数的情况）。
+
+#### 实现了 toPrimitive 方法
+
+```js
+9999 + myObj; // '99992023-12-25 12:25:00'
+'9999' + myObj; // '99992023-12-25 12:25:00'
+true + myObj; // 'true2023-12-25 12:25:00'
+```
+
+上述示例表明了 `+` 运算符在转换原始值的时候是以 default 作为 hint 值的，下面是内置对象 Date 的行为示例；
+
+```js
+const date = new Date('2024-1-1');
+
+9999 + date; // '9999Mon Jan 01 2024 00:00:00 GMT+0800 (中国标准时间)'
+'9999' + date; // '9999Mon Jan 01 2024 00:00:00 GMT+0800 (中国标准时间)'
+true + date; // 'trueMon Jan 01 2024 00:00:00 GMT+0800 (中国标准时间)'
+```
+
+#### 未实现 toPrimitive 方法
+
+先看数组 `[]` 和对象 `{}`：
+
+```js
+[1] + [2]; // '12'
+[1] + {}; // 1[object Object]
+```
+
+上面的例子看起来是正常的，但下面的结果就比较奇怪：
+
+```js
+console.log({} + {}); // NaN
+console.log({} + []); // 0
+```
+
+为什么会这样呢？其实就是前面的 `{}` 不回被当作对象处理，而是当作空的 JS 代码块，后面的部分就变成了只有一个操作数的情况。如果安装了代码格式化工具，上面的代码也会自动转换为如下格式：
+
+```js
+{
+}
++{}; // NaN
+
+{
+}
++[]; // 0
+```
+
+#### 只有一个操作数时
+
+### \=\= 运算符
+
+如果一个运算对象是原始值，而另一个运算对象是对象（object），则该对象将转换为没有首选类型的原始值。
+
+## 转换为数字类型
+
+当进行算术运算或者 Number(), BigInt() 强制转换时
+
+> 转换顺序：`[@@toPrimitive]("number")` → `valueOf()` → `toString()`
+
+```js
+// 自定义一个对象并实现 [Symbol.toPrimitive] valueOf toString 方法
+const yearObj = {
+  [Symbol.toPrimitive]: function (hint) {
+    return (
+      {
+        default: 2023,
+        number: 2024,
+        string: '2025',
+      }[hint] || undefined
+    );
+  },
+  valueOf: function () {
+    return 2026;
+  },
+  toString: function () {
+    return '2027';
+  },
+};
+
+yearObj[Symbol.toPrimitive]('number'); // 2024
+Number(yearObj); // 2024
++yearObj; // 2024
+yearObj * 2; // 4048
+```
+
+## 转换为字符串类型
+
+JS 中许多内置操作首先将它们的参数强制转换为字符串
+
+> 转换顺序：`[@@toPrimitive]("string")` → `toString()` → `valueOf()`
+
+## 脚注
+
+- `[@@toPrimitive]` 是该方法的表示法；
+- `[Symbol.toPrimitive]` 是该方法在 JS 中的具体实现；
+- `toPrimitive` 是转换原始值行为的统称，文中作该方法的简称。
+
+`updating`
