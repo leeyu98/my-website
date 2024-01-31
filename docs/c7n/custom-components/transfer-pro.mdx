@@ -9,7 +9,7 @@ keywords:
   - TransferPro
 ---
 
-<Author count={6000} publish="2023-04-18 23:35:00" update="2023-7-24 10:50" />
+<Author cost={9} publish="2023-04-18 23:35:00" update="2023-12-24 22:50" />
 
 基于 `SelectBox` 组件封装的符合现行 `UED` 规范的简单易用的穿梭框组件。
 
@@ -105,18 +105,18 @@ export type ConfigProps = {
 ```
 
 :::info 注意
-加载源数据的方式<Emphasis>只能且必须</Emphasis>选择 `lovCode` `lookupCode` `data` 与 `read` 一种：值集 (列表) 的配置更为简洁， `read` 配置更为灵活。<br/>如果使用 `JS/JSX` 可能不会有类型错误提示，同时配置的话 `read` 优先级更高。
+加载源数据的方式<Emphasis>只能且必须</Emphasis>选择 `lovCode` `lookupCode` `data` 与 `read` 一种：值集 (列表) 的配置更为简洁， `read` 配置更为灵活。<br/>如果使用 `JS/JSX` 可能不会有类型错误提示，同时配置的话优先级顺序： `read` > `lovCode` \> `lookupCode` \> `data`。
 :::
 
-| 参数       | 类型            | 说明                                                                                                                                                                  | 默认值       |
-| :--------- | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------- |
-| primaryKey | `string`        | <Highlight color="red">必输</Highlight> 主键，用于数据标识                                                                                                            | -            |
-| textField  | `string`        | <Highlight color="red">必输</Highlight> 作为主要展示字段                                                                                                              | `textField`  |
-| valueField | `string`        | <Highlight>可选</Highlight> 作为次要展示字段                                                                                                                          | `valueField` |
-| data       | `any`           | <Highlight>可选</Highlight> 用于初始化源数据                                                                                                                          | -            |
-| lovCode    | `string`        | <Highlight>可选</Highlight> 值集编码，用于加载源数据                                                                                                                  | -            |
-| lookupCode | `string`        | <Highlight>可选</Highlight> 值列表编码，用于加载源数据                                                                                                                | -            |
-| read       | `TransportType` | <Highlight>可选</Highlight> 详细配置参见 [Transport](https://open.hand-china.com/choerodon-ui/zh/procmp/dataset/dataset#transport)，优先级高于 `lovCode` `lookupCode` | -            |
+| 参数       | 类型            | 说明                                                                                                                                           | 默认值       |
+| :--------- | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :----------- |
+| primaryKey | `string`        | <Highlight color="red">必输</Highlight> 主键，用于数据标识                                                                                     | -            |
+| textField  | `string`        | <Highlight color="red">必输</Highlight> 作为主要展示字段                                                                                       | `textField`  |
+| valueField | `string`        | <Highlight>可选</Highlight> 作为次要展示字段                                                                                                   | `valueField` |
+| data       | `any`           | <Highlight>可选</Highlight> 用于初始化源数据                                                                                                   | -            |
+| lookupCode | `string`        | <Highlight>可选</Highlight> 值列表编码，用于加载源数据，优先级仅高于 `data`                                                                    | -            |
+| lovCode    | `string`        | <Highlight>可选</Highlight> 值集编码，用于加载源数据，优先级高于 `lookupCode` `data`                                                           | -            |
+| read       | `TransportType` | <Highlight>可选</Highlight> 详细配置参见 [Transport](https://open.hand-china.com/choerodon-ui/zh/procmp/dataset/dataset#transport)，优先级最高 | -            |
 
 ### TargetProps
 
@@ -134,15 +134,15 @@ export type TargetProps = {
 } & ({ data?: undefined; read: TransportType } | { data: unknown[]; read?: undefined });
 ```
 
-| 参数       | 类型            | 说明                                       | 默认值                               |
-| :--------- | :-------------- | :----------------------------------------- | :----------------------------------- |
-| primaryKey | `string`        | <Highlight>可选</Highlight> 仅用于数据匹配 | 默认与 `ConfigProps.primaryKey` 一致 |
-| data       | `Array<any>`    | <Highlight>可选</Highlight> 目标数据       | -                                    |
-| read       | `TransportType` | <Highlight>可选</Highlight> 目标数据源配置 | -                                    |
+| 参数       | 类型            | 说明                                                        | 默认值                               |
+| :--------- | :-------------- | :---------------------------------------------------------- | :----------------------------------- |
+| primaryKey | `string`        | <Highlight>可选</Highlight> 仅用于数据匹配                  | 默认与 `ConfigProps.primaryKey` 一致 |
+| data       | `Array<any>`    | <Highlight>可选</Highlight> 目标数据                        | -                                    |
+| read       | `TransportType` | <Highlight>可选</Highlight> 目标数据源配置，优先级高于 data | -                                    |
 
 :::warning 注意
-`ConfigProps` 与 `TargetProps` 对返回数据的要求：<br/>
-`Array` 或者 `{ content: Array }`，其他返回结果需要通过配置 `read.transformResponse` 自行格式转换。
+ConfigProps 与 TargetProps 对接口响应数据格式的要求：<br/>
+HZERO 标准响应结构 `{ content: Array }` 或者数组 `Array`，其他返回结果需要通过配置 `read.transformResponse` 进行格式转换。
 :::
 
 ## 更新日志
