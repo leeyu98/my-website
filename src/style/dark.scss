@@ -1,5 +1,8 @@
 // 暗色主题
 :root[data-theme='dark'] {
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
   #__docusaurus {
     nav.navbar {
       background-color: rgba(40, 40, 40, 0.6);
