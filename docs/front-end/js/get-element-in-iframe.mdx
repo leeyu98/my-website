@@ -23,6 +23,8 @@ tags:
 ```js
 // 方法一
 document.querySelector('#frame').contentWindow.document.querySelector('.child');
+document.querySelector('#frame').contentDocument.querySelector('.child');
 // 方法二
-document.frames['frame'].document.querySelector('.child');
+window.frames['frame'].contentWindow.document.querySelector('.child');
+window.frames['frame'].contentDocument.querySelector('.child');
 ```
