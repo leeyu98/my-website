@@ -1,0 +1,47 @@
+---
+title: 配置不同的 SSH Key
+sidebar_position: 15
+tags:
+  - SSH Key
+---
+
+<Author cost={3} publish="2024-4-12 22:17" update="" />
+
+为不同的站点配置不同的 SSH Key。
+
+## 生成 SSH Key
+
+```bash
+ssh-keygen -t RSA -C 'my_email@email.com'
+```
+
+## 配置
+
+##### 新建 config 文件
+
+在用户文件夹下的 `.ssh` 文件夹下 `~/.ssh` 新建 `config` 文件。
+
+> 在 `Windows` 平台下的具体路径为 `C:\Users\用户名\.ssh`；`Mac` 平台下的具体路径为 `/Users/用户名/.ssh`
+
+```bash
+touch config
+```
+
+##### 写入配置
+
+```bash
+# Gitee
+Host gitee.com
+Hostname gitee.com
+User git
+Port 22
+IdentityFile ~/.ssh/id_rsa_gitee
+
+# GitHub
+Host github.com
+Hostname github.com
+User git
+Port 22
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa_github
+```
