@@ -3,14 +3,12 @@ title: useAutoHeight
 description: 自动高度计算。
 sidebar_position: 10
 tags:
-  - 头像
-  - AvatarPro
+  - 自动高度
 keywords:
-  - 头像
-  - AvatarPro
+  - 自动高度
 ---
 
-<Author cost={5} publish="2024-1-11 18:40" update="" />
+<Author cost={5} publish="2024-1-11 18:40" update="2024-4-15 18:18" />
 
 基于原生 `requireAnimationFrame` 实现的元素高度自动计算 `Hook`。
 
@@ -68,6 +66,176 @@ export default () => {
 ## 返回值
 
 返回一个 `number` 类型的数字，为计算高度和给定最小高度中的较大值 `(Math.max(height, minHeight))`。
+
+## 源代码
+
+```ts showLineNumbers
+import React from 'react';
+
+/**
+ * @description 解析 CSS 选择器
+ */
+const parseSelector = <T extends string | string[]>(className: T): T | false => {
+  if (!className || !className.length) {
+    return false;
+  }
+  if (Array.isArray(className)) {
+    return className.filter(Boolean).map((cls) => {
+      if (!new RegExp(/^[.#]/).test(cls)) {
+        console.warn(`${cls} is not a valid css selector!`);
+        return false;
+      }
+      return cls;
+    }) as T;
+  }
+  if (!new RegExp(/^[.#]/).test(className)) {
+    console.warn(`${className} is not a valid css selector!`);
+    return false;
+  }
+  return className;
+};
+
+/** @description 获取子节点 */
+const getChildNode = (parentSelector: string | null, selector: string): HTMLElement | null => {
+  if (!parentSelector) {
+    return null;
+  }
+  const _parentSelector = parseSelector<string>(parentSelector);
+  const _selector = parseSelector<string>(selector);
+  if (!_parentSelector || !_selector) {
+    return null;
+  }
+  const parentNode = document.querySelector<HTMLElement>(_parentSelector);
+  return (parentNode || document).querySelector(_selector);
+  // parentNode.classList.add('hide-scrollbar'); // 隐藏滚动条
+};
+
+/**
+ * @description 获取需要减去的元素高度
+ */
+const getDiffHeight = (parentSelector: string, diffSelectors: string[]) => {
+  if (!parentSelector || !diffSelectors) {
+    return 0;
+  }
+  const _parentSelector = parseSelector(parentSelector);
+  const parentNode: HTMLElement | Document | null = _parentSelector
+    ? document.querySelector<HTMLElement>(_parentSelector)
+    : document;
+  const selectors = parseSelector(diffSelectors);
+  return (selectors || []).reduce((res, sel) => {
+    const targetElm = parentNode?.querySelector(sel);
+    return targetElm ? targetElm.getBoundingClientRect()?.height + res : res;
+  }, 0);
+};
+
+export interface IParams {
+  /**
+   * @description 目标选择器
+   */
+  selector?: string;
+
+  /**
+   * @description 父级选择器 (必须提供且应全局唯一) - 限定选择器所在范围，多 Tab 情况
+   */
+  parentSelector: string;
+
+  /**
+   * @description 影响自动高度计算的元素选择器，关联的元素变动会重新计算高度
+   */
+  depSelectors?: string[];
+
+  /**
+   * @description 相关元素的高度会被减去
+   */
+  diffSelectors?: string[];
+
+  /**
+   * @description depSelectors & diffSelectors 有什么不同？
+   * depSelectors 元素高度变化会引起重新计算，但不一定参与计算
+   * diffSelectors 元素高度参与计算，并自动监听高度变化
+   */
+
+  /**
+   * @description 需要额外减去高度
+   * @default 40 默认是底部分页器的高度 40
+   */
+  diff?: number;
+
+  /**
+   * @description 最小高度, 避免小屏展示过于拥挤
+   * @default 376 默认是 10 条数据的高度 + 表头高度 + (2 * 边框高度) (34 * 11 + 2)
+   */
+  minHeight?: number;
+}
+
+export const useAutoHeight = (
+  {
+    selector = '.c7n-pro-table-body',
+    parentSelector = '',
+    depSelectors = ['.c7n-pro-table-professional-query-bar'],
+    diffSelectors = [],
+    diff = 40,
+    minHeight = 34 * 11 + 2,
+  }: IParams,
+  deps: unknown[]
+): number => {
+  const [height, setHeight] = React.useState<number>(0);
+  const frame = React.useRef(0);
+
+  const _parentSelector = parseSelector(parentSelector);
+
+  React.useLayoutEffect(() => {
+    const childNode: HTMLElement | null = getChildNode(parentSelector, selector);
+
+    if (childNode) {
+      const resize = () => {
+        const diffHeight = getDiffHeight(parentSelector, diffSelectors);
+        const { top: childTop } = childNode.getBoundingClientRect();
+        setHeight(window.innerHeight - childTop - diffHeight - diff);
+      };
+      resize();
+      const handler = () => {
+        cancelAnimationFrame(frame.current);
+        frame.current = requestAnimationFrame(resize);
+      };
+      window.addEventListener('resize', handler);
+      return () => {
+        window.removeEventListener('resize', handler);
+      };
+    }
+  }, [parentSelector, selector, diffSelectors, ...deps]);
+
+  //高度变化监听
+  React.useLayoutEffect(() => {
+    if (!depSelectors) {
+      return () => false;
+    }
+    const parentNode: HTMLElement | Document | null = _parentSelector
+      ? document.querySelector<HTMLElement>(_parentSelector)
+      : document;
+    if (parentNode) {
+      const selectors = parseSelector([...depSelectors, ...diffSelectors]);
+      // 创建监听对象
+      const elmObserver = new ResizeObserver(() => {
+        const resizeEvent = new Event('resize');
+        window.dispatchEvent(resizeEvent);
+      });
+      // 监听相关元素
+      (selectors || []).forEach((sel) => {
+        const targetElm = parentNode.querySelector(sel);
+        if (targetElm) {
+          elmObserver.observe(targetElm);
+        }
+      });
+      return () => {
+        elmObserver.disconnect(); // 取消监听
+      };
+    }
+  }, [_parentSelector, depSelectors]);
+
+  return Math.max(height, minHeight);
+};
+```
 
 ## 更新日志
 

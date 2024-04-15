@@ -1,0 +1,114 @@
+---
+title: useCurrentMenu
+description: 获取当前打开 Tab 的菜单信息
+sidebar_position: 20
+tags:
+  - HZERO 菜单
+keywords:
+  - HZERO 菜单
+---
+
+<Author cost={5} publish="2024-4-15 18:5" update="" />
+
+基于原生 `requireAnimationFrame` 实现的元素高度自动计算 `Hook`。
+
+## 特性说明
+
+- 根据屏幕高度，自动计算可填充高度
+- 支持监听屏幕和自定义元素变化，重新计算
+
+## 基本用法
+
+```jsx showLineNumbers
+import { useCurrentMenu } from '@/hooks';
+
+export default () => {
+  const { title, name: menuCode } = useCurrentMenu();
+  return (
+    <PageHeaderWrapper title={title || '指标采集列表'} headers={menuCode && <Button />}>
+      {/* some elements... */}
+    </PageHeaderWrapper>
+  );
+};
+```
+
+## 参数
+
+| 参数 | 类型     | 说明                                               | 默认值 | 默认值说明                     |
+| :--- | :------- | :------------------------------------------------- | :----- | ------------------------------ |
+| key  | `string` | <Highlight>可选</Highlight> 要获取的具体属性的键值 |        | 默认为空，返回当前菜单所有信息 |
+| deps | `any[]`  | <Highlight>可选</Highlight> 当前钩子依赖值         | `[]`   | 不监听任何外部属性的变化       |
+
+## 返回值
+
+1. 若 `key` 为空，返回 `IMenuType` 类型，即菜单所有信息；<br/>
+2. 若 `key` 不为空，返回 `IMenuItem` 或 `string` 类型，即具体的值或者 `meutItem`
+
+## 源代码
+
+```ts
+import { getMenuId, getMenuLeafData, waitMenuDataLoad } from 'utils/utils';
+import * as React from 'react';
+
+export type IMenuItem = {
+  level: 'organization' | 'site';
+  sort: number;
+  parentName: string;
+  viewCode: string;
+  rootNode: boolean;
+};
+// 菜单类型定义
+export type IMenuType = {
+  id: string;
+  name: string; // 菜单编码
+  path: string; // 菜单路径
+  title: string; // 菜单名称
+  icon?: string;
+  menuItem?: IMenuItem;
+  parentId: string;
+  type: string;
+  quickIndex?: string;
+  [key: string]: any;
+};
+
+export type IReturnType<P> = P extends string ? IMenuItem | string : IMenuType;
+
+// overload declaration
+// 无参数 - 返回菜单信息
+// 有参数 - 返回菜单指定字段信息
+export function useCurrentMenu(): IMenuType;
+export function useCurrentMenu(key: string): IMenuItem | string;
+
+// implementation
+export function useCurrentMenu(key?: string | undefined, deps?: React.DependencyList | undefined) {
+  const [currentMenu, setCurrentMenu] = React.useState<IReturnType<typeof key>>(
+    {} as IReturnType<typeof key>
+  );
+
+  React.useEffect(() => {
+    (async () => {
+      await waitMenuDataLoad();
+      const menuId = getMenuId();
+      const menuData = getMenuLeafData();
+
+      const currentMenu = menuData.find((item) => item.id === menuId);
+      setCurrentMenu(key ? currentMenu?.[key] : currentMenu ?? {});
+    })();
+  }, [...(deps ?? [])]);
+
+  return currentMenu;
+}
+```
+
+## 更新日志
+
+### alpha
+
+**2023-12-24**
+
+- 🍋 为菜单定义 TS 类型 (仅有限属性)；
+- 🎉 增加签名，根据参数类型匹配返回类型；
+
+**2023-12-24**
+
+- 🎉 新增 `useCurrentMenu`；
