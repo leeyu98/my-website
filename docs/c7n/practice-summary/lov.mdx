@@ -4,9 +4,11 @@ description: Lov 值集视图相关的实践方案。
 sidebar_position: 20
 tags:
   - Lov
+keywords:
+  - Lov 配置
 ---
 
-<Author cost={4} publish="2024-1-11 23:25" update="" />
+<Author cost={4} publish="2024-1-11 23:25" update="2024-4-24 0:35" />
 
 ## 如何保证 Lov 配置正确加载
 
@@ -81,4 +83,90 @@ export const getDSProps = () => {
     ],
   };
 };
+```
+
+## Lov 参数 lovPara 如何传递数组
+
+`lovPara` 默认被定义为对象，在传参时也会转成 object；当需要传递其他类型的参数时，可通过以下方式进行调整：
+
+#### 静态查询 URL
+
+手动指定 lov 的查询 URL
+
+```ts showLineNumbers
+export const getLovDSProps = () => {
+  return {
+    fields: [
+      {
+        name: 'lov',
+        type: FieldType.object,
+        lovCode: 'LOV_CODE',
+        dynamicProps: {
+          lovPara: () => ({ para: ['1', '2'] }), // 不能直接返回 array
+        },
+        lovQueryAxiosConfig: {
+          url: `${API_PREFIX}/lov/api`,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          transformRequest: (value) => {
+            try {
+              return JSON.stringify(value?.para);
+            } catch (err) {
+              return [];
+            }
+          },
+        },
+      },
+    ],
+  };
+};
+```
+
+### 动态查询 URL
+
+通过 lov 的配置获取查询 URL
+
+```ts showLineNumbers {14-18}
+import { Stores } from 'choeroson-ui/pro';
+
+export const getLovDSProps = () => {
+  return {
+    fields: [
+      {
+        name: 'lov',
+        type: 'object',
+        lovCode: 'LOV_CODE',
+        dynamicProps: {
+          lovPara: () => ({ para: ['1', '2'] }), // 不能直接返回 array
+        },
+        lovQueryAxiosConfig: (code, config, { dataSet, params, data }) => {
+          const lovQueryConfig = Stores.LovCodeStore.getQueryAxiosConfig(
+            code,
+            dataSet.getField('lovField'),
+            config
+          )({ dataSet, params, data });
+          return {
+            ...lovQueryConfig,
+            headers: { 'Content-Type': 'application/json' },
+            transformRequest: (value) => {
+              try {
+                return JSON.stringify(value?.para);
+              } catch (err) {
+                return [];
+              }
+            },
+          };
+        },
+      },
+    ],
+  };
+};
+```
+
+也可以通过 getConfig 获取 lov 配置，替换上述高亮部分即可
+
+```js
+import { getConfig } from 'choerodon-ui';
+
+const lovQueryConfig = getConfig('lovQueryAxiosConfig')({ dataSet, params, data });
 ```
