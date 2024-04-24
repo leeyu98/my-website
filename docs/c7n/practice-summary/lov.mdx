@@ -142,7 +142,7 @@ export const getLovDSProps = () => {
         lovQueryAxiosConfig: (code, config, { dataSet, params, data }) => {
           const lovQueryConfig = Stores.LovCodeStore.getQueryAxiosConfig(
             code,
-            dataSet.getField('lovField'),
+            dataSet.getField('lov'),
             config
           )({ dataSet, params, data });
           return {
@@ -165,8 +165,8 @@ export const getLovDSProps = () => {
 
 也可以通过 getConfig 获取 lov 配置，替换上述高亮部分即可
 
-```js
+```ts
 import { getConfig } from 'choerodon-ui';
 
-const lovQueryConfig = getConfig('lovQueryAxiosConfig')({ dataSet, params, data });
+const lovQueryConfig = getConfig('lovQueryAxiosConfig')(code, config, { dataSet, params, data });
 ```
