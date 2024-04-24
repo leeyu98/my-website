@@ -1,0 +1,41 @@
+---
+title: every 和 some 对空数组的处理
+description: 为什么 every 方法总是返回 true，some 总是返回 false？
+displayed_sidebar: frontendSidebar
+tags:
+  - 数组
+  - 空数组
+keywords:
+  - 空数组
+  - every
+  - some
+---
+
+<Author cost={5} publish="2024-1-3 23:15" update="" />
+
+下面的这句代码执行之后，arr 的值是怎样的？
+
+```js
+[].every(() => true);
+[].every(() => false);
+[, ,].every(() => false);
+```
+
+结果都为 true。
+
+```js
+[].some(() => true);
+[].some(() => false);
+[, ,].some(() => false);
+```
+
+结果都为 false。
+
+> 对于空数组，没有机会执行回调函数，总是返回默认实现中的 true/false。
+
+## 为什么会这样
+
+JavaScript (其实还有其他语言如 Python 的 all 与 any) 之所以这样设计，也与数学中 “空集” “所有” 以及 “存在” 的概念有关。
+
+- “空集合的所有元素都满足任何给定的条件”
+- “空集合不存在某个元素满足给定的条件”
