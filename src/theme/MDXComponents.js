@@ -1,4 +1,4 @@
-import MDXComponents from '@docusaurus/theme-classic/lib/theme/MDXComponents';
+import MDXComponents from '@theme-original/MDXComponents';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import * as MyComponents from '@site/src/components';

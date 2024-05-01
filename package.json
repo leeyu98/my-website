@@ -14,9 +14,9 @@
     "write-heading-ids": "docusaurus write-heading-ids"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.0.1",
-    "@docusaurus/preset-classic": "^3.0.1",
-    "@docusaurus/remark-plugin-npm2yarn": "^3.0.1",
+    "@docusaurus/core": "^3.2.1",
+    "@docusaurus/preset-classic": "^3.2.1",
+    "@docusaurus/remark-plugin-npm2yarn": "^3.2.1",
     "@easyops-cn/docusaurus-search-local": "^0.40.1",
     "@mdx-js/react": "^3.0.0",
     "babel-plugin-inline-react-svg": "^2.0.2",
@@ -31,10 +31,10 @@
     "sass": "^1.59.3"
   },
   "devDependencies": {
-    "@docusaurus/eslint-plugin": "^2.4.1",
-    "@docusaurus/module-type-aliases": "^3.0.0",
-    "@docusaurus/tsconfig": "^3.0.0",
-    "@docusaurus/types": "^3.0.0",
+    "@docusaurus/eslint-plugin": "^3.2.1",
+    "@docusaurus/module-type-aliases": "^3.2.1",
+    "@docusaurus/tsconfig": "^3.2.1",
+    "@docusaurus/types": "^3.2.1",
     "@types/react": "^18.2.29",
     "typescript": "^5.2.2"
   },
