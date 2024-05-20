@@ -2,16 +2,16 @@
 
 <img width="100" src="./static/img/logo.png" />
 
-
 本站是基于 [Docusaurus 2](https://docusaurus.io/) 构建的个人博客。
-
 
 ## 安装
 
 ```bash
 $ yarn
-```
 
+# recommend using pnpm
+$ pnpm
+```
 
 ## 本地开发
 
@@ -19,6 +19,9 @@ $ yarn
 
 ```bash
 $ yarn start
+
+# recommend using pnpm
+$ pnpm start
 ```
 
 ## 构建
@@ -27,8 +30,10 @@ $ yarn start
 
 ```bash
 $ yarn build
-```
 
+# recommend using pnpm
+$ pnpm build
+```
 
 ## 部署
 
@@ -49,6 +54,7 @@ $ GIT_USER=<Your GitHub username> yarn deploy
 ```
 
 ### 2. Netlify
+
 `Netlify` 提供 `Docusaurus` 部署模版。
 
 ### 3. Vercel
@@ -58,9 +64,19 @@ $ GIT_USER=<Your GitHub username> yarn deploy
 `Vercel` 提供 `Docusaurus` 部署模版。
 
 ## 书写规范说明
+
 **标签（tags）**
+
 - 采用无序列表形式
 - 全小写
 
+**更新日志符号说明**
+
+- 🎉 新功能/特性
+- 🍋 性能/逻辑优化
+- 🌶️ 移除/废弃功能
+- 🐞 问题修复
+
 **其他**
+
 - 表格中使用竖线符号 `&#124;`
