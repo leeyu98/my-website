@@ -8,14 +8,13 @@ keywords:
   - HZERO 菜单
 ---
 
-<Author cost={5} publish="2024-4-15 18:5" update="" />
+<Author cost={5} publish="2024-4-15 18:5" update="2024-5-20 17:5" />
 
-基于原生 `requireAnimationFrame` 实现的元素高度自动计算 `Hook`。
+获取当前打开 Tab 对应的菜单信息，主要用于动态设置标题与编码。
 
 ## 特性说明
 
-- 根据屏幕高度，自动计算可填充高度
-- 支持监听屏幕和自定义元素变化，重新计算
+- 支持单个或完整信息获取
 
 ## 基本用法
 
@@ -25,7 +24,7 @@ import { useCurrentMenu } from '@/hooks';
 export default () => {
   const { title, name: menuCode } = useCurrentMenu();
   return (
-    <PageHeaderWrapper title={title || '指标采集列表'} headers={menuCode && <Button />}>
+    <PageHeaderWrapper title={title || '菜单列表'} headers={menuCode && <Button />}>
       {/* some elements... */}
     </PageHeaderWrapper>
   );
