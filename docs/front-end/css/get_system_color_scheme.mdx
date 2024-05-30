@@ -1,0 +1,66 @@
+---
+sidebar_position: 16
+displayed_sidebar: frontendSidebar
+title: 获取系统颜色模式
+description: 判断系统亮/暗色模式，监听系统颜色模式切换。
+---
+
+<Author count={1200} publish="2022-4-5 23:35:00" update="2024-5-30 20:52" />
+
+## CSS
+
+使用媒介查询 `prefers-color-scheme`，支持 `dark` `light` 、`no-preference` 三种模式，会在系统切换颜色模式时自动应用样式表。
+
+```css
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #121212;
+    color: rgba(255, 255, 255, 0.86);
+  }
+}
+```
+
+## JavaScript
+
+使用 `matchMedia` 方法判断是否符合媒介。<br/>
+返回值为 `MediaQueryList` 对象，该对象具有属性 `matches` 和 `media`，方法 `addListener` 和 `removeListener`。`matches` 布尔值，只读；`media` 为 `DOMString` 类型。
+
+:::info 注意
+`addListener` 和 `removeListener` 为旧版的 API，已经被废弃，不推荐使用。
+:::
+
+### 判断是否支持颜色模式
+
+```js
+// not all 表示不支持
+if (window.matchMedia('(prefers-color-scheme)').media === 'not all') {
+  console.log("Browser doesn't support dark mode");
+}
+```
+
+### 判断是否处于亮/暗色模式
+
+```javascript
+if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+  // 浅色
+}
+
+if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  // 深色
+}
+```
+
+### 事件监听
+
+```js
+// 监听切换暗色模式
+const handleChangeDarkMode = (event) => {
+  if (event.matches) {
+    console.log('切换到深色模式');
+  } else {
+    console.log('切换到浅色模式');
+  }
+};
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('chnage', handleChangeDarkMode);
+```
