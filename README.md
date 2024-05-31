@@ -2,7 +2,7 @@
 
 <img width="100" src="./static/img/logo.png" />
 
-本站是基于 [Docusaurus 2](https://docusaurus.io/) 构建的个人博客。
+本站是基于 [Docusaurus 3](https://docusaurus.io/) 构建的个人博客。
 
 ## 安装
 
@@ -65,6 +65,10 @@ $ GIT_USER=<Your GitHub username> yarn deploy
 
 ## 书写规范说明
 
+**文件**
+
+- 采用 snake case 命名
+
 **标签（tags）**
 
 - 采用无序列表形式
@@ -76,6 +80,7 @@ $ GIT_USER=<Your GitHub username> yarn deploy
 - 🍋 性能/逻辑优化
 - 🌶️ 移除/废弃功能
 - 🐞 问题修复
+- ✂️ 停止维护/更新
 
 **其他**
 
