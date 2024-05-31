@@ -1,0 +1,36 @@
+---
+title: git tag 标签
+sidebar_position: 40
+tags:
+  - git
+---
+
+<Author cost={2} publish="2023-3-4" update="2024-3-28" />
+
+## 创建 tag
+
+```bash
+git tag <tagname> -m <message>
+```
+
+## 查看
+
+```bash
+# 列出所有的 tag
+git tag --list # or -l
+```
+
+## 重命名
+
+```bash
+git tag <newname> <oldname>
+git tag -d <oldname>
+git push --tags
+```
+
+## 修改描述
+
+```bash
+git tag -m <message> -e <tagname> -f
+git push --tags -f
+```
