@@ -18,7 +18,7 @@ keywords:
 
 ## 抽象相等
 
-抽象相等 (`Abstract Equality`)，也称宽松相等，操作符为 `==` 和 `!=`。特点是<Emphasis>会对类型不同的两个操作数进行强制类型转换</Emphasis>。
+抽象相等 (`Abstract Equality`)，也称宽松相等 (`Loose Equality`)，操作符为 `==` 和 `!=`。特点是<Emphasis>会对类型不同的两个操作数进行强制类型转换</Emphasis>。
 
 ### 类型相同
 
@@ -33,7 +33,7 @@ keywords:
 
 #### null 与 undefined
 
-当一个是 `null/undefined` 时，只有另一个也是 `null/undefined` 时返回 `true`。
+当其中一个操作数是 `null/undefined` 时，只有另一个也是 `null/undefined` 时返回 `true`。
 
 :::warning 违反规则的特例
 `document.all` 被视为 `undefined`，所以 `document.all == undefined`，`document.all == null`，但是 `document.all == null && document.all == undefined` 为 `false`。
@@ -56,7 +56,7 @@ keywords:
 
 按照以下顺序，先把引用类型转换为基本类型：
 
-1. 调用该对象的 `@@toPrimitive('default')` 方法 (以 `default` 为 `hint`)；
+1. 调用该对象的 `@@toPrimitive(hint)` 方法 (以 `default` 为 `hint`)；
 2. 调用该对象的 `valueOf()` 方法；
 3. 调用该对象的 `toString()` 方法。
 
