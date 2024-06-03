@@ -78,13 +78,13 @@ export default () => {
 | searchable  | `boolean`                                                               | <Highlight>可选</Highlight> 是否支持搜索                                                                                                                            | `true`                         |
 | titles      | `string[]` &#124; `React.ReactNode[]`                                   | <Highlight>可选</Highlight> 左右侧标题                                                                                                                              | `["已选择","未选择"]`          |
 | header      | `React.ReactNode`                                                       | <Highlight>可选</Highlight> 顶部自定义渲染                                                                                                                          | -                              |
-| footer      | `React.ReactNode`                                                       | <Highlight>可选</Highlight> 地步自定义渲染                                                                                                                          | -                              |
+| footer      | `React.ReactNode`                                                       | <Highlight>可选</Highlight> 底部自定义渲染                                                                                                                          | -                              |
 | avatarProps | `AvatarProps`                                                           | <Highlight>可选</Highlight> 支持头像组件所有属性                                                                                                                    | `{ size: 28, shape: "square"}` |
 | className   | `string`                                                                | <Highlight>可选</Highlight> 自定义类名                                                                                                                              | -                              |
 | style       | `React.CSSProperties`                                                   | <Highlight>可选</Highlight> 自定义样式                                                                                                                              | -                              |
 | modal       | `any`                                                                   | <Highlight>可选</Highlight> 使用 `Modal.open` 打开弹窗，默认会注入该参数，组件内部将目标数据结果注入到 `onOk` 回调中，[详细](./transfer-pro-button#tmodalpropsonok) |                                |
 | renderItem  | `(record: Record) => JSX.Element`                                       | <Highlight>可选</Highlight> 自定义 `Item` 渲染                                                                                                                      | -                              |
-| onChange    | `({ records, value }: { records: Record[]; value: unknown[] }) => void` | <Highlight>可选</Highlight> 选择数据事件回调：单选、全选、清空。返回当前变更的记录及道当前右侧已选择的所有数据                                                      | -                              |
+| onChange    | `({ records, value }: { records: Record[]; value: unknown[] }) => void` | <Highlight>可选</Highlight> 选择数据事件回调：单选、全选、清空。返回当前变更的记录及当前右侧已选择的所有数据                                                        | -                              |
 
 ### ConfigProps
 
@@ -120,11 +120,6 @@ export type ConfigProps = {
 
 ### TargetProps
 
-:::info 注意
-只接受 3 个参数。加载目标数据的方式<Emphasis>只能且必须</Emphasis>选择 `data` 与 `read` 其中一种：`data` 的配置需要手动请求数据，`read` 配置组件内部自动请求数据。同样 `read` 的优先级更高。
-
-:::
-
 ```ts
 /**
  * @description 目标数据源 DS 配置 data 与 read 二选一不能共存
@@ -133,6 +128,10 @@ export type TargetProps = {
   primaryKey?: string; // 仅用于数据筛选, 默认值与 ConfigProps.primaryKey 一致
 } & ({ data?: undefined; read: TransportType } | { data: unknown[]; read?: undefined });
 ```
+
+:::info 注意
+只接受 3 个参数。加载目标数据的方式<Emphasis>只能且必须</Emphasis>选择 `data` 与 `read` 其中一种：`data` 的配置需要手动请求数据，`read` 配置组件内部自动请求数据。同样 `read` 的优先级更高。
+:::
 
 | 参数       | 类型            | 说明                                                        | 默认值                               |
 | :--------- | :-------------- | :---------------------------------------------------------- | :----------------------------------- |
