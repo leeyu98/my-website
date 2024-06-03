@@ -1,0 +1,217 @@
+---
+title: React 中 Context 的用法
+description: Context 在 Class 组件和 Function 组件中的用法。
+sidebar_position: 20
+tags:
+  - React
+  - Context
+---
+
+<Author cost={5} publish="2021-8-10 21:36" update="2024-6-3 20:45" />
+
+`Context` 提供了一个无需为每层组件手动添加 `props`，就能在组件树间进行数据传递的方法。
+
+## Class 组件
+
+### 1. 创建全局共享的数据源
+
+这里定义了需要共享的数据 `appState`，同时创建了 `Context` 对象，并提供了一个包装组件(包装组件是为了方便渲染)。
+当然，也可以将 `appState` 定义在单独的文件中。
+
+`this.props.children` 指的是当前组件的子组件，这样就能保证把当前组件包裹的组件作为 `消费者`，实现数据共享。
+
+```js title="store.js"
+import React, { Component, createContext } from 'react';
+// 创建Context
+const AppContext = createContext({});
+const { Provider } = AppContext;
+// 需要共享的数据
+let appState = { data: 'default' };
+// 包装组件
+class AppStore extends Component {
+  render() {
+    return (
+      // 把需要共享的值传到 value，不要忽略 this.props，避免造成数据 props 数据丢失
+      <Provider value={appState} {...this.props}>
+        {this.props.children}
+      </Provider>
+    );
+  }
+}
+```
+
+### 2. 创建消费者组件及其子组件
+
+#### Class.contextType
+
+消费者组件中，一种方式引入 `AppContext` 对象，并把对象绑定到类组件的 `contextType` 上。绑定有两种方式：
+
+- 在类组件内部 `static contextType = AppContext;`
+- 在类组件外部 `ClassComponent.contextType = AppContext`
+
+这里为了更明显的体现效果，创建了消费者组件和它的子组件 (相当于孙子组件)。
+
+```js title="ChildClassComponent.js"
+import React, { Component } from 'react';
+import { AppContext } from './store';
+
+class ChildClassComponent extends Component {
+  static contextType = AppContext;
+  render() {
+    console.log(this.context);
+    return <div> {this.context.data} </div>;
+  }
+}
+
+export default ChildClassComponent;
+```
+
+```js title="ClassComponent.js"
+import React from 'react';
+import { AppContext } from './store';
+import ChildClassComponent from './ChildClassComponent';
+
+class ClassComponent extends React.Component {
+  // 将 Context 挂载到 contextType 上，就能直接通过 this.context 访问
+  static contextType = AppContext;
+  render() {
+    console.log(this.context);
+    return (
+      <div>
+        {this.context.data}
+        <ChildClassComponent />
+      </div>
+    );
+  }
+}
+// or write like this
+// ClassComponent.contextType = AppContext；
+export default ClassComponent;
+```
+
+#### Context.Consumer
+
+还有一种方式时使用 `Consumer` 包裹子组件，`Consumer` 需要接受一个函数作为子元素，并将 `context` 作为参数。
+
+> 这里仅对消费者的子组件进行了改写演示。
+
+```js title="ChildClassComponent.js"
+import React, { Component } from 'react';
+import { Consumer } from './store';
+
+class ChildClassComponent extends Component {
+  render() {
+    return <Consumer>{({ data }) => <div>消费者子组件:{data}</div>}</Consumer>;
+  }
+}
+
+export default ChildClassComponent;
+```
+
+### 3. 将消费者作为包装组件的子组件
+
+```js title="index.js"
+import React from 'react';
+import ClassComponent from './ClassComponent';
+import { AppStore } from './store';
+
+class MyApp extends React.Component {
+  render() {
+    return (
+      <AppStore {...this.props}>
+        <ClassComponent />
+      </AppStore>
+    );
+  }
+}
+
+export default MyApp;
+```
+
+## Function 组件
+
+函数组件与类组件最大的区别就是在 `消费者组件` 中 使用 `useContext()` 来绑定 `Context`。将上述 `Class` 组件改为 `Function` 组件即可。
+
+### 1. 创建全局共享的数据源
+
+```js title="store.js"
+import React, { createContext } from 'react';
+// 创建Context
+const AppContext = createContext({});
+const { Provider } = AppContext;
+// 需要共享的数据
+let appState = { data: 'default' };
+// 包装组件
+const AppStore = (props) => (
+  <Provider value={appState} {...props}>
+    {props.children}
+  </Provider>
+);
+
+export { AppStore, AppContext };
+```
+
+### 2. 创建消费者组件及其子组件
+
+#### useContext
+
+```js title="ChildFunctionComponent.js"
+import React, { useContext } from 'react';
+import { AppContext } from './store';
+
+const ChildFunctionComponent = (props) => {
+  const appContext = useContext(AppContext);
+  return <div>消费者子组件:{appContext.data}</div>;
+};
+
+export default ChildFunctionComponent;
+```
+
+```js title="FunctionComponent.js"
+import React, { useContext } from 'react';
+import ChildFunctionComponent from './ChildFunctionComponent';
+import { AppContext } from './store';
+
+const FunctionComponent = (props) => {
+  const appContext = useContext(AppContext);
+  return (
+    <div>
+      消费者组件:{appContext.data}
+      <ChildFunctionComponent />
+    </div>
+  );
+};
+
+export default FunctionComponent;
+```
+
+#### Context.Consumer
+
+> 这里仅对消费者的子组件进行了改写演示。
+
+```js title="ChildFunctionComponent.js"
+import React from 'react';
+import { Consumer } from './store';
+
+const ChildFunctionComponent = () => {
+  return <Consumer>{({ data }) => <div>消费者子组件:{data}</div>}</Consumer>;
+};
+
+export default ChildFunctionComponent;
+```
+
+### 3. 将消费者作为包装组件的子组件
+
+```js title="index.js"
+import React from 'react';
+import FunctionComponent from './FunctionComponent';
+import { AppStore } from './store';
+
+const MyApp = (props) => (
+  <AppStore {...props}>
+    <FunctionComponent />
+  </AppStore>
+);
+
+export default MyApp;
+```
