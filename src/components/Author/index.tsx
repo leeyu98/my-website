@@ -49,15 +49,23 @@ const Author: React.FC<IProps> = ({ cost, count, publish, update }) => {
           <img className={styles.avatar__image} src={avatarImage} alt={name} />
         </Link>
         <section>
-          <Link to="/blog/author" className={styles['author']}>
-            {name}
-          </Link>
-          <div className={styles['costing']}>
-            {[time, _publish, _update].filter(Boolean).map((i, index) => (
-              <span key={index} className={styles.item}>
-                {i}
-              </span>
-            ))}
+          <section style={{ display: 'flex', alignItems: 'center' }}>
+            <Link to="/blog/author" className={styles['author']}>
+              {name}
+            </Link>
+            <span className={styles['costing']}>
+              {[time, _publish, _update].filter(Boolean).map((i, index) => (
+                <span key={index} className={styles.item}>
+                  {i}
+                </span>
+              ))}
+            </span>
+          </section>
+          <div className={styles.copyright}>
+            © 转载需要保留原始链接，未经明确许可，禁止商业使用。支持原创{' '}
+            <Link to="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans">
+              CC BY-NC-SA 4.0
+            </Link>
           </div>
         </section>
       </section>
