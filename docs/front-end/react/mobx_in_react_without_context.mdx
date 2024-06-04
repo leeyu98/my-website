@@ -1,0 +1,194 @@
+---
+title: 使用 MobX (不结合 Context)
+description: React 中 MobX 的用法 (不使用 Context)。
+sidebar_position: 30
+tags:
+  - React
+  - MobX
+---
+
+<Author cost={5} publish="2021-8-11 18:43" update="2022-09-18 19:30" />
+
+:::info
+
+在 `React` 提出 `Context` 之前，`Provider` 和 `inject()` 就是 `MobX` 提供的数据共享的解决方案。在 `React` 提出 `Context` 之后，提供了 `Context.Provider` ，`Provider` 和 `inject()` 就显得没有那么必要了。
+:::
+
+## Class 组件
+
+### 1. 创建共享数据源
+
+这里只需要从 `mobx-react` 中引入`Provider`，`Provider` 可以接受自定义的属性，不像 `Context.Provider` 必须接受 `value`。
+
+```js title="store.js"
+import React from 'react';
+import { action, makeAutoObservable } from 'mobx';
+import { Provider } from 'mobx-react';
+
+// 需要共享的数据
+let appState = makeAutoObservable({
+  data: 'default',
+  get newData() {
+    return `${appState.data}-new`;
+  },
+  changeData: action((newData) => {
+    appState.data = newData;
+  }),
+});
+// 包装组件
+class AppStore extends React.Component {
+  render() {
+    return (
+      <Provider appState={appState} {...this.props}>
+        {this.props.children}
+      </Provider>
+    );
+  }
+}
+
+export { AppStore };
+```
+
+### 2. 创建组件并注入数据
+
+使用 `inject()` 将页面中需要用到的数据注入到组件中，然后在组件中通过 `props` 获取注入的数据。(类似于 `dva` 中的 `connect` 的思维方式)。
+
+`inject()` 可以接受对应 `state` 名称字符串 (语法参考例子中的注释部分)；
+也可以接受一个函数，返回需要注入该组件的内容 (这和 `dva` 的 `connect` 使用方式很相似)。
+
+```js
+inject(({ appState }) => {
+  data: appState.data;
+});
+```
+
+```js title="Parent.js"
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+
+const Parent = observer(
+  class ClassComponent extends React.Component {
+    handleChange = () => {
+      this.props.changeData('haha');
+      console.log(this.props.changeData);
+      // this.context.changeData('New')
+    };
+    render() {
+      return (
+        <div>
+          消费者组件: {this.props.data}
+          {this.props.newData}
+          <button onClick={this.handleChange}>Change</button>
+        </div>
+      );
+    }
+  }
+);
+
+export default inject(({ appState }) => ({
+  ...appState,
+}))(Parent);
+
+// or writing like this
+// export default inject('appState')(Parent);
+```
+
+### 3. 将上面的组件作为包装组件的子组件
+
+```js title="index.js"
+import React from 'react';
+import Parent from './Parent';
+import { AppStore } from './store';
+
+const MyApp = (props) => (
+  <AppStore {...props}>
+    <Parent {...props} />
+  </AppStore>
+);
+
+export default MyApp;
+```
+
+## Function 组件
+
+### 1. 创建共享数据源
+
+这里只需要从 `mobx-react` 中引入`Provider`，`Provider` 可以接受任何属性名，不像 `Context.Provider` 必须接受 `value`。
+
+```js title="store.js"
+import React from 'react';
+import { action, makeAutoObservable } from 'mobx';
+import { Provider } from 'mobx-react'; //引入 Provider
+
+// 需要共享的数据
+let appState = makeAutoObservable({
+  data: 'default',
+  get newData() {
+    return `${appState.data}-new`;
+  },
+  changeData: action((newData) => {
+    appState.data = newData;
+  }),
+});
+// 包装组件
+const AppStore = (props) => (
+  <Provider appState={appState} {...props}>
+    {props.children}
+  </Provider>
+);
+
+export { AppStore };
+```
+
+### 2. 创建组件并注入数据
+
+使用 `inject()` 将页面中需要用到的数据注入到组件中。
+
+```js
+inject(({ appState }) => {
+  data: appState.data;
+});
+```
+
+```js title="Parent.js"
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+
+const Parent = observer(({ appState }) => {
+  const handleChange = () => {
+    appState.changeData('haha');
+    console.log(appState.changeData);
+  };
+
+  return (
+    <div>
+      消费者组件:{appState.data}
+      {appState.newData}
+      <button onClick={handleChange}>Change</button>
+    </div>
+  );
+});
+// 将 appState 注入到组件中
+export default inject(({ appState }) => ({
+  ...appState,
+}))(Parent);
+
+// or writing like this
+// export default inject('appState')(Parent);
+```
+
+### 3. 将上面的组件作为包装组件的子组件
+
+```js title="index.js"
+import React from 'react';
+import Parent from './Parent';
+import { AppStore } from './store';
+
+const MyApp = (props) => (
+  <AppStore {...props}>
+    <Parent {...props} />
+  </AppStore>
+);
+
+export default MyApp;
+```
