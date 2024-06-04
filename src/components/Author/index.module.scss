@@ -28,7 +28,8 @@
       }
       .costing {
         font-size: 0.8rem;
-        color: rgba(0, 0, 0, 0.5);
+        color: rgba(0, 0, 0, 0.8);
+        margin-left: 8px;
 
         .item:not(:first-child) {
           &::before {
@@ -43,6 +44,11 @@
           }
         }
       }
+
+      .copyright{
+        font-size: 0.8rem;
+        color: rgba(0, 0, 0, 0.5);
+      }
     }
   }
 }
@@ -52,12 +58,16 @@
 
     .avatar {
       .costing {
-        color: rgba(200, 200, 200, 0.8);
+        color: rgba(250, 250, 250, 0.8);
         .item:not(:first-child) {
           &::before {
             background-color: rgba(200, 200, 200, 0.8);
           }
         }
+      }
+      .copyright{
+        color: rgba(200, 200, 200, 0.8);
+
       }
     }
   }

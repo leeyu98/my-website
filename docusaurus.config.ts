@@ -121,6 +121,7 @@ const config: Config = {
       minHeadingLevel: 2,
       maxHeadingLevel: 4,
     },
+    metadata: [{ name: 'keywords', content: 'blog,front-end,changnian' }],
     // announcementBar: {
     //   id: 'arc_invitation_code',
     //   content:
