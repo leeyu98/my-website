@@ -47,31 +47,19 @@ class AppStore extends Component {
 消费者组件中，一种方式引入 `AppContext` 对象，并把对象绑定到类组件的 `contextType` 上。绑定有两种方式：
 
 - 在类组件内部 `static contextType = AppContext;`
-- 在类组件外部 `ClassComponent.contextType = AppContext`
+- 在类组件外部 `Parent.contextType = AppContext`
 
 这里为了更明显的体现效果，创建了消费者组件和它的子组件 (相当于孙子组件)。
 
-```js title="ChildClassComponent.js"
-import React, { Component } from 'react';
-import { AppContext } from './store';
+<Tabs>
+<TabItem value="parent" label="父组件" default>
 
-class ChildClassComponent extends Component {
-  static contextType = AppContext;
-  render() {
-    console.log(this.context);
-    return <div> {this.context.data} </div>;
-  }
-}
-
-export default ChildClassComponent;
-```
-
-```js title="ClassComponent.js"
+```jsx title="Parent.jsx"
 import React from 'react';
 import { AppContext } from './store';
-import ChildClassComponent from './ChildClassComponent';
+import Child from './Child';
 
-class ClassComponent extends React.Component {
+class Parent extends React.Component {
   // 将 Context 挂载到 contextType 上，就能直接通过 this.context 访问
   static contextType = AppContext;
   render() {
@@ -79,15 +67,36 @@ class ClassComponent extends React.Component {
     return (
       <div>
         {this.context.data}
-        <ChildClassComponent />
+        <Child />
       </div>
     );
   }
 }
 // or write like this
-// ClassComponent.contextType = AppContext；
-export default ClassComponent;
+// Parent.contextType = AppContext；
+export default Parent;
 ```
+
+</TabItem >
+<TabItem value="child" label="子组件" default>
+
+```jsx title="Child.jsx"
+import React from 'react';
+import { AppContext } from './store';
+
+class Child extends React.Component {
+  static contextType = AppContext;
+  render() {
+    console.log(this.context);
+    return <div> {this.context.data} </div>;
+  }
+}
+
+export default Child;
+```
+
+</TabItem>
+</Tabs>
 
 #### Context.Consumer
 
@@ -95,31 +104,31 @@ export default ClassComponent;
 
 > 这里仅对消费者的子组件进行了改写演示。
 
-```js title="ChildClassComponent.js"
-import React, { Component } from 'react';
+```jsx title="Child.jsx"
+import React from 'react';
 import { Consumer } from './store';
 
-class ChildClassComponent extends Component {
+class Child extends React.Component {
   render() {
     return <Consumer>{({ data }) => <div>消费者子组件:{data}</div>}</Consumer>;
   }
 }
 
-export default ChildClassComponent;
+export default Child;
 ```
 
 ### 3. 将消费者作为包装组件的子组件
 
-```js title="index.js"
+```jsx title="index.jsx"
 import React from 'react';
-import ClassComponent from './ClassComponent';
+import Parent from './Parent';
 import { AppStore } from './store';
 
 class MyApp extends React.Component {
   render() {
     return (
       <AppStore {...this.props}>
-        <ClassComponent />
+        <Parent />
       </AppStore>
     );
   }
@@ -155,61 +164,70 @@ export { AppStore, AppContext };
 
 #### useContext
 
-```js title="ChildFunctionComponent.js"
+<Tabs>
+<TabItem value="parent" label="父组件" default>
+
+```jsx title="Parent.jsx"
 import React, { useContext } from 'react';
+import Child from './Child';
 import { AppContext } from './store';
 
-const ChildFunctionComponent = (props) => {
-  const appContext = useContext(AppContext);
-  return <div>消费者子组件:{appContext.data}</div>;
-};
-
-export default ChildFunctionComponent;
-```
-
-```js title="FunctionComponent.js"
-import React, { useContext } from 'react';
-import ChildFunctionComponent from './ChildFunctionComponent';
-import { AppContext } from './store';
-
-const FunctionComponent = (props) => {
+const Parent = (props) => {
   const appContext = useContext(AppContext);
   return (
     <div>
       消费者组件:{appContext.data}
-      <ChildFunctionComponent />
+      <Child />
     </div>
   );
 };
 
-export default FunctionComponent;
+export default Parent;
 ```
+
+</TabItem >
+<TabItem value="child" label="子组件" default>
+
+```jsx title="Child.jsx"
+import React, { useContext } from 'react';
+import { AppContext } from './store';
+
+const Child = (props) => {
+  const appContext = useContext(AppContext);
+  return <div>消费者子组件:{appContext.data}</div>;
+};
+
+export default Child;
+```
+
+</TabItem>
+</Tabs>
 
 #### Context.Consumer
 
 > 这里仅对消费者的子组件进行了改写演示。
 
-```js title="ChildFunctionComponent.js"
+```jsx title="Child.jsx"
 import React from 'react';
 import { Consumer } from './store';
 
-const ChildFunctionComponent = () => {
+const Child = () => {
   return <Consumer>{({ data }) => <div>消费者子组件:{data}</div>}</Consumer>;
 };
 
-export default ChildFunctionComponent;
+export default Child;
 ```
 
 ### 3. 将消费者作为包装组件的子组件
 
-```js title="index.js"
+```jsx title="index.jsx"
 import React from 'react';
-import FunctionComponent from './FunctionComponent';
+import Parent from './Parent';
 import { AppStore } from './store';
 
 const MyApp = (props) => (
   <AppStore {...props}>
-    <FunctionComponent />
+    <Parent />
   </AppStore>
 );
 
