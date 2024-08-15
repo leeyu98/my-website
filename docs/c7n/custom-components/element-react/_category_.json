@@ -1,0 +1,9 @@
+{
+  "position": 1000,
+  "label": "基于 Element React",
+  "link": {
+    "type": "generated-index",
+    "slug": "c7n/custom-components/element-react",
+    "description": "基于 Element React 与 DataSet 特性进行封装的自定义组件！"
+  }
+}
