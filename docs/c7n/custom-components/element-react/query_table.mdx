@@ -1,0 +1,188 @@
+---
+title: QueryTable
+description: 基于 Element React 和 ChoerodonUI 封装的查询表格组件。
+sidebar_position: 70
+tags:
+  - 查询表格
+  - QueryTable
+keywords:
+  - 查询表格
+  - QueryTable
+---
+
+<Author count={3000} publish="2024-9-14 14:55" />
+
+:::warning 警告
+开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
+:::
+
+基于 Element React 的 `Form` 组件和 ChoerodonUI 的 `Table` 组件封装的查询表格组件。
+
+## 特性说明
+
+- 支持 DataSet 配置自动生成 QueryForm 查询表单；
+- 理论上支持 Table 的所有属性
+
+## 何时使用
+
+- 兼容使用 Table 的所有场景
+
+## 基本用法
+
+```tsx showLineNumbers
+import { QueryTable } from '@/components/element-pro';
+
+export default () => {
+  return (
+    <QueryTable
+      rowNumber
+      rowNumberColumnProps={rowNumberColumnProps}
+      dataSet={dataSet}
+      columns={columns}
+      withSpace
+    />
+  );
+};
+```
+
+## API
+
+> 除此以下附加属性外，支持 `Table` 所有属性。
+
+| 参数             | 类型 <div style={{minWidth:130}}/> | 说明                                                                                            | 默认值     |
+| :--------------- | :--------------------------------- | :---------------------------------------------------------------------------------------------- | :--------- |
+| elButtons        | `ElButton` &#124; `ElButton[]`     | <Highlight>可选</Highlight> 表格上方的按钮组，支持 Element 按钮（组）                           | -          |
+| afterQuery       | `(params: any) => any`             | <Highlight>可选</Highlight> 哪些字段定义在 queryFields 或者 queryDataSet 中但不需要渲染的字段   | `[]`       |
+| excludeFields    | `string[]`                         | <Highlight>可选</Highlight> 点击查询按钮之后的回调，参数中可以拿到所有的查询参数                | `() => {}` |
+| wrapperStyle     | `React.CSSProperties`              | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                      | -          |
+| wrapperClassName | `string`                           | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options | -          |
+| withSpace        | `boolean`                          | <Highlight>可选</Highlight> 查询表单与顶部的间距 `10px`                                         | `false`    |
+
+## 源代码
+
+```tsx showLineNumbers title="QueryTable/index.tsx"
+import { Table } from 'choerodon-ui/pro';
+import { QuickJumperPosition, SizeChangerPosition } from 'choerodon-ui/pro/lib/pagination/enum';
+import { TableQueryBarType } from 'choerodon-ui/pro/lib/table/enum';
+import { TableProps } from 'choerodon-ui/pro/lib/table/Table';
+import cls from 'classnames';
+import { Button } from 'element-react';
+import { observer } from 'mobx-react';
+import React from 'react';
+import styles from './index.module.less';
+import QueryForm, { QueryFormProps } from './QueryForm';
+
+// element 按钮
+export type ElButton = React.ReactElement<React.ComponentProps<typeof Button>>;
+
+export interface QueryTableProps extends TableProps {
+  /**
+   * @description table 上方的按钮组，支持 Element 按钮(组)
+   */
+  elButtons?: ElButton | ElButton[];
+  /**
+   * @description 点击查询按钮之后的操作
+   */
+  afterQuery?: QueryFormProps['afterQuery'];
+
+  excludeFields?: QueryFormProps['excludeFields'];
+
+  wrapperStyle?: React.CSSProperties;
+
+  wrapperClassName?: string;
+  /**
+   * @description 查询表单与顶部的间距 10
+   * @default false
+   */
+  withSpace?: boolean;
+}
+
+const QueryTable: React.FC<QueryTableProps> = ({
+  dataSet,
+  columns,
+  queryBar,
+  elButtons,
+  afterQuery = () => {},
+  wrapperStyle = {},
+  wrapperClassName = '',
+  className,
+  withSpace = false,
+  excludeFields = [],
+  ...restProps
+}) => {
+  return (
+    <div className={wrapperClassName} style={{ marginTop: withSpace ? 0 : -10, ...wrapperStyle }}>
+      {queryBar !== TableQueryBarType.none && (
+        <QueryForm
+          dataSet={dataSet}
+          // defaultValues={defaultValues}
+          excludeFields={excludeFields}
+          afterQuery={afterQuery}
+        />
+      )}
+      {elButtons && (
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            marginBottom: 16,
+          }}
+        >
+          {elButtons}
+        </div>
+      )}
+      <Table
+        dataSet={dataSet}
+        queryBar={TableQueryBarType.none}
+        columns={columns}
+        className={cls(styles.table, className)}
+        style={{ clear: 'both' }}
+        pagination={{
+          className: styles.nav__pagination,
+          showPager: true,
+          showQuickJumper: true,
+          showSizeChangerLabel: true,
+          pageSizeOptions: ['10', '15', '20', '30', '40', '50', '100'],
+          quickJumperPosition: QuickJumperPosition.right,
+          sizeChangerPosition: SizeChangerPosition.right,
+          sizeChangerOptionRenderer: ({ text }) => {
+            return `${text} 条/页`;
+          },
+          showTotal: (total: number, range: [number, number], _counting: any, page: number) => {
+            return (
+              <span>
+                共 {total} 条记录 第 {page}/{range?.[0]} 页
+              </span>
+            );
+          },
+        }}
+        {...restProps}
+      />
+    </div>
+  );
+};
+
+export default observer(QueryTable);
+```
+
+## 更新日志
+
+### alpha
+
+**2024-08-28**
+
+- 🎉 新增 `excludeFields` 剔除不需要渲染的字段；
+
+**2024-08-21**
+
+- 🎉 新增 `afterQuery` 回调函数；
+
+**2024-08-14**
+
+- 🎉 拆分 `QueryForm` `QueryTable` 组件；
+
+**2024-07-24**
+
+- 🎉 新增 `QueryTable` 组件；

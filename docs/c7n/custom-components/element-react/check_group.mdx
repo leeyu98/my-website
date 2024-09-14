@@ -16,7 +16,7 @@ keywords:
 开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
 :::
 
-基于 `Element React` 的 `CheckGroup` 组件，结合 `DataSet` 的一些特性封装的多选组组件。
+基于 `Element React` 的 `Checkbox.Group` 组件，结合 `DataSet` 的一些特性封装的多选组组件。
 
 ![基本用法](./images/check_group.png)
 
@@ -32,7 +32,7 @@ keywords:
 
 ## 基本用法
 
-```jsx showLineNumbers
+```tsx showLineNumbers
 import { CheckGroup } from '@/components/element-pro';
 
 export default () => {
@@ -54,7 +54,7 @@ export default () => {
 
 ## API
 
-> 除此以下附加属性外，支持 `Avatar` 默认所有属性 `AvatarProps`
+> 除此以下附加属性外，支持 `Checkbox.Group` 默认所有属性。
 
 | 参数        | 类型 <div style={{minWidth:130}}/>    | 说明                                                                                                                                         | 默认值    |
 | :---------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
@@ -68,6 +68,125 @@ export default () => {
 | onChange    | `(value: any, checked?: any) => void` | <Highlight>可选</Highlight> 通过 textField 匹配返回原始数据 checked                                                                          | -         |
 
 ## 源代码
+
+```tsx showLineNumbers title="CheckGroup/index.tsx"
+import React from 'react';
+import { Field, Record } from 'choerodon-ui/dataset';
+import DataSet from 'choerodon-ui/dataset/data-set';
+import cls from 'classnames';
+import { Checkbox } from 'element-react';
+import { isFunction } from 'lodash-es';
+import { observer } from 'mobx-react';
+import styles from './index.module.less';
+
+type CheckboxGroupProps = React.ComponentProps<typeof Checkbox.Group>;
+
+// WARNING: 开发阶段：组件 API 可能随时变更
+export interface CheckGroupProps extends Omit<CheckboxGroupProps, 'onChange'> {
+  /**
+   * @description 绑定的 Element 表单 model 中的 value
+   */
+  value: any;
+  /**
+   * @description field name【未关联 DataSet 时不需要传入】
+   */
+  name?: string;
+  /**
+   * @description Checkbox 不支持 valueField，需要保证 textField 唯一性
+   */
+  textField?: string;
+  /**
+   * @description 【优先级高于 dataSet】用于手动渲染数据的 DataSet
+   */
+  options?: DataSet;
+  /**
+   * @description 【优先级最高，高于 options】用于手动渲染的数据，未使用 dataSet 的情况
+   */
+  optionsData?: Array<any>;
+  /**
+   * @description 【优先级最低】绑定的 dataSet - 为了使用 dataSet 获取对应字段的 lookupCode 配置【注意：使用查询参数时传入 dataSet.queryDataSet】
+   */
+  dataSet?: DataSet | null;
+  /**
+   * @description 禁用状态
+   * @default false
+   */
+  disabled?: boolean;
+  /**
+   * @description 通过 textField 匹配返回原始数据 checked
+   */
+  onChange?: (value: any, checked?: any) => void;
+}
+
+const CheckGroup: React.FC<CheckGroupProps> = ({
+  value,
+  name,
+  textField: txtField,
+  options,
+  dataSet,
+  optionsData,
+  onChange,
+  className,
+  disabled = false,
+  ...restProps
+}) => {
+  const field: Field | undefined = dataSet?.getField(name);
+
+  // Checkbox 不支持 valueField，默认 value 与 textField 相等
+  const textField = txtField || field?.pristineProps?.textField || 'meaning';
+
+  const optionsDS = options || field?.options;
+
+  const handleChange = (value) => {
+    if (value && value?.length) {
+      if (onChange && isFunction(onChange)) {
+        const checked: any[] = [];
+        // 通过 textField 匹配返回原始数据
+
+        (optionsData || optionsDS)?.forEach((opt) => {
+          if (opt instanceof Record) {
+            if (value.includes(opt?.get(textField))) {
+              checked.push(opt);
+            }
+          } else if (typeof opt === 'string' || typeof opt === 'number') {
+            if (value.includes(opt)) {
+              checked.push(opt);
+            }
+          } else {
+            if (value.includes(opt?.[textField])) {
+              checked.push(opt);
+            }
+          }
+        });
+
+        onChange(value, checked);
+      }
+    }
+  };
+
+  return (
+    <Checkbox.Group
+      value={value}
+      onChange={handleChange}
+      className={cls(styles.check__group, className)}
+      {...restProps}
+    >
+      {(optionsData || optionsDS)?.map((opt: Record | unknown) => {
+        // record 渲染
+        if (opt instanceof Record) {
+          return (
+            <Checkbox key={opt?.get(textField)} label={opt?.get(textField)} disabled={disabled} />
+          );
+        }
+        // optionsData 渲染
+        return <Checkbox key={opt?.[textField]} label={opt?.[textField]} disabled={disabled} />;
+      })}
+    </Checkbox.Group>
+  );
+};
+
+export default observer(CheckGroup);
+```
 
 ## 更新日志
 

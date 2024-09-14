@@ -1,0 +1,331 @@
+---
+title: QueryForm
+description: 基于 Element React 和 ChoerodonUI 封装的查询表单组件。
+sidebar_position: 60
+tags:
+  - 查询表单
+  - QueryForm
+keywords:
+  - 查询表单
+  - QueryForm
+---
+
+<Author count={3000} publish="2024-9-14 14:55" />
+
+:::warning 警告
+开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
+:::
+
+基于 Element React 的 `Form` 组件和 ChoerodonUI 的 `DataSet` 封装的查询表单组件。
+
+## 特性说明
+
+- 支持获取 `DataSet` 中的 `queryFields` `queryDataSet` 配置生成查询表单
+
+## 何时使用
+
+- 一般情况在 `QueryTable` 组件中自动使用，当需要实现查询表单与表格分离时可使用该组件。
+
+## 基本用法
+
+```tsx showLineNumbers
+import { QueryForm } from '@/components/element-pro';
+
+export default () => {
+  return <QueryForm dataSet={dataSet} excludeFields={['batch']} className="form__planning" />;
+};
+```
+
+## API
+
+> 除此以下附加属性外，支持 `Table` 所有属性。
+
+| 参数          | 类型 <div style={{minWidth:130}}/> | 说明                                                                                          | 默认值     |
+| :------------ | :--------------------------------- | :-------------------------------------------------------------------------------------------- | :--------- |
+| dataSet       | `DataSet`                          | <Highlight color="red">必输</Highlight> 绑定的 dataSet，用于获取 dataSet.queryDataSet         | -          |
+| excludeFields | `string[]`                         | <Highlight>可选</Highlight> 哪些字段定义在 queryFields 或者 queryDataSet 中但不需要渲染的字段 | `[]`       |
+| afterQuery    | `(params: any) => any`             | <Highlight>可选</Highlight> 点击查询按钮之后的回调，参数中可以拿到所有的查询参数              | `() => {}` |
+
+## 源代码
+
+```tsx showLineNumbers title="QueryTable/QueryForm.tsx"
+import DataSet from 'choerodon-ui/dataset/data-set';
+import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import Field from 'choerodon-ui/dataset/data-set/Field';
+import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
+import cls from 'classnames';
+import { Button, Form, Input } from 'element-react';
+import { debounce, isFunction, isNil, omitBy } from 'lodash-es';
+import { toJS } from 'mobx';
+import { observer } from 'mobx-react';
+import React, { useState } from 'react';
+import DatePickerPro from '../DatePickerPro';
+import SelectPro from '../SelectPro';
+import styles from './index.module.less';
+
+type FieldKeyType = string | number | symbol | any;
+
+export interface QueryFormProps {
+  /**
+   * @description Table DataSet
+   */
+  dataSet: DataSet;
+  /**
+   * @deprecated 使用 dataSet.queryDataSet 中配置 defaultValue 代替
+   * @description 查询表单默认值
+   * @default {}
+   */
+  defaultValues?: any;
+
+  className?: string;
+  /**
+   * @description 点击查询按钮之后的回调
+   * @default ()=>{}
+   */
+  afterQuery?: (params: any) => any;
+
+  excludeFields?: string[];
+}
+
+const dateTypeMapping = {
+  [FieldType.year]: {
+    selectMode: 'year',
+    meaning: '年',
+  },
+  [FieldType.month]: {
+    selectMode: 'month',
+    meaning: '月',
+  },
+  [FieldType.week]: {
+    selectMode: 'week',
+    meaning: '周',
+  },
+} as const;
+
+const QueryForm: React.FC<QueryFormProps> = ({
+  dataSet,
+  className = '',
+  excludeFields = [],
+  afterQuery = () => {},
+}) => {
+  const { queryDataSet } = dataSet;
+
+  const defaultValues = React.useMemo(() => {
+    const _defaultValues = {};
+    // 使用 data 能够获取到 DataSet 解析之后的值，可以支持 transformResponse 等的数据转换
+    Object.entries(toJS(queryDataSet?.current?.data) || {})
+      .filter(([, v]) => !isNil(v))
+      .forEach(([k, v]) => {
+        _defaultValues[k] = v;
+        // NOTE: 已对 DatePicker 重新封装，支持 moment dayjs 等，不需要再做类型转换
+        // 日期特殊处理
+        // if (v instanceof moment) {
+        //   console.log('moment', v, new Date(moment(v).valueOf()));
+        //   _defaultValues[k] = new Date(moment(v).valueOf());
+        // } else {
+        //   _defaultValues[k] = v;
+        // }
+      });
+    return _defaultValues;
+  }, [queryDataSet?.current?.data]); // for once
+
+  const [isExpand, setIsExpand] = useState<boolean>(false);
+  const [model, setModel] = React.useState<any>({ ...defaultValues });
+
+  const queryFields: Array<[FieldKeyType, Field]> = React.useMemo(() => {
+    // dataSet.queryFields 一定会生成 dataSet.queryDataSet，此处仅判断 queryDataSet
+    const fieldsMap: Array<[FieldKeyType, Field]> = Array.from(queryDataSet?.fields ?? []).filter(
+      ([k]) => !excludeFields.includes(k)
+    );
+    return fieldsMap;
+  }, [queryDataSet?.fields]);
+
+  const handleInputChange = (key: string, value: any) => {
+    setModel((prevModel: any) => ({
+      ...prevModel,
+      [key]: value,
+    }));
+    queryDataSet?.current?.set(`${key}`, value);
+  };
+
+  const handleQuery = debounce(() => {
+    console.log(model);
+    Object.keys(model).forEach((key) => {
+      queryDataSet?.current?.set(`${key}`, model[key]);
+    });
+    dataSet.query();
+    if (isFunction(afterQuery)) {
+      const queryData = omitBy(queryDataSet?.current?.toJSONData() || {}, (_, k) =>
+        k?.startsWith('_')
+      );
+
+      afterQuery({ ...queryData, ...dataSet.queryParameter });
+    }
+  }, 500);
+
+  /**
+   * @description 重置 - 逻辑为重置到默认值
+   */
+  const handleReset = debounce(() => {
+    const resetValue = {};
+    Object.entries(model).forEach(([k]) => {
+      resetValue[k] = null;
+    });
+    // 保留注释 for debugger
+    console.log('[reset value]', { ...resetValue, ...defaultValues });
+    setModel({ ...resetValue, ...defaultValues });
+
+    queryDataSet?.current?.set({
+      ...resetValue,
+      ...defaultValues,
+    });
+  }, 500);
+
+  const renderFormItem = (key: string, field: Field, index: number) => {
+    // field 仅有 name type 2个可用属性，且 type 为解析过的属性
+    // const { name, type } = field;
+
+    if (index >= 4 && !isExpand) {
+      return null;
+    }
+
+    const {
+      name,
+      type = FieldType.string,
+      placeholder: _placeholder, // element 不支持 string[]
+      lookupCode,
+      textField,
+      valueField,
+      options,
+      multiple, // element 不支持分隔符形式
+      label,
+      labelWidth,
+    } = field.pristineProps || {};
+
+    const placeholder = typeof _placeholder === 'string' ? _placeholder : _placeholder?.join(', ');
+    if (type === FieldType.date) {
+      return (
+        <Form.Item
+          key={name}
+          label={`${label}:`}
+          className={styles.form__item}
+          labelWidth={labelWidth}
+          style={{}}
+        >
+          <DatePickerPro
+            value={model?.[key]}
+            placeholder={`${placeholder || '请选择日期'}`}
+            onChange={(value) => handleInputChange(key, value)}
+          />
+        </Form.Item>
+      );
+    }
+    // 年月周
+    if ([FieldType.year, FieldType.month, FieldType.week].includes(type)) {
+      const { selectMode, meaning } = dateTypeMapping[type];
+      return (
+        <Form.Item
+          key={name}
+          label={`${label}:`}
+          className={styles.form__item}
+          labelWidth={labelWidth}
+          style={{}}
+        >
+          <DatePickerPro
+            placeholder={`${placeholder || `请选择${meaning}`}`}
+            selectionMode={selectMode}
+            align="right"
+            value={model?.[key]}
+            onChange={(value) => handleInputChange(key, value)}
+          />
+        </Form.Item>
+      );
+    }
+
+    if (type === FieldType.string) {
+      if (lookupCode || options) {
+        if (typeof options === 'string') {
+          return null;
+        }
+        return (
+          <Form.Item
+            key={name}
+            label={`${label}:`}
+            className={styles.form__item}
+            labelWidth={labelWidth}
+            style={{}}
+          >
+            <SelectPro
+              name={name}
+              value={model?.[key] ?? ''}
+              dataSet={queryDataSet}
+              options={options}
+              valueField={valueField}
+              textField={textField}
+              placeholder={`${placeholder || '请选择'}`}
+              onChange={(value) => handleInputChange(key, value)}
+              multiple={!!multiple}
+              // element select 不支持分隔符
+            />
+          </Form.Item>
+        );
+      }
+    }
+    return (
+      <Form.Item
+        key={name}
+        label={`${label}:`}
+        className={styles.form__item}
+        labelWidth={labelWidth}
+      >
+        <Input
+          value={model?.[key]}
+          placeholder={`${placeholder || '请输入'}`}
+          onChange={(value) => handleInputChange(key, value)}
+        />
+      </Form.Item>
+    );
+  };
+
+  if (!queryFields.length) {
+    return null;
+  }
+
+  return (
+    <Form className={cls(styles.form__query, className)} model={model} inline>
+      {queryFields.map(([key, field], index: number) => renderFormItem(key, field, index))}
+      <div className={cls(styles.form__item, styles.buttons__query)} style={{ float: 'right' }}>
+        <Button type={ButtonColor.primary} onClick={() => handleQuery()}>
+          查询
+        </Button>
+        <Button className={styles.button__reset} onClick={() => handleReset()}>
+          重置
+        </Button>
+        {/* 目前仅支持 5 列展示 */}
+        {queryFields.length > 4 && (
+          <Button type="text" onClick={() => setIsExpand(!isExpand)} style={{ marginLeft: 10 }}>
+            {isExpand ? '收起 >' : '更多'}
+          </Button>
+        )}
+      </div>
+    </Form>
+  );
+};
+export default observer(QueryForm);
+```
+
+## 更新日志
+
+### alpha
+
+**2024-09-14**
+
+- 🐞 修复默认值取值逻辑；
+
+**2024-09-04**
+
+- 🎉 日期组件替换为 `DatePickerPro`；
+
+**2024-08-05**
+
+- 🎉 新增 `QueryForm` 组件；
