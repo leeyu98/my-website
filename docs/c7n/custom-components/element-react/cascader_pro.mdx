@@ -1,0 +1,67 @@
+---
+title: CascaderPro
+description: 基于 Element React 封装的级联选择组件。
+sidebar_position: 20
+tags:
+  - Element React
+  - CascaderPro
+keywords:
+  - Element React
+  - CascaderPro
+---
+
+<Author count={3000} publish="2024-09-14 10:40" />
+
+:::warning 警告
+开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
+:::
+
+基于 `Element React` 的 `Cascader` 组件，结合 `DataSet` 的一些特性封装的多选组组件。
+
+## 特性说明
+
+- 理论上支持 `Cascader` 组件除`onChange` 的所有属性（对 `onChange` 做了自定义封装，返回原始数据）
+
+## 何时使用
+
+- 在表单中需要使用级联选择且需要获取原始数据时使用，其他情况请使用标准组件。
+
+## 基本用法
+
+```tsx showLineNumbers
+import { CascaderPro } from '@/components/element-pro';
+
+export default () => {
+  const handleSelectChange = (key: string, value: any, checked: any) => {
+    console.log(key, value, checked);
+  };
+
+  return (
+    <CascaderPro
+      options={options || []}
+      value={model.address || []}
+      onChange={(val, checked) => handleSelectChange('address', val, checked)}
+      changeOnSelect
+    />
+  );
+};
+```
+
+## API
+
+> 除此以下附加属性外，支持 `Checkbox.Group` 默认所有属性。
+
+| 参数     | 类型 <div style={{minWidth:130}}/>    | 说明                                                                                                                                 | 默认值 |
+| :------- | :------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------- | :----- |
+| options  | `any[]`                               | <Highlight color="red">必选</Highlight> 用于手动渲染选项数据。请使用 `Cascader` 标准数据结构（非标准数据请使用 `parseDicData` 转换） | -      |
+| onChange | `(value: any, checked?: any) => void` | <Highlight>可选</Highlight> 通过 `value` 匹配返回原始数据 checked                                                                    | -      |
+
+## 源代码
+
+## 更新日志
+
+### alpha
+
+**2024-09-13**
+
+- 🎉 新增 `CascaderPro` 组件；
