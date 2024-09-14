@@ -1,7 +1,7 @@
 ---
 title: FormPro
 description: 基于 Element React 封装的表单组件。
-sidebar_position: 30
+sidebar_position: 50
 tags:
   - 表单
   - FormPro
@@ -72,6 +72,124 @@ export default () => {
 | defaultExpanded | `boolean`                          | <Highlight>可选</Highlight> 是否默认展开                                                                | `false` |
 
 ## 源代码
+
+```tsx showLineNumbers title="FormPro/index.tsx"
+import { Button, Form } from 'element-react';
+import cls from 'classnames';
+import styles from './index.module.less';
+import { HeaderTitle } from '@/components/layout';
+import { HeaderTitleProps } from '@/components/layout/HeaderTitle';
+import { Icon, Collapse } from 'choerodon-ui';
+
+const ExpandIcon = ({ isExpand = true, onToggle }) => {
+  return isExpand ? (
+    <Button type="text" onClick={() => onToggle('collapse')}>
+      收起
+      <Icon type="expand_less" style={{ marginLeft: 6 }} />
+    </Button>
+  ) : (
+    <Button type="text" onClick={() => onToggle('expand')}>
+      展开
+      <Icon type="expand_more" style={{ marginLeft: 6 }} />
+    </Button>
+  );
+};
+
+type FormProps = React.ComponentProps<typeof Form>;
+export interface FormProProps extends Omit<FormProps, 'className'> {
+  columns?: number;
+  className?: string;
+  header?: React.ReactNode;
+  headerProps?: HeaderTitleProps;
+  /**
+   * @description 是否只读 - 做样式调整，移除边框及背景色
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
+   * @description 是否可展开/收起
+   * @default false 不展示展开/收起
+
+   */
+  collapsible?: boolean;
+  /**
+   * @description 收起时保留的表单项个数
+   * @default 0 不保留，全部收收起
+   */
+  limit?: number;
+  /**
+   * @description 是否默认展开
+   * @default false 收起
+   */
+  defaultExpanded?: boolean;
+}
+
+const FormPro: React.FC<FormProProps> = React.forwardRef<Form, FormProProps>(
+  (
+    {
+      columns = 3,
+      limit = 0,
+      collapsible = false,
+      defaultExpanded = false,
+      readOnly = false,
+      className = '',
+      header,
+      children,
+      headerProps,
+      labelPosition = 'right',
+      ...formProps
+    },
+    ref
+  ) => {
+    const childrenList = React.Children.toArray(children);
+    const [isExpand, setIsExpand] = React.useState<boolean>(defaultExpanded);
+
+    const handleToggle = React.useCallback((type: 'collapse' | 'expand') => {
+      setIsExpand(type === 'expand');
+    }, []);
+
+    return (
+      <>
+        {header && (
+          <HeaderTitle
+            extra={collapsible ? <ExpandIcon isExpand={isExpand} onToggle={handleToggle} /> : null}
+            {...headerProps}
+          >
+            {header}
+          </HeaderTitle>
+        )}
+        <Form
+          ref={ref}
+          {...formProps}
+          className={cls(className, styles[`form__columns-${columns}`], styles.form__pro, {
+            [styles['form__pro-vertical']]: labelPosition === 'top',
+            [styles['form__pro--readonly']]: readOnly,
+          })}
+        >
+          {collapsible ? (
+            <>
+              {childrenList.slice(0, limit)}
+              <Collapse
+                activeKey={isExpand ? '1' : '0'}
+                ghost
+                className={styles['collapse__no-header']}
+              >
+                <Collapse.Panel key="1" header="">
+                  {childrenList.slice(limit)}
+                </Collapse.Panel>
+              </Collapse>
+            </>
+          ) : (
+            childrenList
+          )}
+        </Form>
+      </>
+    );
+  }
+);
+
+export default FormPro;
+```
 
 ## 更新日志
 

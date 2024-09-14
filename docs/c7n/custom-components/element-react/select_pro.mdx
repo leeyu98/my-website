@@ -62,6 +62,124 @@ export default () => {
 
 ## 源代码
 
+```tsx showLineNumbers title="SelectPro/index.tsx"
+import { Field, Record } from 'choerodon-ui/dataset';
+import DataSet from 'choerodon-ui/dataset/data-set';
+import { Select } from 'element-react';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+
+type SelectProps = React.ComponentProps<typeof Select>;
+
+// WARNING: 开发阶段：组件 API 可能随时变更
+export interface SelectProProps extends Omit<SelectProps, 'onChange'> {
+  /**
+   * @description 绑定的 Element 表单 model 中的 value
+   */
+  value: any;
+  /**
+   * @description 绑定的字段名 - 由于 field 仅支持 string，所以不做其他类型兼容【未关联 DataSet 时不需要传入】
+   */
+  name?: string;
+  /**
+   * @description 用于手动渲染数据时选项绑定的值字段，同时用于生成 key，需要保证唯一性
+   */
+  valueField?: string;
+  /**
+   * @description 用于手动渲染数据时的展示字段
+   */
+  textField?: string;
+  /**
+   * @description 用于手动渲染数据的 DataSet
+   */
+  options?: DataSet | null;
+
+  /**
+   * @description 用于手动渲染的数据，未使用 dataSet 的情况。支持非对象数据渲染
+   */
+  optionsData?: Array<any>;
+
+  /**
+   * @deprecated 后续版本会删除，请使用 dataSet
+   * @description 绑定的 record - 主要为了使用 record.dataSet 获取配置
+   */
+  record?: Record | null;
+
+  /**
+   * @description 绑定的 dataSet - 为了使用 dataSet 获取对应字段的 lookupCode 配置【注意：使用查询参数时传入 dataSet.queryDataSet】
+   */
+  dataSet?: DataSet | null;
+  /**
+   * @description onChange 事件，覆盖默认的 onChange 事件类型问题
+   */
+  onChange?: (value: any, checked: any) => void;
+}
+
+const SelectPro: React.FC<SelectProProps> & {
+  Option: typeof Select.Option;
+  OptionGroup: typeof Select.OptionGroup;
+} = ({
+  value,
+  name,
+  valueField: valField,
+  textField: txtField,
+  options,
+  optionsData,
+  record,
+  dataSet,
+  style,
+  children,
+  onChange,
+  ...restProps
+}) => {
+  const field: Field | undefined = dataSet?.getField(name) || record?.dataSet?.getField(name);
+
+  const textField = txtField || field?.pristineProps?.textField || 'meaning';
+  const valueField = valField || field?.pristineProps?.valueField || 'value';
+
+  const optionsDS = options || field?.options;
+
+  return (
+    <Select
+      value={value}
+      style={{ width: '100%', ...style }}
+      onChange={onChange as SelectProps['onChange']}
+      {...restProps}
+    >
+      {children ||
+        (optionsData || optionsDS)?.map((opt: Record | unknown) => {
+          // record 渲染
+          if (opt instanceof Record) {
+            return (
+              <Select.Option
+                key={opt?.get(valueField)}
+                value={opt?.get(valueField)}
+                label={opt?.get(textField)}
+              />
+            );
+          }
+          // optionsData 渲染
+          if (typeof opt === 'string' || typeof opt === 'number') {
+            return <Select.Option key={opt} value={opt} label={opt} />;
+          }
+          return (
+            <Select.Option
+              key={opt?.[valueField]}
+              value={opt?.[valueField]}
+              label={opt?.[textField]}
+            />
+          );
+        })}
+    </Select>
+  );
+};
+
+SelectPro.Option = Select.Option;
+SelectPro.OptionGroup = Select.OptionGroup;
+
+export default observer(SelectPro);
+```
+
 ## 更新日志
 
 ### alpha

@@ -1,7 +1,7 @@
 ---
 title: CascaderPro
 description: 基于 Element React 封装的级联选择组件。
-sidebar_position: 20
+sidebar_position: 30
 tags:
   - Element React
   - CascaderPro
@@ -57,6 +57,63 @@ export default () => {
 | onChange | `(value: any, checked?: any) => void` | <Highlight>可选</Highlight> 通过 `value` 匹配返回原始数据 checked                                                                    | -      |
 
 ## 源代码
+
+```tsx showLineNumbers title="CascaderPro/index.tsx"
+import { Cascader } from 'element-react';
+import { isFunction } from 'lodash-es';
+
+type CascaderProps = React.ComponentProps<typeof Cascader>;
+
+// 把树形数据打平
+const flatOptions = (options: any[]) => {
+  let result: any[] = [];
+  options.forEach((opt) => {
+    const { children, ..._opt } = opt;
+    result.push(_opt);
+    if (children) {
+      result = [...result, ...flatOptions(children)];
+    }
+  });
+  return result;
+};
+
+export interface CascaderProProps extends Omit<CascaderProps, 'onChange'> {
+  onChange?: (val: any, checked: any) => void;
+}
+
+const CascaderPro: React.FC<CascaderProProps> = ({
+  options,
+  props = {
+    value: 'value',
+    label: 'label',
+    children: 'children',
+    disabled: 'disabled',
+  },
+  onChange,
+  ...restProps
+}) => {
+  const { value = 'value' } = props;
+
+  const flattedOptions = React.useMemo(() => flatOptions(options), [options.length]);
+
+  const handleChange = (values) => {
+    if (values && values?.length) {
+      if (onChange && isFunction(onChange)) {
+        // 通过 value 匹配返回原始数据
+        const checked = (values || [])?.map((val) =>
+          flattedOptions?.find((opt) => opt?.[value] === val)
+        );
+
+        onChange(values, checked);
+      }
+    }
+  };
+
+  return <Cascader options={options} props={props} {...restProps} onChange={handleChange} />;
+};
+
+export default CascaderPro;
+```
 
 ## 更新日志
 

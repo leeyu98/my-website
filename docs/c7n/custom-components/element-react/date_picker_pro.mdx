@@ -1,0 +1,119 @@
+---
+title: DatePickerPro
+description: 基于 Element React封装的日期选择组件。
+sidebar_position: 40
+tags:
+  - 日期选择
+  - DatePickerPro
+keywords:
+  - 日期选择
+  - DatePickerPro
+---
+
+<Author count={3000} publish="2024-9-14 10:55" />
+
+:::warning 警告
+开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
+:::
+
+基于 Element React `DatePicker` 组件封装的日期选择组件。
+
+## 特性说明
+
+- 扩展支持 `monent.Moment` `dayjs.Dayjs` 值类型
+- 支持 `disabled` 禁用属性
+- 理论上支持 `DatePicker` 组件所有属性
+
+## 何时使用
+
+- 使用 `DatePicker` 组件的所有场景
+
+## 基本用法
+
+```tsx showLineNumbers
+import { DatePickerPro } from '@/components/element-pro';
+
+export default () => {
+  const handleValueChange = (key: string, value: any, checked: any) => {
+    console.log(key, value, checked);
+  };
+
+  return (
+    <DatePickerPro
+      value={model.startTime}
+      placeholder="选择月"
+      selectionMode="month"
+      onChange={(val) => handleValueChange('startTime', val)}
+    />
+  );
+};
+```
+
+## API
+
+> 除此以下附加属性外，支持 `DatePicker` 所有属性。
+
+| 参数     | 类型 <div style={{minWidth:130}}/>                                               | 说明                                                 | 默认值  |
+| :------- | :------------------------------------------------------------------------------- | :--------------------------------------------------- | :------ |
+| value    | `Date` &#124; `null` &#124; `string` &#124; `moment.Moment` &#124; `dayjs.Dayjs` | <Highlight color="red">必输</Highlight> 绑定的值字段 | -       |
+| disabled | `boolean`                                                                        | <Highlight>可选</Highlight> 禁用状态                 | `false` |
+
+## 源代码
+
+```tsx showLineNumbers title="DatePickerPro/index.tsx"
+import cls from 'classnames';
+import dayjs from 'dayjs';
+import { DatePicker } from 'element-react';
+import moment from 'moment';
+import styles from './index.module.less';
+
+type DatePickerProps = React.ComponentProps<typeof DatePicker>;
+
+export interface DatePickerProProps extends Omit<DatePickerProps, 'value'> {
+  /**
+   * @description 组件是否禁用
+   * @default false
+   */
+  disabled?: boolean;
+  /**
+   * @description 值 - 扩展值类型，支持 moment dayjs
+   */
+  value: Date | null | string | moment.Moment | dayjs.Dayjs;
+}
+
+const DatePickerPro: React.FC<DatePickerProProps> = ({
+  disabled = false,
+  value: _value,
+  ...restProps
+}) => {
+  let value: Date | null = null;
+
+  if (typeof _value === 'string') {
+    // NOTE: 虽然官方类型定义中支持 string，但实际上不能正常渲染
+    value = new Date(_value); // 兼容 string
+  } else if (moment.isMoment(_value) || dayjs.isDayjs(_value)) {
+    value = new Date(_value.valueOf()); // 兼容 moment dayjs 类型
+  } else {
+    value = _value;
+  }
+  return (
+    <DatePicker
+      value={value}
+      className={cls({
+        [styles['date__picker--disabled']]: disabled,
+      })}
+      {...restProps}
+    />
+  );
+};
+
+export default DatePickerPro;
+```
+
+## 更新日志
+
+### alpha
+
+**2024-08-05**
+
+- 🎉 新增 `DatePickerPro` 组件；
