@@ -1,0 +1,91 @@
+---
+title: FormPro
+description: 基于 Element React 封装的表单组件。
+sidebar_position: 30
+tags:
+  - 表单
+  - FormPro
+keywords:
+  - 表单
+  - FormPro
+---
+
+<Author count={3000} publish="2024-9-14 11:15" />
+
+:::warning 警告
+开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
+:::
+
+基于 Element React `Form` 组件封装的表单组件。
+
+## 特性说明
+
+- 支持自定义多列渲染
+- 支持 header 自定义渲染
+- 支持展开/折叠禁用属性
+- 支持只读模式，需配合 `disabled` 属性使用
+- 理论上支持 `Form` 组件所有属性
+
+## 何时使用
+
+- 使用 `Form` 组件的所有场景
+
+## 基本用法
+
+```tsx showLineNumbers
+import { FormPro, SelectPro } from '@/components/element-pro';
+
+export default () => {
+  return (
+    <FormPro columns={6} model={model} labelPosition="right" labelWidth={80} inline readOnly>
+      <Form.Item
+        prop="reportingChannel"
+        label={dataSet?.getField('reportingChannel')?.get('label')}
+      >
+        <SelectPro
+          name="reportingChannel"
+          dataSet={dataSet}
+          value={model.reportingChannel}
+          disabled
+        />
+      </Form.Item>
+      <Form.Item prop="batch" label={dataSet?.getField('batch')?.get('label')}>
+        <SelectPro name="batch" dataSet={dataSet} value={model.batch} disabled />
+      </Form.Item>
+    </FormPro>
+  );
+};
+```
+
+## API
+
+> 除此以下附加属性外，支持 `Form` 所有属性。
+
+| 参数            | 类型 <div style={{minWidth:130}}/> | 说明                                                                                                    | 默认值  |
+| :-------------- | :--------------------------------- | :------------------------------------------------------------------------------------------------------ | :-----: |
+| columns         | `number`                           | <Highlight>可选</Highlight> 表单分列                                                                    |    3    |
+| header          | `React.ReactNode`                  | <Highlight>可选</Highlight> 表单标题                                                                    |    -    |
+| headerProps     | `HeaderTitleProps`                 | <Highlight>可选</Highlight> `HeaderTitle` 的属性配置                                                    |    -    |
+| readOnly        | `boolean`                          | <Highlight>可选</Highlight> 渲染只读表单，通过样式移除边框、背景、角标等；需要将表单项设定为 `disabled` |    -    |
+| collapsible     | `boolean`                          | <Highlight>可选</Highlight> 是否可展开/收起                                                             | `false` |
+| limit           | `number`                           | <Highlight>可选</Highlight> 表单折叠时保留的表单项数量                                                  |   `0`   |
+| defaultExpanded | `boolean`                          | <Highlight>可选</Highlight> 是否默认展开                                                                | `false` |
+
+## 源代码
+
+## 更新日志
+
+### alpha
+
+**2024-09-12**
+
+- 🎉 新增 `readOnly` 支持只读模式；
+- 🎉 新增 `collapsible` `limit` `defaultExpanded` 支持展开折叠；
+
+**2024-09-03**
+
+- 🐞 修复 `ref` 丢失的问题；
+
+**2024-08-27**
+
+- 🎉 新增 `FormPro` 组件；
