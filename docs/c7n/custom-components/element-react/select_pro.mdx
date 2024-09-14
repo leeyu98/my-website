@@ -1,0 +1,75 @@
+---
+title: SelectPro
+description: 基于 Element React 封装的下拉组件。
+sidebar_position: 10
+tags:
+  - Element React
+  - SelectPro
+keywords:
+  - Element React
+  - SelectPro
+---
+
+<Author count={3000} publish="2023-9-14 10:40" />
+
+:::warning 警告
+开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
+:::
+
+基于 `Select` 组件封装的下拉选择组件。
+
+## 特性说明
+
+- 支持 `dataSet` 自动获取值集数据渲染
+- 支持 `options` `optionsData` 手动渲染
+- 理论上与 `Select` 组件完全兼容，支持 `Seelct` 组件除的所有属性
+
+## 何时使用
+
+- 使用 `Select` 组件的所有场景
+
+## 基本用法
+
+```tsx showLineNumbers
+import { SelectPro } from '@/components/element-pro';
+
+export default () => {
+  return (
+    <SelectPro
+      name="type"
+      dataSet={dataSet}
+      value={model.type}
+      onChange={(val) => handleValueChange('type', val)}
+    />
+  );
+};
+```
+
+## API
+
+> 除此以下附加属性外，支持 `Select` 默认所有属性。
+
+| 参数        | 类型 <div style={{minWidth:130}}/>    | 说明                                                                                                                                         | 默认值    |
+| :---------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
+| value       | `any`                                 | <Highlight color="red">必输</Highlight> 绑定的 Element 表单 model 中的 value                                                                 | -         |
+| name        | `string`                              | <Highlight>可选</Highlight> field name【未关联 DataSet 时不需要传入】                                                                        | `false`   |
+| valueField  | `string`                              | <Highlight>可选</Highlight> 值字段，支持 DataSet 配置                                                                                        | `value`   |
+| textField   | `string`                              | <Highlight>可选</Highlight> 展示字段，支持 DataSet 配置                                                                                      | `meaning` |
+| options     | `DataSet` &#124; `null`               | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                                                                   | -         |
+| optionsData | ` Array<any>`                         | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options                                              | -         |
+| dataSet     | `DataSet`&#124; `null`                | <Highlight>可选</Highlight> 绑定的 dataSet，用于获取对应字段的 lookupCode 配置；优先级最低<br/>注意：使用查询参数时传入 dataSet.queryDataSet | -         |
+| onChange    | `(value: any, checked?: any) => void` | <Highlight>可选</Highlight> 仅对 onChange 事件做类型重定义（默认 onChange 事件支持从第二参数获取原始数据，但类型定义存在问题）               | -         |
+
+## 源代码
+
+## 更新日志
+
+### alpha
+
+**2024-08-05**
+
+- 🐞 单选情况下默认不启用可筛选属性（导致其余选项丢失）
+
+**2024-08-05**
+
+- 🎉 新增 `SelectPro` 组件；
