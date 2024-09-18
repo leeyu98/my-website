@@ -1,0 +1,9 @@
+{
+  "position": 1000,
+  "label": "Layout 布局",
+  "link": {
+    "type": "generated-index",
+    "slug": "c7n/custom-components/layout",
+    "description": "基于 hzero-front 组件进行封装的自定义布局组件！"
+  }
+}

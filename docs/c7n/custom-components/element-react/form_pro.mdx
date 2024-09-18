@@ -124,7 +124,7 @@ export interface FormProProps extends Omit<FormProps, 'className'> {
   defaultExpanded?: boolean;
 }
 
-const FormPro: React.FC<FormProProps> = React.forwardRef<Form, FormProProps>(
+const FormPro = React.forwardRef<Form, React.PropsWithChildren<FormProProps>>(
   (
     {
       columns = 3,

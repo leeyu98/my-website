@@ -1,0 +1,116 @@
+---
+title: PageWithFooter
+description: 基于 PageHeaderWrapper 组件封装的支持自定义固定底部操作栏的布局组件。
+sidebar_position: 10
+tags:
+  - Layout
+  - 布局
+keywords:
+  - PageWithFooter
+---
+
+<Author cost={3} publish="2024-9-18 18:35:00" />
+
+基于 `PageHeaderWrapper` 组件封装的支持自定义固定底部操作栏的布局组件。
+
+## 特性说明
+
+- 支持自定义底部固定操作栏
+- 兼容 `PageHeaderWrapper` 所有属性
+
+## 基本用法
+
+```tsx
+import { PageWithFooter } from '@/components/layout';
+
+export default () => {
+  return (
+    <PageWithFooter
+      title={title}
+      header={
+        <Button style={{ marginRight: 8 }} onClick={handleLinkBack}>
+          <Icon type="arrow_back" style={{ marginRight: 4 }} />
+          返回
+        </Button>
+      }
+      contentProps={{ style: { paddingLeft: 50 } }}
+      showFooter={!isReadonly}
+      footer={<Button onClick={handleLinkBack}>取消</Button>}
+    >
+      {/* content here */}
+    </PageWithFooter>
+  );
+};
+```
+
+## API
+
+| 参数         | 类型              | 说明                                           | 默认值  |
+| :----------- | :---------------- | :--------------------------------------------- | :------ |
+| showFooter   | `boolean`         | <Highlight>可选</Highlight> 是否需要底部操作栏 | `false` |
+| footerHeight | `number`          | <Highlight>可选</Highlight> 底部操作栏高度     | `60`    |
+| footer       | `React.ReactNode` | <Highlight>可选</Highlight> 底部操作栏内容     | `null`  |
+
+### 源代码
+
+```tsx
+import { PageHeaderWrapper } from 'components/Page';
+
+export interface PageWithFooterProps extends React.ComponentProps<typeof PageHeaderWrapper> {
+  showFooter?: boolean;
+  footerHeight?: number;
+  footer?: React.ReactNode;
+}
+
+const PageWithFooter: React.FC<PageWithFooterProps> = ({
+  children,
+  showFooter = false,
+  footerHeight = 60,
+  footer = null,
+  contentProps = { style: {} },
+  ...wrapperProps
+}) => {
+  return (
+    <PageHeaderWrapper
+      {...wrapperProps}
+      contentProps={{
+        ...contentProps,
+        style: { ...contentProps.style, position: 'relative', paddingRight: 0 },
+      }}
+    >
+      <div
+        style={{
+          height: showFooter ? `calc(100% - ${footerHeight}px)` : '100%',
+          overflowY: 'auto',
+          paddingRight: contentProps.style?.paddingRight ?? 50,
+        }}
+      >
+        {children}
+      </div>
+      {showFooter && (
+        <div
+          style={{
+            width: '100%',
+            height: footerHeight,
+            textAlign: 'center',
+            padding: '12px 0',
+            backgroundColor: '#ffffff',
+          }}
+        >
+          {footer}
+        </div>
+      )}
+    </PageHeaderWrapper>
+  );
+};
+
+export default PageWithFooter;
+```
+
+## 更新日志
+
+### alpha
+
+**2023-08-27**
+
+- 🎉 新增 `PageWithFooter` 布局组件
