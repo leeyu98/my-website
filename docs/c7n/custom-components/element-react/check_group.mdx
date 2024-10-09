@@ -60,6 +60,7 @@ export default () => {
 | :---------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
 | value       | `any`                                 | <Highlight color="red">必输</Highlight> 绑定的 Element 表单 model 中的 value                                                                 | -         |
 | name        | `string`                              | <Highlight>可选</Highlight> field name【未关联 DataSet 时不需要传入】                                                                        | `false`   |
+| valueField  | `string`                              | <Highlight>可选</Highlight> 自定义 valueField                                                                                                | `value`   |
 | textField   | `string`                              | <Highlight>可选</Highlight> Checkbox 不支持 valueField，需要保证 textField 唯一性                                                            | `meaning` |
 | options     | `DataSet` &#124; `null`               | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                                                                   | -         |
 | optionsData | ` Array<any>`                         | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options                                              | -         |
@@ -82,6 +83,9 @@ import styles from './index.module.less';
 type CheckboxGroupProps = React.ComponentProps<typeof Checkbox.Group>;
 
 // WARNING: 开发阶段：组件 API 可能随时变更
+/**
+ * @see https://changnian.netlify.app/docs/c7n/custom-components/element-react/check_group
+ */
 export interface CheckGroupProps extends Omit<CheckboxGroupProps, 'onChange'> {
   /**
    * @description 绑定的 Element 表单 model 中的 value
@@ -91,6 +95,10 @@ export interface CheckGroupProps extends Omit<CheckboxGroupProps, 'onChange'> {
    * @description field name【未关联 DataSet 时不需要传入】
    */
   name?: string;
+  /**
+   * @description 支持 valueField，需要保证 textField 唯一性
+   */
+  valueField?: string;
   /**
    * @description Checkbox 不支持 valueField，需要保证 textField 唯一性
    */
@@ -116,11 +124,14 @@ export interface CheckGroupProps extends Omit<CheckboxGroupProps, 'onChange'> {
    * @description 通过 textField 匹配返回原始数据 checked
    */
   onChange?: (value: any, checked?: any) => void;
+
+  bordered?: boolean;
 }
 
 const CheckGroup: React.FC<CheckGroupProps> = ({
   value,
   name,
+  valueField: valField,
   textField: txtField,
   options,
   dataSet,
@@ -128,47 +139,86 @@ const CheckGroup: React.FC<CheckGroupProps> = ({
   onChange,
   className,
   disabled = false,
+  bordered = false,
   ...restProps
 }) => {
   const field: Field | undefined = dataSet?.getField(name);
 
   // Checkbox 不支持 valueField，默认 value 与 textField 相等
   const textField = txtField || field?.pristineProps?.textField || 'meaning';
+  const valueField = valField || field?.pristineProps?.valueField || 'value';
 
   const optionsDS = options || field?.options;
 
+  const textValue = React.useMemo(() => {
+    const checked: any[] = [];
+    (value || []).forEach((val) => {
+      (optionsData || optionsDS)?.forEach((opt) => {
+        if (opt instanceof Record) {
+          if (val === opt?.get(valueField)) {
+            checked.push(opt?.get(textField));
+          }
+        } else if (typeof opt === 'string' || typeof opt === 'number') {
+          if (val === opt) {
+            checked.push(opt);
+          }
+        } else {
+          if (val === opt?.[valueField]) {
+            checked.push(opt?.[textField]);
+          }
+        }
+      });
+    });
+    return checked;
+  }, [value, optionsData, optionsDS]);
+
+  // DEBUG: for debugging
+  console.log('[CheckGroup]', value, textValue);
+
   const handleChange = (value) => {
-    if (value && value?.length) {
-      if (onChange && isFunction(onChange)) {
+    if (onChange && isFunction(onChange)) {
+      if (value && value?.length) {
+        const values: any[] = [];
         const checked: any[] = [];
-        // 通过 textField 匹配返回原始数据
+        // 通过 valueField 匹配返回原始数据
 
         (optionsData || optionsDS)?.forEach((opt) => {
           if (opt instanceof Record) {
             if (value.includes(opt?.get(textField))) {
               checked.push(opt);
+              values.push(opt?.get(valueField));
             }
           } else if (typeof opt === 'string' || typeof opt === 'number') {
             if (value.includes(opt)) {
               checked.push(opt);
+              values.push(opt);
             }
           } else {
             if (value.includes(opt?.[textField])) {
               checked.push(opt);
+              values.push(opt?.[valueField]);
             }
           }
         });
 
-        onChange(value, checked);
+        onChange(values, checked);
+      } else {
+        onChange([], []);
       }
     }
   };
 
   return (
     <Checkbox.Group
-      value={value}
+      value={textValue}
       onChange={handleChange}
-      className={cls(styles.check__group, className)}
+      className={cls(
+        styles.check__group,
+        {
+          [styles['check__group--bordered']]: bordered,
+        },
+        className
+      )}
       {...restProps}
     >
       {(optionsData || optionsDS)?.map((opt: Record | unknown) => {
@@ -191,6 +241,12 @@ export default observer(CheckGroup);
 ## 更新日志
 
 ### alpha
+
+**2024-09-25**
+
+- 🎉 新增 `valueField` 属性，`value` 属性调整为按值匹配；
+- 🎉 新增 `bordered` 属性，支持调整是否展示边框；
+- 🐞 修复空值未触发 `onChange` 的问题
 
 **2024-08-05**
 
