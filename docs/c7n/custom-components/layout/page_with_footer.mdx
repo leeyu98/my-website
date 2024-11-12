@@ -9,7 +9,7 @@ keywords:
   - PageWithFooter
 ---
 
-<Author cost={3} publish="2024-9-18 18:35:00" />
+<Author cost={3} publish="2024-9-18 18:35:00" update="2024-11-12 15:8" />
 
 基于 `PageHeaderWrapper` 组件封装的支持自定义固定底部操作栏的布局组件。
 
@@ -17,6 +17,7 @@ keywords:
 
 - 支持自定义底部固定操作栏
 - 兼容 `PageHeaderWrapper` 所有属性
+- 内置 `Spin` 控制内容加载效果
 
 ## 基本用法
 
@@ -54,19 +55,28 @@ export default () => {
 ### 源代码
 
 ```tsx
+import { Size } from 'choerodon-ui/lib/_util/enum';
+import { Spin } from 'choerodon-ui/pro';
+import { SpinProps } from 'choerodon-ui/pro/lib/spin';
 import { PageHeaderWrapper } from 'components/Page';
 
+// 基于 PageHeaderWrapper 封装，支持所有属性；PageWithFooter 存在固定底部按钮组的布局
+type PickSpinProps = Pick<SpinProps, 'spinning' | 'dataSet' | 'size' | 'tip'>;
 export interface PageWithFooterProps extends React.ComponentProps<typeof PageHeaderWrapper> {
   showFooter?: boolean;
   footerHeight?: number;
   footer?: React.ReactNode;
 }
 
-const PageWithFooter: React.FC<PageWithFooterProps> = ({
+const PageWithFooter: React.FC<PageWithFooterProps & PickSpinProps> = ({
   children,
   showFooter = false,
   footerHeight = 60,
   footer = null,
+  spinning = false,
+  dataSet,
+  size = Size.default,
+  tip = '',
   contentProps = { style: {} },
   ...wrapperProps
 }) => {
@@ -75,7 +85,7 @@ const PageWithFooter: React.FC<PageWithFooterProps> = ({
       {...wrapperProps}
       contentProps={{
         ...contentProps,
-        style: { ...contentProps.style, position: 'relative', paddingRight: 0 },
+        style: { position: 'relative', paddingRight: 0, paddingBottom: 0, ...contentProps.style },
       }}
     >
       <div
@@ -85,7 +95,9 @@ const PageWithFooter: React.FC<PageWithFooterProps> = ({
           paddingRight: contentProps.style?.paddingRight ?? 50,
         }}
       >
-        {children}
+        <Spin dataSet={dataSet} spinning={spinning} tip={tip} size={size}>
+          {children}
+        </Spin>
       </div>
       {showFooter && (
         <div
@@ -110,6 +122,10 @@ export default PageWithFooter;
 ## 更新日志
 
 ### alpha
+
+**2023-11-12**
+
+- 🎉 新增 `Spin` 控制内容加载效果
 
 **2023-08-27**
 

@@ -121,7 +121,7 @@ displayed_sidebar: frontendSidebar
 
 ### \<script setup\>
 
-`<script setup>` 是 `setup()` 的语法糖，会自动返回模板中用到的变量；在访问 props emits slots 等时需要通过一些编译器宏如 defineProps defineEmits defineSlots 等。
+`<script setup>` 是 `setup()` 的语法糖，会自动返回模板中用到的变量；在访问 `props` `emits` `slots` 等时需要通过一些编译器宏如 `defineProps` `defineEmits` `defineSlots` 等。
 
 ```html title="Greeting.vue"
 <template>
@@ -152,7 +152,7 @@ displayed_sidebar: frontendSidebar
 
 ### defineComponent 函数式
 
-函数式支持 TSX/JSX，可以直接返回 JSX 元素，不再编写 tempalte，对熟悉 JSX 的 React 开发者来说相对友好。
+函数式支持 `TSX/JSX`，可以直接返回 `JSX` 元素，不再编写 `tempalte`，对熟悉 `JSX` 的 `React` 开发者来说相对友好。
 
 ```jsx
 import { defineComponent } from 'vue';
