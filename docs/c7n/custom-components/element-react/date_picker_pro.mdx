@@ -10,7 +10,7 @@ keywords:
   - DatePickerPro
 ---
 
-<Author count={3000} publish="2024-9-14 10:55" />
+<Author count={3000} publish="2024-9-14 10:55" update="2024-11-12 17:43" />
 
 :::warning 警告
 开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
@@ -23,6 +23,7 @@ keywords:
 - 扩展支持 `monent.Moment` `dayjs.Dayjs` 值类型
 - 支持 `disabled` 禁用属性
 - 理论上支持 `DatePicker` 组件所有属性
+- 支持日期范围选择
 
 ## 何时使用
 
@@ -53,52 +54,80 @@ export default () => {
 
 > 除此以下附加属性外，支持 `DatePicker` 所有属性。
 
-| 参数     | 类型 <div style={{minWidth:130}}/>                                               | 说明                                                 | 默认值  |
-| :------- | :------------------------------------------------------------------------------- | :--------------------------------------------------- | :------ |
-| value    | `Date` &#124; `null` &#124; `string` &#124; `moment.Moment` &#124; `dayjs.Dayjs` | <Highlight color="red">必输</Highlight> 绑定的值字段 | -       |
-| disabled | `boolean`                                                                        | <Highlight>可选</Highlight> 禁用状态                 | `false` |
+| 参数     | 类型 <div style={{ minWidth:130 }}/>                                                                                                    | 说明                                                 | 默认值  |
+| :------- | :-------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------- | :------ |
+| value    | `Date` \| `null` \| `string` \| `moment.Moment` \| `dayjs.Dayjs` <br/> `(Date  \| null  \| string  \| moment.Moment  \| dayjs.Dayjs)[]` | <Highlight color="red">必输</Highlight> 绑定的值字段 | -       |
+| disabled | `boolean`                                                                                                                               | <Highlight>可选</Highlight> 禁用状态                 | `false` |
+| isRange  | `boolean`                                                                                                                               | <Highlight>可选</Highlight> 是否日期范围选择器       | `false` |
 
 ## 源代码
 
 ```tsx showLineNumbers title="DatePickerPro/index.tsx"
 import cls from 'classnames';
 import dayjs from 'dayjs';
-import { DatePicker } from 'element-react';
+import { DatePicker, DateRangePicker } from 'element-react';
 import moment from 'moment';
+import React from 'react';
 import styles from './index.module.less';
 
 type DatePickerProps = React.ComponentProps<typeof DatePicker>;
 
 export interface DatePickerProProps extends Omit<DatePickerProps, 'value'> {
   /**
+   * @description 值 - 扩展值类型，支持 moment dayjs 扩展 range
+   */
+  value:
+    | Date
+    | null
+    | string
+    | moment.Moment
+    | dayjs.Dayjs
+    | (Date | null | string | moment.Moment | dayjs.Dayjs)[];
+  /**
    * @description 组件是否禁用
    * @default false
    */
   disabled?: boolean;
   /**
-   * @description 值 - 扩展值类型，支持 moment dayjs
+   * @description 值 - 是否展示日期范围选择器
    */
-  value: Date | null | string | moment.Moment | dayjs.Dayjs;
+  isRange?: boolean;
 }
 
 const DatePickerPro: React.FC<DatePickerProProps> = ({
   disabled = false,
   value: _value,
+  isRange = false,
   ...restProps
 }) => {
-  let value: Date | null = null;
+  let values = Array.isArray(_value) ? _value : [_value];
 
-  if (typeof _value === 'string') {
-    // NOTE: 虽然官方类型定义中支持 string，但实际上不能正常渲染
-    value = new Date(_value); // 兼容 string
-  } else if (moment.isMoment(_value) || dayjs.isDayjs(_value)) {
-    value = new Date(_value.valueOf()); // 兼容 moment dayjs 类型
-  } else {
-    value = _value;
+  const parsedValues = values.map((v) => {
+    if (typeof v === 'string') {
+      // NOTE: 虽然官方类型定义中支持 string，但实际上不能正常渲染
+      return v ? new Date(v) : null; // 兼容 string
+    } else if (moment.isMoment(v) || dayjs.isDayjs(v)) {
+      return new Date(v.valueOf()); // 兼容 moment dayjs 类型
+    } else {
+      return v;
+    }
+  });
+
+  if (isRange) {
+    return (
+      <DateRangePicker
+        value={parsedValues}
+        className={cls({
+          [styles['date__picker--disabled']]: disabled,
+        })}
+        {...restProps}
+      />
+    );
   }
+
   return (
     <DatePicker
-      value={value}
+      value={parsedValues?.[0]}
       className={cls({
         [styles['date__picker--disabled']]: disabled,
       })}
@@ -113,6 +142,14 @@ export default DatePickerPro;
 ## 更新日志
 
 ### alpha
+
+**2024-11-12**
+
+- 🐞 修复空字符值无法渲染问题；
+
+**2024-09-20**
+
+- 🎉 新增 `isRange` 支持日期范围；
 
 **2024-09-04**
 
