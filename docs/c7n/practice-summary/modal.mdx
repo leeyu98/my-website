@@ -10,15 +10,15 @@ tags:
 
 ## 切换路由时关闭弹窗
 
-官方文档有说明这种情况，在应用的最外层使用 ModalProvider 并传入 location 即可。
+官方文档有说明这种情况，在应用的最外层使用 `ModalProvider` 并传入 `location` 即可。
 
 ```js
 import { ModalProvider } from 'choerodon-ui/pro';
 import { useLocation } from 'dva';
 
 export default () => {
-  const _location = useLocation();
-  return <ModalProvider location={_location}>{/** ... */}</ModalProvider>;
+  const dvaLocation = useLocation();
+  return <ModalProvider location={dvaLocation}>{/** ... */}</ModalProvider>;
 };
 ```
 
@@ -50,7 +50,7 @@ export default () => {
 
 ### 针对旧版 Class 组件的解决方案
 
-针对一些旧的写法需要做适配的情况，通过 Function 组件传递。
+针对一些旧的写法需要做适配的情况，通过 `Function` 组件传递。
 
 ```tsx
 class OldClassCmp {
@@ -72,8 +72,8 @@ export default observer((props) => {
 ## 可导航的全屏渲染
 
 默认情况下，弹窗挂载在单独的节点，在弹窗中需要进行跳转、导航到其他路由等操作时弹窗始终展示。<br/>
-可以通过 ModalProvider 将弹窗挂载到指定页面容器内，并通过样式设定“伪装”全屏。
-最终效果可以实现跳转后新 TAB 页面不会展示弹窗，且交互不受影响，返回时原页面弹窗状态保留。
+可以通过 `ModalProvider` 将弹窗挂载到指定页面容器内，并通过样式设定“伪装”全屏。
+最终效果可以实现跳转后新 `TAB` 页面不会展示弹窗，且交互不受影响，返回时原页面弹窗状态保留。
 
 ```tsx
 Modal.open({
