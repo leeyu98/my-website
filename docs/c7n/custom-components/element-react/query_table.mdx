@@ -10,7 +10,7 @@ keywords:
   - QueryTable
 ---
 
-<Author count={3000} publish="2024-9-14 14:55" />
+<Author count={3000} publish="2024-9-14 14:55" update="2024-11-13 17:28" />
 
 :::warning 警告
 开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
@@ -49,14 +49,19 @@ export default () => {
 
 > 除此以下附加属性外，支持 `Table` 所有属性。
 
-| 参数             | 类型 <div style={{minWidth:130}}/> | 说明                                                                                            | 默认值     |
-| :--------------- | :--------------------------------- | :---------------------------------------------------------------------------------------------- | :--------- |
-| elButtons        | `ElButton` &#124; `ElButton[]`     | <Highlight>可选</Highlight> 表格上方的按钮组，支持 Element 按钮（组）                           | -          |
-| afterQuery       | `(params: any) => any`             | <Highlight>可选</Highlight> 哪些字段定义在 queryFields 或者 queryDataSet 中但不需要渲染的字段   | `[]`       |
-| excludeFields    | `string[]`                         | <Highlight>可选</Highlight> 点击查询按钮之后的回调，参数中可以拿到所有的查询参数                | `() => {}` |
-| wrapperStyle     | `React.CSSProperties`              | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                      | -          |
-| wrapperClassName | `string`                           | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options | -          |
-| withSpace        | `boolean`                          | <Highlight>可选</Highlight> 查询表单与顶部的间距 `10px`                                         | `false`    |
+| 参数             | 类型 <div style={{minWidth:130}}/>   | 说明                                                                                            | 默认值  |
+| :--------------- | :----------------------------------- | :---------------------------------------------------------------------------------------------- | :------ |
+| elButtons        | `ElButton` \| `ElButton[]`           | <Highlight>可选</Highlight> 表格上方的按钮组，支持 Element 按钮（组）                           | -       |
+| wrapperStyle     | `React.CSSProperties`                | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                      | -       |
+| wrapperClassName | `string`                             | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options | -       |
+| withSpace        | `boolean`                            | <Highlight>可选</Highlight> 查询表单与顶部的间距 `10px`                                         | `false` |
+| excludeFields    | `QueryFormProps['excludeFields']`    | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
+| afterQuery       | `QueryFormProps['afterQuery']`       | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
+| afterReset       | `QueryFormProps['afterReset']`       | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
+| queryFormProps   | `QueryFormProps['queryFormProps']`   | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
+| queryFieldsProps | `QueryFormProps['queryFieldsProps']` | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
+| cascadeMap       | `QueryFormProps['cascadeMap']`       | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
+| autoQuery        | `QueryFormProps['autoQuery']`        | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
 
 ## 源代码
 
@@ -74,7 +79,9 @@ import QueryForm, { QueryFormProps } from './QueryForm';
 
 // element 按钮
 export type ElButton = React.ReactElement<React.ComponentProps<typeof Button>>;
-
+/**
+ * @see https://changnian.netlify.app/docs/c7n/custom-components/element-react/query_table
+ */
 export interface QueryTableProps extends TableProps {
   /**
    * @description table 上方的按钮组，支持 Element 按钮(组)
@@ -84,8 +91,17 @@ export interface QueryTableProps extends TableProps {
    * @description 点击查询按钮之后的操作
    */
   afterQuery?: QueryFormProps['afterQuery'];
+  afterReset?: QueryFormProps['afterReset'];
 
   excludeFields?: QueryFormProps['excludeFields'];
+
+  queryFormProps?: QueryFormProps['queryFormProps'];
+
+  queryFieldsProps?: QueryFormProps['queryFieldsProps'];
+
+  cascadeMap?: QueryFormProps['cascadeMap'];
+
+  autoQuery?: QueryFormProps['autoQuery'];
 
   wrapperStyle?: React.CSSProperties;
 
@@ -102,12 +118,17 @@ const QueryTable: React.FC<QueryTableProps> = ({
   columns,
   queryBar,
   elButtons,
-  afterQuery = () => {},
+  afterQuery,
+  afterReset,
   wrapperStyle = {},
   wrapperClassName = '',
   className,
   withSpace = false,
   excludeFields = [],
+  queryFormProps = {},
+  queryFieldsProps = {},
+  cascadeMap = {},
+  autoQuery = true,
   ...restProps
 }) => {
   return (
@@ -118,6 +139,11 @@ const QueryTable: React.FC<QueryTableProps> = ({
           // defaultValues={defaultValues}
           excludeFields={excludeFields}
           afterQuery={afterQuery}
+          afterReset={afterReset}
+          queryFormProps={queryFormProps}
+          queryFieldsProps={queryFieldsProps}
+          cascadeMap={cascadeMap}
+          autoQuery={autoQuery}
         />
       )}
       {elButtons && (
@@ -150,10 +176,10 @@ const QueryTable: React.FC<QueryTableProps> = ({
           sizeChangerOptionRenderer: ({ text }) => {
             return `${text} 条/页`;
           },
-          showTotal: (total: number, range: [number, number], _counting: any, page: number) => {
+          showTotal: (total: number, _range: [number, number], _counting: any, page: number) => {
             return (
               <span>
-                共 {total} 条记录 第 {page}/{range?.[0]} 页
+                共 {total} 条记录 第 {page}/{dataSet.totalPage} 页
               </span>
             );
           },
@@ -170,6 +196,10 @@ export default observer(QueryTable);
 ## 更新日志
 
 ### alpha
+
+**2024-10-28**
+
+- 🎉 同步 `QueryForm` 新增属性支持；
 
 **2024-08-28**
 
