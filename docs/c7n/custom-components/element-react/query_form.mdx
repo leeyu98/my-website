@@ -10,7 +10,7 @@ keywords:
   - QueryForm
 ---
 
-<Author count={3000} publish="2024-9-14 14:55" />
+<Author count={3000} publish="2024-9-14 14:55" update="2024-11-13 17:28" />
 
 :::warning 警告
 开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
@@ -40,17 +40,23 @@ export default () => {
 
 > 除此以下附加属性外，支持 `Table` 所有属性。
 
-| 参数          | 类型 <div style={{minWidth:130}}/> | 说明                                                                                          | 默认值     |
-| :------------ | :--------------------------------- | :-------------------------------------------------------------------------------------------- | :--------- |
-| dataSet       | `DataSet`                          | <Highlight color="red">必输</Highlight> 绑定的 dataSet，用于获取 dataSet.queryDataSet         | -          |
-| excludeFields | `string[]`                         | <Highlight>可选</Highlight> 哪些字段定义在 queryFields 或者 queryDataSet 中但不需要渲染的字段 | `[]`       |
-| afterQuery    | `(params: any) => any`             | <Highlight>可选</Highlight> 点击查询按钮之后的回调，参数中可以拿到所有的查询参数              | `() => {}` |
+| 参数             | 类型 <div style={{minWidth:130}}/>     | 说明                                                                                             | 默认值     |
+| :--------------- | :------------------------------------- | :----------------------------------------------------------------------------------------------- | :--------- |
+| dataSet          | `DataSet`                              | <Highlight color="red">必输</Highlight> 绑定的 dataSet，用于获取 dataSet.queryDataSet            | -          |
+| autoQuery        | `boolean`                              | <Highlight>可选</Highlight> 查询条件变化时，是否自动查询                                         | `true`     |
+| excludeFields    | `string[]`                             | <Highlight>可选</Highlight> 哪些字段定义在 queryFields 或者 queryDataSet 中但不需要渲染的字段    | `[]`       |
+| queryFormProps   | `Omit<FormProps, 'inline' \| 'model'>` | <Highlight>可选</Highlight> 兼容 ELement React 表单属性设置，支持除 `inline` 和 `model` 外的属性 | `-`        |
+| queryFieldsProps | `Record<string, Record<any, any>>`     | <Highlight>可选</Highlight> 兼容 ELement React 各组件属性设置                                    | `-`        |
+| cascadeMap       | `Record<string, string[]>`             | <Highlight>可选</Highlight> 设置级联清除的字段，清空 `A` 字段时 清除 `[B,C]`                     | `-`        |
+| afterQuery       | `(params: any) => any`                 | <Highlight>可选</Highlight> 点击查询按钮之后的回调，参数中可以拿到所有的查询参数                 | `() => {}` |
+| afterReset       | `() => any`                            | <Highlight>可选</Highlight> 点击重置按钮之后的回调                                               | `-`        |
 
 ## 源代码
 
 ```tsx showLineNumbers title="QueryTable/QueryForm.tsx"
+import { parseDicData } from '@/utils';
 import DataSet from 'choerodon-ui/dataset/data-set';
-import { FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import { DataSetEvents, FieldType } from 'choerodon-ui/dataset/data-set/enum';
 import Field from 'choerodon-ui/dataset/data-set/Field';
 import { ButtonColor } from 'choerodon-ui/pro/lib/button/enum';
 import cls from 'classnames';
@@ -59,12 +65,18 @@ import { debounce, isFunction, isNil, omitBy } from 'lodash-es';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { useState } from 'react';
+import CascaderPro from '../CascaderPro';
 import DatePickerPro from '../DatePickerPro';
+import { FormProps } from '../FormPro';
+import NumberProRange, { NumberProRangeProps } from '../NumberProRange';
 import SelectPro from '../SelectPro';
 import styles from './index.module.less';
 
 type FieldKeyType = string | number | symbol | any;
 
+/**
+ * @see https://changnian.netlify.app/docs/c7n/custom-components/element-react/query_form
+ */
 export interface QueryFormProps {
   /**
    * @description Table DataSet
@@ -76,6 +88,15 @@ export interface QueryFormProps {
    * @default {}
    */
   defaultValues?: any;
+  /**
+   * @description 查询表单属性，兼容 FormProps
+   */
+  queryFormProps?: Omit<FormProps, 'inline' | 'model'>;
+
+  /**
+   * @description 自定义传入组件属性，实现自定义
+   */
+  queryFieldsProps?: Record<string, Record<any, any>>;
 
   className?: string;
   /**
@@ -83,8 +104,17 @@ export interface QueryFormProps {
    * @default ()=>{}
    */
   afterQuery?: (params: any) => any;
+  afterReset?: () => any;
 
   excludeFields?: string[];
+
+  cascadeMap?: Record<string, string[]>;
+
+  /**
+   * @description 切换查询条件时是否自动查询
+   * @default true
+   */
+  autoQuery?: boolean;
 }
 
 const dateTypeMapping = {
@@ -106,7 +136,12 @@ const QueryForm: React.FC<QueryFormProps> = ({
   dataSet,
   className = '',
   excludeFields = [],
-  afterQuery = () => {},
+  afterQuery,
+  afterReset,
+  queryFormProps = {},
+  queryFieldsProps = {},
+  cascadeMap = {},
+  autoQuery = true,
 }) => {
   const { queryDataSet } = dataSet;
 
@@ -129,8 +164,15 @@ const QueryForm: React.FC<QueryFormProps> = ({
     return _defaultValues;
   }, [queryDataSet?.current?.data]); // for once
 
+  const cascadeMapping = React.useMemo(() => Object.entries(cascadeMap), [cascadeMap]);
+
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [model, setModel] = React.useState<any>({ ...defaultValues });
+
+  const debouncedQuery = React.useCallback(
+    debounce(() => dataSet.query(), 500, { leading: false }),
+    [dataSet]
+  );
 
   const queryFields: Array<[FieldKeyType, Field]> = React.useMemo(() => {
     // dataSet.queryFields 一定会生成 dataSet.queryDataSet，此处仅判断 queryDataSet
@@ -146,15 +188,28 @@ const QueryForm: React.FC<QueryFormProps> = ({
       [key]: value,
     }));
     queryDataSet?.current?.set(`${key}`, value);
+    if (autoQuery) {
+      debouncedQuery();
+    }
+  };
+
+  const handleNumberRangeChange = (key: string, value: NumberProRangeProps['value']) => {
+    setModel((v) => ({ ...v, [key]: value }));
+
+    if (isNil(value?.[0]) || isNil(value?.[1])) {
+      return;
+    }
+    if (autoQuery) {
+      debouncedQuery();
+    }
   };
 
   const handleQuery = debounce(() => {
-    console.log(model);
     Object.keys(model).forEach((key) => {
       queryDataSet?.current?.set(`${key}`, model[key]);
     });
     dataSet.query();
-    if (isFunction(afterQuery)) {
+    if (afterQuery && isFunction(afterQuery)) {
       const queryData = omitBy(queryDataSet?.current?.toJSONData() || {}, (_, k) =>
         k?.startsWith('_')
       );
@@ -168,18 +223,45 @@ const QueryForm: React.FC<QueryFormProps> = ({
    */
   const handleReset = debounce(() => {
     const resetValue = {};
+    const forceResetValue = {};
     Object.entries(model).forEach(([k]) => {
       resetValue[k] = null;
+      const { type, range } = dataSet.queryDataSet?.getField(k)?.pristineProps || {};
+      if (range && type === FieldType.number) {
+        forceResetValue[k] = null;
+      }
     });
-    // 保留注释 for debugger
-    console.log('[reset value]', { ...resetValue, ...defaultValues });
-    setModel({ ...resetValue, ...defaultValues });
+    setModel({ ...resetValue, ...defaultValues, ...forceResetValue });
 
     queryDataSet?.current?.set({
       ...resetValue,
       ...defaultValues,
+      ...forceResetValue,
     });
+    if (afterReset && isFunction(afterReset)) {
+      afterReset();
+    }
   }, 500);
+
+  React.useEffect(() => {
+    const handleCascadeChange = ({ name, record, dataSet }) => {
+      for (const [key, keys] of cascadeMapping) {
+        if (name === key) {
+          const obj = {};
+          keys.forEach((k) => Object.assign(obj, { [k]: undefined }));
+          record.set({ ...obj });
+          setModel((m) => ({ ...m, ...obj }));
+          return;
+        }
+      }
+    };
+
+    queryDataSet?.addEventListener(DataSetEvents.update, handleCascadeChange);
+
+    return () => {
+      queryDataSet?.removeEventListener(DataSetEvents.update, handleCascadeChange);
+    };
+  }, [queryDataSet, cascadeMapping]);
 
   const renderFormItem = (key: string, field: Field, index: number) => {
     // field 仅有 name type 2个可用属性，且 type 为解析过的属性
@@ -194,15 +276,39 @@ const QueryForm: React.FC<QueryFormProps> = ({
       type = FieldType.string,
       placeholder: _placeholder, // element 不支持 string[]
       lookupCode,
+      lookupUrl,
       textField,
       valueField,
       options,
       multiple, // element 不支持分隔符形式
       label,
       labelWidth,
+      range = false,
     } = field.pristineProps || {};
 
+    const fieldProps = name ? queryFieldsProps[name] : undefined;
+
     const placeholder = typeof _placeholder === 'string' ? _placeholder : _placeholder?.join(', ');
+    if (type === FieldType.number && range) {
+      return (
+        <Form.Item
+          key={name}
+          label={`${label}:`}
+          className={styles.form__item}
+          labelWidth={labelWidth}
+        >
+          <NumberProRange
+            name={name}
+            value={model?.[key]}
+            dataSet={queryDataSet}
+            range={range}
+            placeholder={placeholder || '请输入'}
+            {...fieldProps}
+            onChange={(val) => handleNumberRangeChange(key, val)}
+          />
+        </Form.Item>
+      );
+    }
     if (type === FieldType.date) {
       return (
         <Form.Item
@@ -216,6 +322,8 @@ const QueryForm: React.FC<QueryFormProps> = ({
             value={model?.[key]}
             placeholder={`${placeholder || '请选择日期'}`}
             onChange={(value) => handleInputChange(key, value)}
+            isRange={!!range}
+            {...fieldProps}
           />
         </Form.Item>
       );
@@ -237,15 +345,43 @@ const QueryForm: React.FC<QueryFormProps> = ({
             align="right"
             value={model?.[key]}
             onChange={(value) => handleInputChange(key, value)}
+            isRange={!!range}
+            {...fieldProps}
           />
         </Form.Item>
       );
     }
 
     if (type === FieldType.string) {
-      if (lookupCode || options) {
+      const lookupOptions = queryDataSet?.getField(key)?.options?.toData();
+      if (lookupCode || lookupUrl || options || lookupOptions) {
         if (typeof options === 'string') {
           return null;
+        }
+        if (fieldProps?.isTree && lookupOptions) {
+          const parsedOptions = parseDicData(lookupOptions, {
+            labelField: textField!,
+            valueField: valueField!,
+            childrenField: 'childList',
+          });
+          return (
+            <Form.Item
+              key={name}
+              label={`${label}:`}
+              className={styles.form__item}
+              labelWidth={labelWidth}
+              style={{}}
+            >
+              <CascaderPro
+                value={model?.[key] ?? []}
+                options={parsedOptions}
+                placeholder={`${placeholder || '请选择'}`}
+                onChange={(value) => handleInputChange(key, value)}
+                {...fieldProps}
+                // element select 不支持分隔符
+              />
+            </Form.Item>
+          );
         }
         return (
           <Form.Item
@@ -257,7 +393,7 @@ const QueryForm: React.FC<QueryFormProps> = ({
           >
             <SelectPro
               name={name}
-              value={model?.[key] ?? ''}
+              value={model?.[key] || ''}
               dataSet={queryDataSet}
               options={options}
               valueField={valueField}
@@ -265,12 +401,14 @@ const QueryForm: React.FC<QueryFormProps> = ({
               placeholder={`${placeholder || '请选择'}`}
               onChange={(value) => handleInputChange(key, value)}
               multiple={!!multiple}
+              {...fieldProps}
               // element select 不支持分隔符
             />
           </Form.Item>
         );
       }
     }
+
     return (
       <Form.Item
         key={name}
@@ -282,6 +420,7 @@ const QueryForm: React.FC<QueryFormProps> = ({
           value={model?.[key]}
           placeholder={`${placeholder || '请输入'}`}
           onChange={(value) => handleInputChange(key, value)}
+          {...fieldProps}
         />
       </Form.Item>
     );
@@ -292,7 +431,7 @@ const QueryForm: React.FC<QueryFormProps> = ({
   }
 
   return (
-    <Form className={cls(styles.form__query, className)} model={model} inline>
+    <Form className={cls(styles.form__query, className)} model={model} {...queryFormProps} inline>
       {queryFields.map(([key, field], index: number) => renderFormItem(key, field, index))}
       <div className={cls(styles.form__item, styles.buttons__query)} style={{ float: 'right' }}>
         <Button type={ButtonColor.primary} onClick={() => handleQuery()}>
@@ -318,13 +457,22 @@ export default observer(QueryForm);
 
 ### alpha
 
+**2024-11-04**
+
+- 🎉 新增 `autoQuery` 属性支持自动查询；
+- 🎉 新增 `CascaderPro` 树形查询组件支持；
+- 🎉 新增 `NumberRangePro` 数字范围查询组件支持；
+- 🍋 新增查询防抖优化查询；
+
+**2024-10-09**
+
+- 🎉 新增 `cascadeMap` 属性支持级联清除；
+- 🎉 新增 `queryFieldsProps` 属性支持传入组件属性；
+
 **2024-09-14**
 
-- 🐞 修复默认值取值逻辑；
-
-**2024-09-04**
-
 - 🎉 日期组件替换为 `DatePickerPro`；
+- 🐞 修复默认值取值逻辑；
 
 **2024-08-05**
 
