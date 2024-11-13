@@ -2,14 +2,17 @@
   border-radius: 4px;
   padding: 2px 4px;
   color: #fff;
+  font-size: 14px;
+  vertical-align: middle;
+  line-height: 20px;
 }
 
 :root[data-theme='light'] {
   .green {
-    background-color: var(--ifm-color-primary);
+    background-color: var(--ifm-color-primary-light);
   }
   .red {
-    background-color: #e05935;
+    background-color: #fb663f;
   }
   .gray {
     background-color: #9a9a9a;
@@ -21,7 +24,7 @@
 
 :root[data-theme='dark'] {
   .green {
-    background-color: rgb(18 124 66);
+    background-color: var(--ifm-color-primary-darker);
   }
   .red {
     background-color: #ae4023;
