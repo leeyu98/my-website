@@ -10,7 +10,7 @@ keywords:
   - QueryForm
 ---
 
-<Author count={3000} publish="2024-9-14 14:55" update="2024-11-13 17:28" />
+<Author count={3000} publish="2024-9-14 14:55" update="2024-11-14 10:15" />
 
 :::warning 警告
 开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
@@ -115,6 +115,11 @@ export interface QueryFormProps {
    * @default true
    */
   autoQuery?: boolean;
+  /**
+   * @description 清空查询条件时是否自动查询
+   * @default true
+   */
+  autoQueryAfterReset?: boolean;
 }
 
 const dateTypeMapping = {
@@ -142,6 +147,7 @@ const QueryForm: React.FC<QueryFormProps> = ({
   queryFieldsProps = {},
   cascadeMap = {},
   autoQuery = true,
+  autoQueryAfterReset = true,
 }) => {
   const { queryDataSet } = dataSet;
 
@@ -238,6 +244,10 @@ const QueryForm: React.FC<QueryFormProps> = ({
       ...defaultValues,
       ...forceResetValue,
     });
+
+    if (autoQueryAfterReset) {
+      dataSet.query();
+    }
     if (afterReset && isFunction(afterReset)) {
       afterReset();
     }
@@ -377,6 +387,7 @@ const QueryForm: React.FC<QueryFormProps> = ({
                 options={parsedOptions}
                 placeholder={`${placeholder || '请选择'}`}
                 onChange={(value) => handleInputChange(key, value)}
+                clearable
                 {...fieldProps}
                 // element select 不支持分隔符
               />
@@ -401,6 +412,7 @@ const QueryForm: React.FC<QueryFormProps> = ({
               placeholder={`${placeholder || '请选择'}`}
               onChange={(value) => handleInputChange(key, value)}
               multiple={!!multiple}
+              clearable
               {...fieldProps}
               // element select 不支持分隔符
             />
@@ -420,6 +432,17 @@ const QueryForm: React.FC<QueryFormProps> = ({
           value={model?.[key]}
           placeholder={`${placeholder || '请输入'}`}
           onChange={(value) => handleInputChange(key, value)}
+          icon={
+            model?.[key] ? (
+              <i
+                className="el-icon-circle-close el-input__icon"
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleInputChange(key, null)}
+              />
+            ) : (
+              ''
+            )
+          }
           {...fieldProps}
         />
       </Form.Item>
@@ -456,6 +479,11 @@ export default observer(QueryForm);
 ## 更新日志
 
 ### alpha
+
+**2024-11-14**
+
+- 🍋 优化查询表单支持重置后自动查询；
+- 🍋 查询条件支持清除；
 
 **2024-11-04**
 

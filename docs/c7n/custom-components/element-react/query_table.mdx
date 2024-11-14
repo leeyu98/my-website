@@ -10,7 +10,7 @@ keywords:
   - QueryTable
 ---
 
-<Author count={3000} publish="2024-9-14 14:55" update="2024-11-13 17:28" />
+<Author count={3000} publish="2024-9-14 14:55" update="2024-11-14 10:15" />
 
 :::warning 警告
 开发阶段，组件特性没有经过全场景的测试，可能存在潜在问题，如遇到问题，请及时联系修复！
@@ -49,19 +49,31 @@ export default () => {
 
 > 除此以下附加属性外，支持 `Table` 所有属性。
 
-| 参数             | 类型 <div style={{minWidth:130}}/>   | 说明                                                                                            | 默认值  |
-| :--------------- | :----------------------------------- | :---------------------------------------------------------------------------------------------- | :------ |
-| elButtons        | `ElButton` \| `ElButton[]`           | <Highlight>可选</Highlight> 表格上方的按钮组，支持 Element 按钮（组）                           | -       |
-| wrapperStyle     | `React.CSSProperties`                | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                      | -       |
-| wrapperClassName | `string`                             | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options | -       |
-| withSpace        | `boolean`                            | <Highlight>可选</Highlight> 查询表单与顶部的间距 `10px`                                         | `false` |
-| excludeFields    | `QueryFormProps['excludeFields']`    | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
-| afterQuery       | `QueryFormProps['afterQuery']`       | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
-| afterReset       | `QueryFormProps['afterReset']`       | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
-| queryFormProps   | `QueryFormProps['queryFormProps']`   | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
-| queryFieldsProps | `QueryFormProps['queryFieldsProps']` | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
-| cascadeMap       | `QueryFormProps['cascadeMap']`       | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
-| autoQuery        | `QueryFormProps['autoQuery']`        | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
+| 参数             | 类型 <div style={{minWidth:130}}/> | 说明                                                                                            | 默认值  |
+| :--------------- | :--------------------------------- | :---------------------------------------------------------------------------------------------- | :------ |
+| elButtons        | `ElButton` \| `ElButton[]`         | <Highlight>可选</Highlight> 表格上方的按钮组，支持 Element 按钮（组）                           | -       |
+| wrapperStyle     | `React.CSSProperties`              | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                      | -       |
+| wrapperClassName | `string`                           | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options | -       |
+| withSpace        | `boolean`                          | <Highlight>可选</Highlight> 查询表单与顶部的间距 `10px`                                         | `false` |
+| excludeFields    | `PickedQueryFormProps`             | <Highlight>可选</Highlight> 参考 [QueryForm](query_form#api)                                    | `-`     |
+
+### PickedQueryFormProps
+
+详情参考 [QueryForm](query_form#api)。
+
+```ts
+type PickedQueryFormProps = Pick<
+  QueryFormProps,
+  | 'excludeFields'
+  | 'queryFieldsProps'
+  | 'queryFormProps'
+  | 'autoQuery'
+  | 'autoQueryAfterReset'
+  | 'afterQuery'
+  | 'afterReset'
+  | 'cascadeMap'
+>;
+```
 
 ## 源代码
 
@@ -77,31 +89,28 @@ import React from 'react';
 import styles from './index.module.less';
 import QueryForm, { QueryFormProps } from './QueryForm';
 
+type PickedQueryFormProps = Pick<
+  QueryFormProps,
+  | 'excludeFields'
+  | 'queryFieldsProps'
+  | 'queryFormProps'
+  | 'autoQuery'
+  | 'autoQueryAfterReset'
+  | 'afterQuery'
+  | 'afterReset'
+  | 'cascadeMap'
+>;
+
 // element 按钮
 export type ElButton = React.ReactElement<React.ComponentProps<typeof Button>>;
 /**
  * @see https://changnian.netlify.app/docs/c7n/custom-components/element-react/query_table
  */
-export interface QueryTableProps extends TableProps {
+export interface QueryTableProps extends TableProps, PickedQueryFormProps {
   /**
    * @description table 上方的按钮组，支持 Element 按钮(组)
    */
   elButtons?: ElButton | ElButton[];
-  /**
-   * @description 点击查询按钮之后的操作
-   */
-  afterQuery?: QueryFormProps['afterQuery'];
-  afterReset?: QueryFormProps['afterReset'];
-
-  excludeFields?: QueryFormProps['excludeFields'];
-
-  queryFormProps?: QueryFormProps['queryFormProps'];
-
-  queryFieldsProps?: QueryFormProps['queryFieldsProps'];
-
-  cascadeMap?: QueryFormProps['cascadeMap'];
-
-  autoQuery?: QueryFormProps['autoQuery'];
 
   wrapperStyle?: React.CSSProperties;
 
@@ -129,6 +138,7 @@ const QueryTable: React.FC<QueryTableProps> = ({
   queryFieldsProps = {},
   cascadeMap = {},
   autoQuery = true,
+  autoQueryAfterReset = true,
   ...restProps
 }) => {
   return (
@@ -144,6 +154,7 @@ const QueryTable: React.FC<QueryTableProps> = ({
           queryFieldsProps={queryFieldsProps}
           cascadeMap={cascadeMap}
           autoQuery={autoQuery}
+          autoQueryAfterReset={autoQueryAfterReset}
         />
       )}
       {elButtons && (
@@ -196,6 +207,11 @@ export default observer(QueryTable);
 ## 更新日志
 
 ### alpha
+
+**2024-11-14**
+
+- 🍋 同步 `QueryForm` 新增属性支持；
+- 🍋 代码逻辑优化；
 
 **2024-10-28**
 
