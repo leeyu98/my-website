@@ -515,14 +515,25 @@ $languages: (
         &--prev {
           .pagination-nav__label {
             &::before {
-              content: '← ';
+              content: '';
+              display: inline-flex;
+              width: 20px;
+              height: 20px;
+              vertical-align: bottom;
+              background-image: url('/static/icons/arrow_right_line.svg');
+              transform: rotateZ(180deg);
             }
           }
         }
         &--next {
           .pagination-nav__label {
             &::after {
-              content: ' →';
+              content: '';
+              display: inline-flex;
+              width: 20px;
+              height: 20px;
+              vertical-align: bottom;
+              background-image: url('/static/icons/arrow_right_line.svg');
             }
           }
         }
