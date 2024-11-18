@@ -46,6 +46,7 @@ const config: Config = {
           blogSidebarCount: 'ALL',
           postsPerPage: 'ALL',
           remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
+          onUntruncatedBlogPosts: 'ignore',
         },
         pages: {
           remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
@@ -144,6 +145,17 @@ const config: Config = {
       admonitions: true,
       headingIds: true,
     } satisfies MDX1CompatOptions,
+  },
+  // new future config
+  future: {
+    experimental_faster: {
+      swcJsLoader: false, // 由于 svg 问题，暂不启用
+      swcJsMinimizer: true, // 启用 SWC JS 压缩
+      swcHtmlMinimizer: true, // 启用 SWC HTML 压缩
+      lightningCssMinimizer: true, // 使用 Lightning CSS 压缩
+      rspackBundler: true, // 启用 Rspack 构建
+      mdxCrossCompilerCache: true, // 浏览器/NodeJS 环境仅编译一次
+    },
   },
 };
 
