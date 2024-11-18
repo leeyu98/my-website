@@ -9,7 +9,7 @@ description: 安装 Windows11 时，如何跳过联网步骤，创建本地账�
 
 ## 方法 1: 我没有 Internet 连接
 
-1. 快捷键 `Shift + F10` 或者 `Fn +Shift + F10` 打开命令行
+1. 快捷键 <kbd>Shift</kbd> <kbd>F10</kbd> 或者 <kbd>Fn</kbd> <kbd>Shift</kbd> <kbd>F10</kbd> 打开命令行
 2. 输入 `oobe\BypassNRO.cmd` 回车会自动重启，重启完成之后会出现【我没有 Internet 连接】选项
 
 ![我没有Internet连接](./images/i-have-no-internet.jpeg)
@@ -18,7 +18,7 @@ description: 安装 Windows11 时，如何跳过联网步骤，创建本地账�
 
 ### 1. 终止网络连接进程
 
-1. 快捷键 `Shift + F10` 或者 `Fn +Shift + F10` 打开命令行
+1. 快捷键 <kbd>Shift</kbd> <kbd>F10</kbd> 或者 <kbd>Fn</kbd> <kbd>Shift</kbd> <kbd>F10</kbd> 打开命令行
 2. 输入 `taskmgr` 打开任务管理器
 3. 终止 `OOBE Network Connection Flow` 进程
 
@@ -28,7 +28,7 @@ description: 安装 Windows11 时，如何跳过联网步骤，创建本地账�
 
 ### 2. 修改注册表
 
-1. 快捷键 `Shift + F10` 或者 `Fn +Shift + F10` 打开命令行
+1. 快捷键 <kbd>Shift</kbd> <kbd>F10</kbd> 或者 <kbd>Fn</kbd> <kbd>Shift</kbd> <kbd>F10</kbd> 打开命令行
 2. 输入 `rededit` 打开注册表
 3. 在 `OOBE` 中新建 `DWORD`，字段名为 `BypassNRO`，将值修改为 1
 
