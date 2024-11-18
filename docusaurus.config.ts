@@ -145,6 +145,8 @@ const config: Config = {
       headingIds: true,
     } satisfies MDX1CompatOptions,
   },
+  // new future config
+  future: { experimental_faster: true },
 };
 
 module.exports = config;
