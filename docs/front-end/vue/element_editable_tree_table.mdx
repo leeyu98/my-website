@@ -12,12 +12,12 @@ key_words:
 
 为保证定义的校验功能正确应用，必须注意一下几点：
 
-1. el-table 绑定的 :data 必须在 el-form 绑定的 :model 中
-2. el-form-item 绑定的 prop 必须是该字段的真实路径，否则影响校验
+1. `<el-table />` 绑定的 :data 必须在 el-form 绑定的 :model 中
+2. `<el-form-item />` 绑定的 prop 必须是该字段的真实路径，否则影响校验
 
 例如：treeData 中 id 为 1.1 的 name 字段数据绑定的 prop 应该是这样的 (以下写法等价)：
 
-```
+```js
 :prop=`treeData[0].children[0].name`;
 :prop=`treeData.0.children.0.name`;
 :prop=`[treeData, 0, children, 0, name]`;
