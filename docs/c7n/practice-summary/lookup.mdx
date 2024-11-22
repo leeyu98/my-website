@@ -6,13 +6,13 @@ tags:
   - Lookup
 ---
 
-<Author cost={2} publish="2024-1-11 23:14" update="" />
+<Author cost={2} publish="2024-1-11 23:14" update="2024-11-21 13:49" />
 
 ## 如何保证 Lookup 数据正确加载
 
-当以 Lookup 作为数据源时，必须保证数据在是否被批量预加载的情况下都能正确获取数据。
+当以 `Lookup` 作为数据源时，必须保证数据在是否被批量预加载的情况下都能正确获取数据。
 `Stores.LookupCodeStore.getAxiosConfig` 读取配置，
-`Stores.LookupCodeStore.fetchLookupData` 默认从缓存中读取数据，否则发送网络请求。
+`Stores.LookupCodeStore.fetchLookupData` 默认优先从缓存中读取数据，否则发送网络请求。
 
 :::tip
 `Lookup` 的相关配置是由前端生成，所以 `getAxiosConfig` 是同步操作；但是不能保证该值集数据一定被批量预加载过 (存在缓存)，所以 `fetchLookupData` 是异步操作。
@@ -29,7 +29,7 @@ export default () => {
 
   const getLookupData = async () => {
     // 1. 从 DataSet 配置中获取相关配置
-    const lookupAxiosConfig = Stores.LookupCodeStore.getAxiosConfig(lovDS.getField('lookup'));
+    const lookupAxiosConfig = Stores.LookupCodeStore.getAxiosConfig(lookupDS.getField('lookup'));
     // 2. 从缓存（页面预加载）或者网络请求获取数据
     const lookupData = await Stores.LookupCodeStore.fetchLookupData(lookupAxiosConfig);
     return lookupData;
