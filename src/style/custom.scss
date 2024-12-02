@@ -1,48 +1,62 @@
-// 自定义无头表格
-.table {
-  &__no-header {
-    & + table {
-      & > thead {
-        display: none;
-      }
-    }
-  }
-
-  // 自定义无线表格
-  &__no-border {
-    & + table {
-      & > thead {
-        background-color: unset;
-        tr {
-          box-shadow: none;
-        }
-        :is(tr, th) {
-          border-width: 0;
-        }
-      }
-      & > tbody {
-        :is(tr, td) {
-          border-width: 0;
-          background-color: unset;
-        }
-      }
-    }
-  }
-
-  // 紧凑表格
-  &__compact {
-    & + table {
-      :is(th, td) {
-        padding: 2px 4px;
-      }
-    }
-    &--header {
+#__docusaurus {
+  // 自定义无表头表格
+  .table {
+    &__no-header {
       & + table {
-        thead {
-          th {
-            border-bottom-width: 2px;
+        & > thead {
+          display: none;
+        }
+      }
+    }
+
+    // 自定义无线表格
+    &__no-border {
+      & + table {
+        & > thead {
+          background-color: unset;
+          tr {
+            box-shadow: none;
+          }
+          :is(tr, th) {
+            border-width: 0;
           }
         }
+        & > tbody {
+          :is(tr, td) {
+            border-width: 0;
+            background-color: unset;
+          }
+        }
+      }
+    }
+
+    // 紧凑表格
+    &__compact {
+      & + table {
+        :is(th, td) {
+          padding: 2px 4px;
+        }
+      }
+      &--header {
+        & + table {
+          thead {
+            th {
+              border-bottom-width: 2px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 自定义无标题告示
+  .admonition__no-title {
+    & + div.theme-admonition {
+      padding-top: 0.75rem;
+      div[class^='admonitionHeading_H'] {
+        display: none;
+        height: 0;
+        overflow: hidden;
       }
     }
   }

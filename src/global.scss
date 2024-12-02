@@ -167,6 +167,10 @@ $languages: (
       backdrop-filter: blur(10px);
     }
 
+    ul.dropdown__menu {
+      min-width: 6rem;
+    }
+
     .navbar__items:not(.navbar__items--right) {
       .navbar__item.navbar__link {
         position: relative;

@@ -70,7 +70,7 @@ const config: Config = {
   themeConfig: {
     image: 'img/social-card.png',
     navbar,
-    footer,
+    // footer: {},
     docs: {
       sidebar: {
         hideable: true, // 可收起
