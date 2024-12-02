@@ -5,10 +5,10 @@
  */
 
 /* You can override the default Infima variables here. */
-@import './style/mobile.scss';
-@import './style/light.scss';
-@import './style/dark.scss';
-@import './style/custom.scss';
+@use './style/mobile.scss';
+@use './style/light.scss';
+@use './style/dark.scss';
+@use './style/custom.scss';
 
 :root {
   scroll-behavior: smooth; // 平滑滚动
