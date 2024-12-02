@@ -55,13 +55,27 @@ const navbar: Navbar = {
       docId: 'tutorial/intro',
       position: 'left',
     },
-    // {
-    //   label: '其他',
-    //   type: 'doc',
-    //   docId: 'other/intro',
-    //   position: 'left',
-    // },
     { to: 'blog', label: '博客', position: 'left' },
+    {
+      label: '关于',
+      items: [
+        {
+          
+          label: 'Github',
+          to: 'https://github.com/leeyu98/',
+        },
+        {
+          
+          label: 'CSDN',
+          to: 'https://wentao.blog.csdn.net/',
+        },
+        {
+          label: 'Docusaurus',
+          to: 'https://docusaurus.io/zh-CN/',
+        },
+      ],
+      position: 'right',
+    },
     // 备用站点
     ...getSites(),
   ],
