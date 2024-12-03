@@ -1,0 +1,107 @@
+---
+title: 常用发版脚本
+description: 常用发版脚本
+sidebar_position: 10
+tags:
+  - Shell
+  - Scripts
+keywords:
+  - Shell
+  - Scripts
+---
+
+<Author cost={5} publish="2024-12-3 15:51" update="" />
+
+## 本地打包
+
+**执行脚本**
+
+```bash
+sh build.local.sh --branch=release
+```
+
+**脚本代码**
+
+```bash title="build.local.sh"
+#!/bin/bash
+
+set -e
+
+# 初始化分支变量
+branch="develop"
+
+# 解析命名参数
+for arg in "$@"; do
+  case $arg in
+  --branch=*)
+    branch="${arg#*=}"
+    shift
+    ;;
+  *)
+    # 其他参数
+    shift
+    ;;
+  esac
+done
+
+cd /d/Document/Code/JJYX/eoms-gjh-front
+
+# backup
+if [ -d "./dist" ]; then
+  echo "Backing up in progress..."
+  mv dist dist.bak
+  echo "Backup completed."
+fi
+
+git checkout $branch
+git pull
+
+# build
+pnpm run build:ext-parent:prod
+
+# remove
+if [ -f "./dist_gjh.zip" ]; then
+  echo "Removing the build package last time..."
+  rm dist_gjh.zip
+  echo "Removed."
+fi
+
+# compress
+echo "Compressing with zip..."
+zip -qr dist_gjh.zip dist
+echo "Compressed."
+# tar -zcf dist.tar.gz dist/
+
+echo "Restoring backup..."
+rm -rf dist
+mv dist.bak dist
+echo "Backup restored."
+
+# switch to work branch
+git checkout develop
+
+# open current folder in explorer on Windows
+explorer .
+```
+
+## 远程部署
+
+```bash
+#!/bin/bash
+
+set -e
+
+if [ -f "./dist.zip" ]; then
+  echo "remove dist.zip last time..."
+  rm -rf dist.zip
+fi
+
+mv /home/dist_gjh.zip .
+
+# backup
+mv dist dist-$(date "+%Y%m%d%H%M%S")
+mv dist_gjh.zip dist.zip
+unzip dist.zip
+
+echo "Finished..."
+```
