@@ -1,0 +1,9 @@
+{
+  "label": "服务器",
+  "position": 120,
+  "link": {
+    "type": "generated-index",
+    "slug": "back-end/server",
+    "description": "服务器。"
+  }
+}
