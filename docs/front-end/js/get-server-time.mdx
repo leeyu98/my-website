@@ -1,0 +1,26 @@
+---
+title: 获取服务器时间
+description: 获取服务器时间
+displayed_sidebar: frontendSidebar
+sidebar_position: 100
+tags:
+  - 服务器时间
+keywords:
+  - 服务器时间
+---
+
+<Author cost={3} publish="2024-12-10 15:47" update="" />
+
+`JavaScript` 在浏览器端通过 `Date` 获取的时间为客户端时间，随着本地系统时间的变化而改变。
+有时需要实时获取服务器时间。可以通过发送 `OPTIONS` 从响应头中获取服务器时间。
+
+<div className="admonition__no-title" />
+
+:::tip
+`Headers` 中通常会包含 `Date` 字段，大小写不敏感。
+:::
+
+```js
+const res = await fetch('https://cn.bing.com', { method: 'OPTIONS' });
+const serverTime = new Date(res.headers.get('date'));
+```
