@@ -225,6 +225,16 @@ $languages: (
       padding: 0.5rem 0.75rem 0.75rem;
       & > div[class^='admonitionHeading_'] {
         font-size: 1rem; // title
+        span.admonitionIcon_hnmh {
+          display: inline-flex;
+          margin-right: 0.25rem;
+
+          & > svg {
+            width: 1rem;
+            height: 1rem;
+            padding-bottom: 0.125rem;
+          }
+        }
       }
     }
 
@@ -319,11 +329,11 @@ $languages: (
         img {
           border-radius: $img-border-radius;
         }
-        .theme-admonition {
-          span[class^='admonitionIcon'] {
-            transform: scale(0.8); // alert 图标大小
-          }
-        }
+        // .theme-admonition {
+        //   span[class^='admonitionIcon'] {
+        //     transform: scale(0.8); // alert 图标大小
+        //   }
+        // }
         .anchor {
           & > a.hash-link {
             &::before {
