@@ -54,6 +54,10 @@ const config: Config = {
         theme: {
           customCss: [require.resolve('./src/global.scss')], // CSS 替换为 SCSS
         },
+        googleAnalytics: {
+          trackingID: 'G-Z2BW9NFG3H',
+          anonymizeIP: true,
+        },
       } satisfies Preset.Options,
     ],
   ],
