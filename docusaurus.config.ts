@@ -54,10 +54,6 @@ const config: Config = {
         theme: {
           customCss: [require.resolve('./src/global.scss')], // CSS 替换为 SCSS
         },
-        googleAnalytics: {
-          trackingID: 'G-Z2BW9NFG3H',
-          anonymizeIP: true,
-        },
       } satisfies Preset.Options,
     ],
   ],
@@ -69,6 +65,13 @@ const config: Config = {
         hashed: true, // `hashed` is recommended as long-term-cache of index file is possible.
         language: ['en', 'zh'], // 支持搜索的语言
       } satisfies PluginOptions,
+    ],
+    [
+      '@docusaurus/plugin-google-gtag',
+      {
+        trackingID: 'G-Z2BW9NFG3H',
+        anonymizeIP: true,
+      },
     ],
   ],
   themeConfig: {
@@ -127,10 +130,6 @@ const config: Config = {
       maxHeadingLevel: 4,
     },
     metadata: [{ name: 'keywords', content: 'blog,front-end,changnian' }],
-    googleAnalytics: {
-      trackingID: 'G-Z2BW9NFG3H',
-      anonymizeIP: true,
-    },
     // announcementBar: {
     //   id: 'arc_invitation_code',
     //   content:
