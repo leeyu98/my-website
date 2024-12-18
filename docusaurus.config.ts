@@ -127,6 +127,10 @@ const config: Config = {
       maxHeadingLevel: 4,
     },
     metadata: [{ name: 'keywords', content: 'blog,front-end,changnian' }],
+    googleAnalytics: {
+      trackingID: 'G-Z2BW9NFG3H',
+      anonymizeIP: true,
+    },
     // announcementBar: {
     //   id: 'arc_invitation_code',
     //   content:
