@@ -25,7 +25,7 @@ const getSites = () => {
 // 侧边导航配置
 const navbar: Navbar = {
   title: '长念的小站',
-  hideOnScroll: true,
+  hideOnScroll: false,
   logo: {
     alt: '长念的小站',
     src: 'img/logo.png',
