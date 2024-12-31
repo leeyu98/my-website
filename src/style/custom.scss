@@ -49,16 +49,4 @@
       }
     }
   }
-
-  // 自定义无标题告示
-  .admonition__no-title {
-    & + div.theme-admonition {
-      padding-top: 0.75rem;
-      div[class^='admonitionHeading_H'] {
-        display: none;
-        height: 0;
-        overflow: hidden;
-      }
-    }
-  }
 }
