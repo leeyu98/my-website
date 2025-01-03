@@ -62,9 +62,9 @@ export default () => {
 | name        | `string`                              | <Highlight>可选</Highlight> field name【未关联 DataSet 时不需要传入】                                                                        | `false`   |
 | valueField  | `string`                              | <Highlight>可选</Highlight> 自定义 valueField                                                                                                | `value`   |
 | textField   | `string`                              | <Highlight>可选</Highlight> Checkbox 不支持 valueField，需要保证 textField 唯一性                                                            | `meaning` |
-| options     | `DataSet` &#124; `null`               | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                                                                   | -         |
+| options     | `DataSet` \| `null`               | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                                                                   | -         |
 | optionsData | ` Array<any>`                         | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options                                              | -         |
-| dataSet     | `DataSet`&#124; `null`                | <Highlight>可选</Highlight> 绑定的 dataSet，用于获取对应字段的 lookupCode 配置；优先级最低<br/>注意：使用查询参数时传入 dataSet.queryDataSet | -         |
+| dataSet     | `DataSet` \| `null`                | <Highlight>可选</Highlight> 绑定的 dataSet，用于获取对应字段的 lookupCode 配置；优先级最低<br/>注意：使用查询参数时传入 dataSet.queryDataSet | -         |
 | disabled    | `boolean`                             | <Highlight>可选</Highlight> 禁用状态                                                                                                         | `false`   |
 | onChange    | `(value: any, checked?: any) => void` | <Highlight>可选</Highlight> 通过 textField 匹配返回原始数据 checked                                                                          | -         |
 
