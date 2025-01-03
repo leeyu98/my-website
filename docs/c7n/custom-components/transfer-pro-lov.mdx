@@ -133,10 +133,178 @@ export default () => {
 | 参数        | 类型                                 | 说明                                                                                                                                                   | 默认值                          |
 | :---------- | :----------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------ |
 | name        | `string`                             | <Highlight color="red">必输</Highlight> 字段名称                                                                                                       | <div style={{ width: 50 }} /> - |
-| record      | `Record` \| `undefined`          | <Highlight color="red">必输</Highlight> 关联的 `record`                                                                                                | -                               |
+| record      | `Record` \| `undefined`              | <Highlight color="red">必输</Highlight> 关联的 `record`                                                                                                | -                               |
 | configProps | `{data?:any; read?: TransportType }` | <Highlight>可选</Highlight> 源数据加载方式，仅当指定数据或自定义接口时用到                                                                             | -                               |
 | modalProps  | `TLovModalProps`                     | <Highlight>可选</Highlight> 支持除 `key` `maskClosable` `children` `onOk` 以外的 `ModalProps` 所有属性                                                 | -                               |
 | 其他        | `TransferProProps & FormFieldProps`  | 支持 `TransferPro` 除 `configProps` `targetProps` 外所有属性；支持 `FormFieldProps` 除 `dataSet` 所有属性。 [[1]](#为什么不支持-formfieldpropsdataset) | -                               |
+
+## 源代码
+
+```tsx title="TransferProLov/index.tsx"
+import { Record } from 'choerodon-ui/dataset';
+import { DataSetEvents } from 'choerodon-ui/dataset/data-set/enum';
+import { Icon, Modal, TextField } from 'choerodon-ui/pro';
+import type { TransportType } from 'choerodon-ui/pro/lib/data-set/interface';
+import type { FormFieldProps } from 'choerodon-ui/pro/lib/field/FormField';
+import type { ModalProps } from 'choerodon-ui/pro/lib/modal/Modal';
+import { useObserver } from 'mobx-react-lite';
+import * as React from 'react';
+import type { TransferProProps } from '.';
+import TransferPro from '.';
+
+export type TLovModalProps = Omit<ModalProps, 'key' | 'maskClosable' | 'children' | 'onOk'>;
+
+export type TransferProLovProps = Omit<FormFieldProps, 'dataSet'> & {
+  name: string;
+
+  record: Record | undefined;
+
+  configProps?: { data: any; read?: TransportType };
+
+  /**
+   * @description 弹窗属性
+   */
+  modalProps?: TLovModalProps;
+} & Omit<TransferProProps, 'targetProps' | 'configProps'>;
+
+const modalKey = Modal.key();
+
+/**
+ * @see https://changnian.netlify.app/docs/c7n/custom-components/transfer-pro-lov
+ */
+const TransferProLov: React.FC<TransferProLovProps> = ({
+  name,
+  record,
+  modalProps = {},
+  configProps,
+  avatarProps,
+  titles,
+  header,
+  footer,
+  className,
+  style,
+  searchable,
+  onChange,
+  renderItem,
+  ...formProps
+}) => {
+  const fieldProps = record?.dataSet.getField(name)?.props || new Map();
+
+  const [textField, valueField, primaryKey, lovCode, lookupCode] = [
+    fieldProps.get('textField') || 'textField',
+    fieldProps.get('valueField') || 'valueField',
+    fieldProps.get('idField') || 'id',
+    (fieldProps.get('lovCode') || '') as string | undefined,
+    fieldProps.get('lookupCode') || '',
+  ];
+
+  const handleOk = ({ initialData, value }) => {
+    if (!record) {
+      return;
+    }
+    // 设置值
+    record.set({
+      [name]: value,
+      [textField]: value.map((v) => v[textField]),
+      [valueField]: value.map((v) => v[valueField]),
+    });
+
+    // 触发 update 事件
+    record.dataSet.fireEvent(DataSetEvents.update, {
+      name,
+      record,
+      dataSet: record.dataSet,
+      value,
+      oldValue: initialData,
+    });
+  };
+
+  const handleOpen = () => {
+    let config;
+    if (configProps?.data) {
+      config = { data: configProps?.data };
+    } else if (configProps?.read) {
+      config = { read: configProps?.read };
+    } else if (lovCode) {
+      config = { lovCode };
+    } else if (lookupCode) {
+      config = { lookupCode };
+    }
+
+    const transferProps: TransferProProps = {
+      configProps: {
+        primaryKey,
+        textField,
+        valueField,
+        lookupCode,
+        lovCode,
+        ...config,
+      },
+      targetProps: {
+        primaryKey,
+        data: record?.get(name) || [],
+      },
+      avatarProps,
+      titles,
+      header,
+      footer,
+      style,
+      className,
+      searchable,
+      onChange,
+      renderItem,
+    };
+
+    Modal.open({
+      title: '选择',
+      style: { width: 600 },
+      ...modalProps,
+      key: modalKey,
+      onOk: handleOk,
+      maskClosable: false,
+      children: <TransferPro {...transferProps} />,
+    } as ModalProps);
+  };
+
+  React.useEffect(() => {
+    // 初始化展示数据
+    if (record && record.get(name)) {
+      if (!record.get(textField)) {
+        record.set(
+          textField,
+          record
+            .get(name)
+            .map((r) => r[textField])
+            .filter(Boolean)
+        );
+      }
+      if (!record.get(valueField)) {
+        record.set(
+          valueField,
+          record
+            .get(name)
+            .map((r) => r[valueField])
+            .filter(Boolean)
+        );
+      }
+    }
+  }, [record?.get(name), textField, valueField]);
+
+  return useObserver(() => (
+    <TextField
+      {...formProps}
+      name={textField}
+      readOnly
+      multiple
+      record={record}
+      suffix={<Icon type="search" />}
+      onClick={handleOpen}
+    />
+  ));
+};
+
+export default TransferProLov;
+```
 
 ## Q & A
 

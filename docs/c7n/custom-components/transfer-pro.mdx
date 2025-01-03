@@ -80,7 +80,7 @@ export default () => {
 | configProps | `ConfigProps`                                                           | <Highlight color="red">必输</Highlight> 穿梭框源与目标数据源 `DataSet` 配置，[详细](#configprops)                                                                   | -                              |
 | targetProps | `TargetDSProps`                                                         | <Highlight color="red">必输</Highlight> 目标数据源补充配置，[详细](#targetprops)                                                                                    | -                              |
 | searchable  | `boolean`                                                               | <Highlight>可选</Highlight> 是否支持搜索                                                                                                                            | `true`                         |
-| titles      | `string[]` \| `React.ReactNode[]`                                   | <Highlight>可选</Highlight> 左右侧标题                                                                                                                              | `["已选择","未选择"]`          |
+| titles      | `string[]` \| `React.ReactNode[]`                                       | <Highlight>可选</Highlight> 左右侧标题                                                                                                                              | `["已选择","未选择"]`          |
 | header      | `React.ReactNode`                                                       | <Highlight>可选</Highlight> 顶部自定义渲染                                                                                                                          | -                              |
 | footer      | `React.ReactNode`                                                       | <Highlight>可选</Highlight> 底部自定义渲染                                                                                                                          | -                              |
 | avatarProps | `AvatarProps`                                                           | <Highlight>可选</Highlight> 支持头像组件所有属性                                                                                                                    | `{ size: 28, shape: "square"}` |
@@ -147,6 +147,441 @@ export type TargetProps = {
 ConfigProps 与 TargetProps 对接口响应数据格式的要求：<br/>
 HZERO 标准响应结构 `{ content: Array }` 或者数组 `Array`，其他返回结果需要通过配置 `read.transformResponse` 进行格式转换。
 :::
+
+## 源代码
+
+```tsx title="TransferPro/index.tsx"
+import { Record } from 'choerodon-ui/dataset';
+import { RecordStatus } from 'choerodon-ui/dataset/data-set/enum';
+import {
+  Button,
+  DataSet,
+  Form,
+  Output,
+  SelectBox,
+  Spin,
+  Stores,
+  useDataSet,
+} from 'choerodon-ui/pro';
+import { FuncType } from 'choerodon-ui/pro/lib/button/enum';
+import type { TransportType } from 'choerodon-ui/pro/lib/data-set/interface';
+import type { RenderProps } from 'choerodon-ui/pro/lib/field/FormField';
+import type { SearchMatcherProps } from 'choerodon-ui/pro/lib/select/Select';
+import cls from 'classnames';
+import { isFunction } from 'lodash';
+import { useObserver } from 'mobx-react-lite';
+import * as React from 'react';
+import { getResponse } from 'utils/utils';
+import type { AvatarProProps } from '../AvatarPro';
+import AvatarPro from '../AvatarPro';
+import styles from './index.module.less';
+import { ConfigProps, getFormDSProps, getLovDSProps, getTransferDSProps } from './store';
+
+/**
+ * @description 源数据中挑选目标需要的数据
+ */
+const pickDifference = (src: any[], trg: any[], srcKey: string, trgKey: string) => {
+  return src
+    .map((s: any) => {
+      return trg.find((t) => `${t[trgKey]}` === `${s[srcKey]}`); // 类型不一致导致匹配不成功
+    })
+    .filter(Boolean);
+};
+
+/**
+ * @description 从 src 中剔除 trg 中出现的数据
+ */
+const omitDifference = (src: any[], trg: any[], srcKey: string, trgKey: string) => {
+  return src.filter((s: any) => {
+    return !trg.find((t) => `${t[trgKey]}` === `${s[srcKey]}`); // 类型不一致导致匹配不成功
+  });
+};
+
+/** @description 对比更改前后，返回新增、删除的数据 */
+const getDifference = (originData: any[], currentData: any[], key: string): any[] => {
+  const deleted = originData.filter((o) => !currentData.find((c) => c[key] === o[key])); // 删掉的
+  const created = currentData.filter((c) => !originData.find((o) => c[key] === o[key])); // 新加的
+  return [created, deleted];
+};
+
+/** @description 目标数据源 DS 配置 data 与 read 二选一不能共存 */
+export type TargetProps = {
+  primaryKey?: string; // 仅用于数据筛选, 默认值与 ConfigProps.primaryKey 一致
+} & ({ data?: undefined; read: TransportType } | { data: unknown[]; read?: undefined });
+
+export type TransferProProps = {
+  /** @description 左侧源与右侧目标基础配置 */
+  configProps: ConfigProps;
+
+  /**
+   * @description 右侧目标配置
+   */
+  targetProps: TargetProps;
+
+  /** @description 标题 */
+  titles?: string[] | React.ReactNode[];
+
+  header?: React.ReactNode;
+
+  footer?: React.ReactNode;
+
+  className?: string;
+
+  style?: React.CSSProperties;
+
+  searchable?: boolean;
+
+  /** @description 小头像属性设置 */
+  avatarProps?: Omit<AvatarProProps, 'children'>;
+
+  modal?: any;
+
+  /** @description 选择数据事件回调：单选 & 全选 & 清空 */
+  onChange?: ({ records, value }: { records: Record[]; value: unknown[] }) => void;
+
+  renderItem?: (record: Record) => JSX.Element;
+};
+
+/**
+ * @see https://changnian.netlify.app/docs/c7n/custom-components/transfer-pro
+ */
+const TransferPro: React.FC<TransferProProps> = ({
+  titles = [],
+  searchable = true,
+  configProps,
+  targetProps,
+  avatarProps,
+  onChange,
+  renderItem,
+  modal,
+  style,
+  className,
+  header,
+  footer,
+}) => {
+  const initRef = React.useRef<{ initialData: any[]; originalData: any[] }>({
+    initialData: [], // 保存初始数据，用于返回最终变更
+    originalData: [],
+  });
+
+  const [sourceTitle = '未选择', targetTitle = '已选择'] = titles;
+
+  const { primaryKey, textField, valueField, lovCode, lookupCode, data: sourceData } = configProps;
+  const trgPrimaryKey = targetProps?.primaryKey ?? primaryKey;
+
+  const lovDS: DataSet | null =
+    lovCode || lookupCode
+      ? useDataSet(() => getLovDSProps({ lovCode, lookupCode }), [lovCode, lookupCode])
+      : null;
+
+  const formDS = useDataSet(getFormDSProps, []);
+  const sourceDS = useDataSet(
+    () => getTransferDSProps({ ...configProps, name: 'source' }),
+    [configProps]
+  );
+  const targetDS = useDataSet(() => {
+    const { read } = targetProps;
+    return getTransferDSProps({
+      primaryKey,
+      textField,
+      valueField,
+      read: read as TransportType,
+      name: 'target',
+    });
+  }, [primaryKey, textField, valueField, targetProps.read]);
+
+  React.useEffect(() => {
+    const getSourceData = async (): Promise<unknown[]> => {
+      let sourceResp;
+      if (sourceData) {
+        sourceResp = sourceData;
+      } else if (lovDS && lovCode) {
+        await Stores.LovCodeStore.fetchConfig(lovCode); // 请求之前先获取并设置 lov 配置
+        sourceResp = await lovDS.getField('lov')?.options?.query(1); // 值集
+      } else if (lovDS && lookupCode) {
+        const lookupAxiosConfig = Stores.LookupCodeStore.getAxiosConfig(lovDS.getField('lookup'));
+        sourceResp = await Stores.LookupCodeStore.fetchLookupData(lookupAxiosConfig); // 值列表
+      } else {
+        sourceResp = await sourceDS.query(); // 自定义查询
+      }
+      if (!getResponse(sourceResp)) {
+        return [];
+      }
+      return Array.isArray(sourceResp) ? sourceResp : sourceResp?.content;
+    };
+
+    const getTargetData = async (): Promise<unknown[]> => {
+      const { read, data } = targetProps || {};
+      if (read) {
+        const targetResp = await targetDS.query();
+        if (!getResponse(targetResp)) {
+          return [];
+        }
+        return Array.isArray(targetResp) ? targetResp : targetResp.content;
+      }
+      return data || [];
+    };
+
+    // 初始化源与目标数据
+    (async () => {
+      const targetArr = await getTargetData();
+      const sourceArr = await getSourceData();
+
+      sourceDS.loadData(omitDifference(sourceArr, targetArr, primaryKey, trgPrimaryKey));
+      const matchedItems = pickDifference(targetArr, sourceArr, trgPrimaryKey, primaryKey);
+
+      targetDS.loadData(matchedItems);
+      if (initRef.current) {
+        initRef.current.initialData = matchedItems;
+        initRef.current.originalData = targetArr;
+      }
+    })();
+  }, [lovCode, lookupCode]);
+
+  React.useEffect(() => {
+    if (modal && modal.update) {
+      const { onOk } = modal.props;
+      if (onOk) {
+        modal.update({
+          onOk: () => {
+            const { initialData, originalData } = initRef.current;
+            const value = targetDS.toData();
+            const [created, deleted] = getDifference(initialData, value, primaryKey);
+            return onOk({
+              initialData,
+              originalData,
+              value,
+              created,
+              deleted,
+            });
+          },
+        });
+      }
+    }
+  }, [targetDS, primaryKey]);
+
+  /** @description 搜索 */
+  const searchMatcher = ({ record, text }: SearchMatcherProps): boolean => {
+    const _textField: string = ((record.get(textField) as string) || '').toLowerCase();
+    if (Array.isArray(text)) {
+      return text
+        .filter((t) => Boolean(t.trim()))
+        .some((t) => {
+          return _textField?.indexOf(t.toLowerCase()) !== -1;
+        });
+    }
+    return _textField?.indexOf(text.trim().toLowerCase()) !== -1;
+  };
+
+  /**
+   * @description 单条数据操作
+   * source -> target: add
+   * target -> source: sync
+   */
+  const handleTransfer = (record: Record) => {
+    const source = record.dataSet;
+    const [target, status] =
+      source.name === 'source' ? [targetDS, RecordStatus.add] : [sourceDS, RecordStatus.sync];
+    const newRecord = new Record(record.toData(), target, status);
+    source.remove(record, true); // force removed
+    target.unshift(newRecord);
+
+    if (onChange) {
+      onChange({ records: [newRecord], value: targetDS.toData() });
+    }
+  };
+
+  /** @description 节点渲染 */
+  const optionRenderer = ({ record }: RenderProps): JSX.Element => {
+    if (!record) {
+      return <></>;
+    }
+    if (isFunction(renderItem)) {
+      return renderItem(record);
+    }
+    const avatarText: string = record?.get(textField) || '-';
+
+    return (
+      <span
+        className={styles[`option-item`]}
+        onClick={() => handleTransfer(record)}
+        style={{ ...style }}
+      >
+        <AvatarPro style={{ fontSize: 16 }} size={28} shape="square" {...avatarProps}>
+          {avatarText}
+        </AvatarPro>
+        <span className={styles.title}>{record?.get(textField)}</span>
+        {record?.get(valueField) && (
+          <span className={[styles.title, styles.description].join(' ')}>
+            {record?.get(valueField)}
+          </span>
+        )}
+      </span>
+    );
+  };
+
+  /**
+   * @description 批量操作 - 状态处理与单条数据操作一致
+   * @see handleTransfer
+   * @param isClear 是否清空
+   */
+  const handleBatch = (isClear = false) => {
+    const [source, target, status] = isClear
+      ? [targetDS, sourceDS, RecordStatus.sync]
+      : [sourceDS, targetDS, RecordStatus.add];
+
+    const { records } = source;
+    const newRecords = records.map((r) => new Record(r.toData(), target, status));
+    source.removeAll(true);
+    target.unshift(...newRecords);
+
+    if (onChange) {
+      onChange({ records: newRecords, value: targetDS.toData() });
+    }
+  };
+
+  return useObserver(() => (
+    <div className={cls(styles.wrapper__transfer, className)}>
+      {header}
+      <Form columns={2} className={styles['transfer-header__form']} style={{}}>
+        <Output
+          value={
+            <div className={styles.header__output}>
+              <span className={styles.title}>{sourceTitle}</span>
+              <span>
+                <span className={styles.total}>未选 {sourceDS.length} 项</span>
+                <Button
+                  className={styles.clear__button}
+                  funcType={FuncType.link}
+                  onClick={() => handleBatch(false)}
+                >
+                  全选
+                </Button>
+              </span>
+            </div>
+          }
+        />
+        <Output
+          value={
+            <div className={styles.header__output}>
+              <span className={styles.title}>{targetTitle}</span>
+              <span>
+                <span className={styles.total}>已选 {targetDS.length} 项</span>
+                <Button
+                  className={styles.clear__button}
+                  funcType={FuncType.link}
+                  onClick={() => handleBatch(true)}
+                >
+                  清空
+                </Button>
+              </span>
+            </div>
+          }
+        />
+      </Form>
+      <Spin spinning={sourceDS.status !== 'ready' || targetDS.status !== 'ready'}>
+        <Form dataSet={formDS} columns={2} className={styles.transfer__form}>
+          <SelectBox
+            name="source"
+            vertical
+            searchable={searchable}
+            options={sourceDS}
+            searchMatcher={searchMatcher}
+            optionRenderer={optionRenderer}
+            className={cls(styles[`select-box`], styles[`select-box-source`])}
+          />
+
+          <SelectBox
+            name="target"
+            vertical
+            searchable={searchable}
+            options={targetDS}
+            searchMatcher={searchMatcher}
+            optionRenderer={optionRenderer}
+            className={cls(styles[`select-box`], styles[`select-box-target`])}
+          />
+        </Form>
+      </Spin>
+      {footer}
+    </div>
+  ));
+};
+
+export default TransferPro;
+```
+
+```ts title="store/index.ts"
+import { DataToJSON, FieldType } from 'choerodon-ui/dataset/data-set/enum';
+import type { DataSetProps, TransportType } from 'choerodon-ui/pro/lib/data-set/interface';
+
+/**
+ * @description lovCode,lookupCode,data 与 read 四选一
+ */
+export type ConfigProps = {
+  primaryKey: string;
+  textField: string;
+  valueField?: string;
+} & (
+  | { lovCode: string; lookupCode?: undefined; read?: undefined; data?: undefined }
+  | { lovCode?: undefined; lookupCode: string; read?: undefined; data?: undefined }
+  | { lovCode?: undefined; lookupCode?: undefined; read: TransportType; data?: undefined }
+  | { lovCode?: undefined; lookupCode?: undefined; read?: undefined; data: any }
+);
+
+// 值集模式自动查询
+export const getLovDSProps = ({
+  lovCode,
+  lookupCode,
+}: {
+  lovCode?: string;
+  lookupCode?: string;
+}): DataSetProps => {
+  return {
+    fields: [
+      {
+        name: 'lov',
+        type: FieldType.object,
+        lovCode,
+        optionsProps: { pageSize: 99999 },
+      },
+      {
+        name: 'lookup',
+        type: FieldType.string,
+        lookupCode,
+        optionsProps: { pageSize: 99999 },
+      },
+    ],
+  };
+};
+
+/**
+ * 值集返回数据的要求，Array 类型或者是 { content: Array }，
+ * 其他返回结果需要通过配置 transport.read.transformResponse 自行格式转换
+ */
+export const getTransferDSProps = (configProps: ConfigProps & { name: string }): DataSetProps => {
+  const { name, primaryKey, valueField = 'value', textField, read } = configProps;
+
+  return {
+    name,
+    primaryKey,
+    pageSize: 99999, // 暂不支持分页
+    selection: false,
+    autoCreate: false,
+    autoQuery: false, // 禁用自动查询
+    dataToJSON: DataToJSON.all,
+    transport: { read },
+    fields: [
+      { name: primaryKey, type: FieldType.string },
+      { name: textField, type: FieldType.string },
+      { name: valueField, type: FieldType.string },
+    ],
+  };
+};
+
+export const getFormDSProps = (): DataSetProps => {
+  return { fields: [{ name: 'source' }, { name: 'target' }] };
+};
+```
 
 ## 更新日志
 

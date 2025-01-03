@@ -78,7 +78,7 @@ export default () => {
 
 ### ButtonProps.onClick
 
-组件默认的 `onClick` 事件会打开弹窗，如果同时指定了 `onClick` 事件回调(异步)，则会先执行。
+组件默认的 `onClick` 事件会打开弹窗，如果同时指定了 `onClick` 事件回调 (异步)，则会先执行。
 
 ### TModalProps.onOk
 
@@ -91,6 +91,88 @@ export default () => {
 | value        | `unknown[]` | 当前已选择的所有值                                   |
 | created      | `unknown[]` | `value` 与 `initialData` 对比，新增的数据            |
 | deleted      | `unknown[]` | `value` 与 `initialData` 对比，删除的数据            |
+
+## 源代码
+
+```tsx title="TransferProButton/index.tsx"
+import { Button, Modal } from 'choerodon-ui/pro';
+import type { ButtonProps } from 'choerodon-ui/pro/lib/button/Button';
+import type { ModalProps } from 'choerodon-ui/pro/lib/modal/Modal';
+import { isFunction } from 'lodash';
+import { useObserver } from 'mobx-react-lite';
+import * as React from 'react';
+import type { TransferProProps } from '.';
+import TransferPro from '.';
+
+export interface TButtonModalProps extends Omit<ModalProps, 'key' | 'children' | 'onOk'> {
+  onOk: (args: any) => boolean | void | Promise<boolean | undefined> | undefined;
+}
+
+export type TransferProButtonProps = {
+  /** @description 按钮属性 */
+  buttonProps?: ButtonProps;
+
+  /** @description 弹窗属性 */
+  modalProps?: TButtonModalProps;
+} & TransferProProps;
+
+const modalKey = Modal.key();
+
+/**
+ * @see https://changnian.netlify.app/docs/c7n/custom-components/transfer-pro-button
+ */
+const TransferProButton: React.FC<TransferProButtonProps> = ({
+  buttonProps = {},
+  modalProps = {},
+  children,
+  configProps,
+  targetProps,
+  avatarProps,
+  titles,
+  className,
+  style,
+  searchable,
+  onChange,
+  renderItem,
+}) => {
+  const handleOpen = async (event) => {
+    const { onClick } = buttonProps;
+    if (isFunction(onClick)) {
+      // 默认的按钮时间会被提前执行
+      await onClick(event);
+    }
+
+    const transferProps = {
+      configProps,
+      targetProps,
+      avatarProps,
+      titles,
+      style,
+      className,
+      searchable,
+      onChange,
+      renderItem,
+    };
+
+    Modal.open({
+      title: '选择',
+      style: { width: 600 },
+      ...modalProps,
+      key: modalKey,
+      maskClosable: false,
+      children: <TransferPro {...transferProps} />,
+    });
+  };
+
+  return useObserver(() => (
+    <Button {...buttonProps} onClick={handleOpen}>
+      {children}
+    </Button>
+  ));
+};
+
+export default TransferProButton;
+```
 
 ## Q & A
 
