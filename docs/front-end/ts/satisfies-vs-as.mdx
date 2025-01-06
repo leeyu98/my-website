@@ -1,0 +1,58 @@
+---
+title: TS 关键词 satisfies 和 as
+draft: true
+---
+
+## as
+
+### 类型断言
+
+类型断言 (`Type Assertion`)，`TypeScript` 提供的类型强制转换。
+因为在某些时候开发者可能比 `TypeScript` 更清楚地知道具体的类型，例如：
+
+```ts
+const divElm = document.getElementById('#id');
+```
+
+`document.getElementById` 默认返回的是较为宽泛的类型 `HTMLElement`，但开发者更清楚地知道获取的类型是更为精确的 `HTMLDivElement`，这时就可以使用类型断言，强制进行类型转换。断言有两种语法形式：
+
+```ts
+// as 关键字
+const divElm = document.getElementById('#id') as HTMLDivElement;
+
+// 尖括号
+const divElm = <HTMLDivElement>document.getElementById('#id');
+```
+
+### 断言的类型要求
+
+断言可以是更为宽泛的类型，也可以是更为狭窄的类型，但是前后两种类型之间必须存在重叠：
+
+```ts
+// number 和 string 类型不能充分重叠
+// code-error-next-line
+const str = 123 as string;
+// Error: 类型 "number" 到类型 "string" 的转换可能是错误的，因为两种类型不能充分重叠。
+
+// code-error-next-line
+const num = '123' as number;
+// Error: 类型 "string" 到类型 "number" 的转换可能是错误的，因为两种类型不能充分重叠。
+
+// 允许空对象字面量 {} 作为任何类型的子类型
+const num = {} as number;
+const str = {} as string;
+```
+
+类型断言之后，`TypeScript` 会把该类型作为断言后的类型处理，但是 `TypeScript` 并不会对断言的准确性进行检验：
+
+```ts
+const str = {} as string;
+// code-error-next-line
+str.charAt(0);
+// Uncaught TypeError: {}.charAt is not a function
+```
+
+`TypeScript` 允许 `str.charAt(0)` 方法的调用，因为是 `string` 类型的合法方法，但在代码运行时会出现错误。
+所以断言是比较危险的，开发者必须确保断言的正确性。
+
+## satisfies

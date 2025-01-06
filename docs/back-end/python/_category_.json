@@ -1,0 +1,9 @@
+{
+  "position": 30,
+  "label": "Python",
+  "link": {
+    "type": "generated-index",
+    "slug": "back-end/python",
+    "description": "高层次的解释性、编译性、互动性和面向对象的脚本语言。"
+  }
+}

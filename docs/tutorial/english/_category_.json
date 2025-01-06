@@ -1,0 +1,9 @@
+{
+  "label": "英语",
+  "position": 35,
+  "link": {
+    "type": "generated-index",
+    "slug": "tutorial/english",
+    "description": "英语入门"
+  }
+}
