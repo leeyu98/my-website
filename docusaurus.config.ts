@@ -156,7 +156,7 @@ const config: Config = {
   // new future config
   future: {
     experimental_faster: {
-      swcJsLoader: false, // 由于 svg 问题，暂不启用
+      swcJsLoader: true,
       swcJsMinimizer: true, // 启用 SWC JS 压缩
       swcHtmlMinimizer: true, // 启用 SWC HTML 压缩
       lightningCssMinimizer: true, // 使用 Lightning CSS 压缩
