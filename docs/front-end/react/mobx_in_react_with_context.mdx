@@ -1,0 +1,191 @@
+---
+title: 使用 MobX (结合 Context)
+description: React 中 MobX 的用法 (结合 Context)。
+sidebar_position: 40
+tags:
+  - React
+  - MobX
+  - Context
+---
+
+<Author cost={5} publish="2021-8-11 17:05" update="2022-7-31 17:12" />
+
+## Class 组件
+
+### 1. 创建共享的数据源
+
+```js title="store.js"
+import React from 'react';
+import { action, computed, makeAutoObservable } from 'mobx';
+// 创建Context
+const AppContext = React.createContext({});
+const { Provider, Consumer } = AppContext;
+
+// 需要共享的数据，可以声明为 Class
+class AppState {
+  constructor() {
+    // 将当前 Class 变成可观察的
+    makeAutoObservable(this);
+  }
+  staticData = 'static';
+  data = 'default';
+  changeData = action((newData) => {
+    this.data = newData;
+  });
+  newData = computed(() => {
+    return `${this.data}-new`;
+  });
+}
+
+// 包装组件
+class AppStore extends React.Component {
+  render() {
+    return (
+      <Provider value={new AppState()} {...this.props}>
+        {this.props.children}
+      </Provider>
+    );
+  }
+}
+
+export { AppStore, AppContext, Consumer };
+```
+
+### 2. 创建消费者组件
+
+```js title="Parent.js"
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
+import { AppContext } from './store';
+const Parent = observer(
+  class ClassComponent extends Component {
+    static contextType = AppContext;
+    handleChange = () => {
+      this.context.changeData('New');
+    };
+
+    render() {
+      return (
+        <div>
+          消费者组件:{this.context.data}
+          <button onClick={this.handleChange}>Change</button>
+        </div>
+      );
+    }
+  }
+);
+
+export default Parent;
+```
+
+> 这里使用了 `Class.contextType` ，使用 `Consumer` 也是可以的。
+
+### 3. 将消费者作为包装组件的子组件
+
+```js title="index.js"
+import React from 'react';
+import Parent from './Parent';
+import { AppStore } from './store';
+
+class MyApp extends React.Component {
+  render() {
+    return (
+      <AppStore {...this.props}>
+        <Parent {...this.props} />
+      </AppStore>
+    );
+  }
+}
+
+export default MyApp;
+```
+
+## Function 组件
+
+### 1. 创建共享的数据源
+
+数据源 (store) 文件中做了 `4` 部分操作：
+
+- 创建需要共享的数据：这里可以是多样的，一般是声明为 `Class`
+- 创建 `Context`
+- 自定义 `Hook` 暴露 `Context`：这样是为了更方便的引用。
+- 自定义包装组件
+
+```js title="store.js"
+import React from 'react';
+import { action, observable } from 'mobx';
+// 创建Context
+const AppContext = React.createContext({});
+const { Provider, Consumer } = AppContext;
+// 需要共享的数据
+let appState = observable({
+  data: 'default',
+  // computed data
+  get newData() {
+    return `${appState.data}-new`;
+  },
+  // action 触发数据变更
+  changeData: action((newData) => {
+    appState.data = newData;
+  }),
+});
+// 包装组件
+const AppStore = (props) => (
+  <Provider value={appState} {...props}>
+    {props.children}
+  </Provider>
+);
+// 自定义Hooks
+const useStore = () => React.useContext(AppContext);
+
+export { AppStore, Consumer, useStore };
+```
+
+### 2. 创建消费者组件
+
+```js title="Parent.js"
+import React from 'react';
+import { observer } from 'mobx-react';
+import { useStore } from './store'; //只需引用自定义的 Hook 即可
+
+const Parent = observer((props) => {
+  // 调用自定义 Hook 从 Context 取值
+  const { data, newData, changeData } = useStore();
+  const handleChange = () => {
+    changeData('haha');
+    console.log('store', data);
+  };
+
+  return (
+    <div>
+      消费者组件:{data}
+      {newData}
+      <button onClick={handleChange}>Change</button>
+    </div>
+  );
+});
+
+export default Parent;
+```
+
+:::info 说明
+
+**这里使用 Consumer 好使吗？**<br/>
+自然也是好使的！只不过 `Consumer` 的方式写法不够简洁罢了！
+:::
+
+### 3. 将消费者作为包装组件的子组件
+
+```js title="index.js"
+import React from 'react';
+import Parent from './Parent';
+import { AppStore } from './store';
+
+const MyApp = (props) => (
+  <AppStore {...props}>
+    <Parent {...props} />
+  </AppStore>
+);
+
+export default MyApp;
+```

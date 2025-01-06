@@ -28,8 +28,8 @@ const config: Config = {
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'zh',
-    locales: ['zh'],
+    defaultLocale: 'zh-CN',
+    locales: ['zh-CN'],
   },
   presets: [
     [
@@ -46,6 +46,7 @@ const config: Config = {
           blogSidebarCount: 'ALL',
           postsPerPage: 'ALL',
           remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
+          onUntruncatedBlogPosts: 'ignore',
         },
         pages: {
           remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
@@ -65,11 +66,18 @@ const config: Config = {
         language: ['en', 'zh'], // 支持搜索的语言
       } satisfies PluginOptions,
     ],
+    [
+      '@docusaurus/plugin-google-gtag',
+      {
+        trackingID: 'G-Z2BW9NFG3H',
+        anonymizeIP: true,
+      },
+    ],
   ],
   themeConfig: {
     image: 'img/social-card.png',
     navbar,
-    footer,
+    // footer: {},
     docs: {
       sidebar: {
         hideable: true, // 可收起
@@ -121,6 +129,7 @@ const config: Config = {
       minHeadingLevel: 2,
       maxHeadingLevel: 4,
     },
+    metadata: [{ name: 'keywords', content: 'blog,front-end,changnian' }],
     // announcementBar: {
     //   id: 'arc_invitation_code',
     //   content:
@@ -143,6 +152,17 @@ const config: Config = {
       admonitions: true,
       headingIds: true,
     } satisfies MDX1CompatOptions,
+  },
+  // new future config
+  future: {
+    experimental_faster: {
+      swcJsLoader: false, // 由于 svg 问题，暂不启用
+      swcJsMinimizer: true, // 启用 SWC JS 压缩
+      swcHtmlMinimizer: true, // 启用 SWC HTML 压缩
+      lightningCssMinimizer: true, // 使用 Lightning CSS 压缩
+      rspackBundler: true, // 启用 Rspack 构建
+      mdxCrossCompilerCache: true, // 浏览器/NodeJS 环境仅编译一次
+    },
   },
 };
 

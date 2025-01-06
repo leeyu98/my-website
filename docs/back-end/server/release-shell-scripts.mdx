@@ -1,0 +1,129 @@
+---
+title: 常用发版脚本
+description: 常用发版脚本
+sidebar_position: 10
+tags:
+  - Shell
+  - Scripts
+keywords:
+  - Shell
+  - Scripts
+---
+
+<Author cost={5} publish="2024-12-3 15:51" update="" />
+
+## 本地打包
+
+**执行脚本**
+
+```bash
+sh build.local.sh --branch=release
+```
+
+**脚本代码**
+
+1. 获取当前所在分支，记作 `current_branch`
+2. 初始化分支变量 `branch` 默认取值 `current_branch`
+3. 解析命名参数，如果有 `--branch` 参数，则将 `branch` 赋值为参数值
+4. 切换到前端工程根目录
+5. 如果 `dist` 存在，则备份 `dist` 目录到 `dist.bak`
+6. 切换到指定的 `branch` 分支，并拉取最新代码
+7. 执行打包命令
+8. 如果上次打包压缩文件文件已存在，则删除
+9. 压缩打包文件并删除 `dist` 目录
+10. 恢复 `dist.bak` 到 `dist`
+11. 切换回 `current_branch` 分支
+
+<details>
+<summary>为什么打包前要备份 dist 文件？</summary>
+
+**避免重复构建，节省时间；避免报错。**
+
+项目启动后 `dist` 中会生成项目运行必须的 `hzero_front` `hzero-front_components` `hzero_front_ued` 文件，但在打包时会清除这些文件并在下次启动项目时重新生成，备份可以节省再次生成这些文件的时间。
+
+</details>
+
+```bash title="build.local.sh"
+#!/bin/bash
+
+set -e
+
+# 初始化分支变量
+# 切换回当前分支
+# current_branch=$(git branch --show-current)
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+branch=$current_branch
+
+# 解析命名参数
+for arg in "$@"; do
+  case $arg in
+  --branch=*)
+    branch="${arg#*=}"
+    shift
+    ;;
+  *)
+    # 其他参数
+    shift
+    ;;
+  esac
+done
+
+cd /d/Document/Code/JJYX/eoms-gjh-front
+
+# backup
+if [ -d "./dist" ]; then
+  echo "Backing up in progress..."
+  mv dist dist.bak
+  echo "Backup completed."
+fi
+
+git checkout $branch
+git pull
+
+# build
+pnpm run build:ext-parent:prod
+
+# remove
+if [ -f "./dist_gjh.zip" ]; then
+  echo "Removing the build package last time..."
+  rm dist_gjh.zip
+  echo "Removed."
+fi
+
+# compress
+echo "Compressing with zip..."
+zip -qr dist_gjh.zip dist
+echo "Compressed."
+# tar -zcf dist.tar.gz dist/
+
+echo "Restoring backup..."
+rm -rf dist
+mv dist.bak dist
+echo "Backup restored."
+
+git checkout $current_branch
+
+explorer .
+```
+
+## 远程部署
+
+```bash
+#!/bin/bash
+
+set -e
+
+if [ -f "./dist.zip" ]; then
+  echo "remove dist.zip last time..."
+  rm -rf dist.zip
+fi
+
+mv /home/dist_gjh.zip .
+
+# backup
+mv dist dist-$(date "+%Y%m%d%H%M%S")
+mv dist_gjh.zip dist.zip
+unzip dist.zip
+
+echo "Finished..."
+```

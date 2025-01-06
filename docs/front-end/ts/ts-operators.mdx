@@ -1,0 +1,169 @@
+---
+title: TS 操作符
+description: TypeScript 中的操作符
+sidebar_position: 20
+tags:
+  - TypeScript
+keywords:
+  - React
+---
+
+<Author cost={5} publish="2024-12-5 15:6" update="" />
+
+## typeof & instanceof
+
+用于类型查询和类型细化，可以在运行时检查和细化变量的类型。
+
+```ts
+// 类型收窄
+function printValue(value: string | number) {
+  if (typeof value === 'string') {
+    console.log('String:', value);
+  } else {
+    console.log('Number:', value);
+  }
+}
+
+printValue('Hello'); // String: Hello
+printValue(42); // Number: 42
+
+[] instanceof Array; // true
+Object() instanceof Object; // true
+```
+
+## keyof
+
+获取对象类型的所有键的联合类型。
+
+```ts
+type Person = {
+  name: string;
+  age: number;
+  isStudent: boolean;
+};
+type PersonKeys = keyof Person; // 结果是 "name" | "age" | "isStudent"
+```
+
+## O[K]
+
+索引访问操作符，用于访问对象 `O` 中键为 `K` 的属性的类型。
+
+```ts
+type Person = {
+  name: string;
+  age: number;
+  isStudent: boolean;
+};
+
+type NameType = Person['name']; // 结果是 string
+type AgeType = Person['age']; // 结果是 number
+type IsStudentType = Person['isStudent']; // 结果是 boolean
+```
+
+## [K in keyof O]
+
+映射类型，基于现有类型创建新类型。
+
+```ts
+type Person = {
+  name: string;
+  age: number;
+  isStudent: boolean;
+};
+
+type ReadonlyPerson = {
+  readonly [K in keyof Person]: Person[K];
+};
+
+type NameOnlyPerson = {
+  [K in 'name']: Person[K];
+};
+```
+
+## +/- & readonly & ?
+
+`readonly` 只读属性修饰符；
+`?` 可选属性修饰符；
+`+` 和 `-` 修饰符来添加或移除属性的修饰符。
+
+```ts
+type Person = {
+  name: string;
+  age?: number;
+  readonly isStudent: boolean;
+};
+
+// 为所有属性添加 readonly 修饰符
+type ReadonlyPerson = {
+  +readonly [K in keyof Person]: Person[K];
+};
+
+// 移除所有属性的 readonly 修饰符
+type WriteablePerson = {
+  -readonly [K in keyof Person]: Person[K];
+};
+
+// 为所有属性添加可选修饰符
+type OptionalPerson = {
+  [K in keyof Person]?: Person[K];
+};
+```
+
+## 条件类型
+
+条件类型，基于类型关系进行类型推断。
+
+```ts
+T extends U ? X : Y
+```
+
+```ts
+type Result<T> = T extends string ? string : number;
+type Str = Result<string>; // string
+type Num = Result<number>; // number
+```
+
+## ! 非空断言
+
+非空断言操作符，告诉编译器某个值不会是 `null` 或 `undefined`，在编译时会忽略对 null 或 undefined 的检查
+
+```ts
+let value: string | null = 'Hello';
+
+// 使用非空断言操作符
+let length = value!.length;
+```
+
+## = 泛型默认类型
+
+```ts
+function identity<T = string>(arg: T): T {
+  return arg;
+}
+identity('Hello'); // 推断类型为 string
+```
+
+## as 类型断言
+
+类型断言，用于显式地指定变量的类型。
+
+```ts
+const param: unknown = 'Hello';
+const length = (param as string).length;
+```
+
+## is 类型保护
+
+```ts
+const param: unknown = 'Hello';
+
+function isString(value: any): value is string {
+  return typeof value === 'string';
+}
+
+if (isString(param)) {
+  console.log(param.length); // 现在 TypeScript 知道 param 是字符串类型
+} else {
+  console.log('Not a string');
+}
+```

@@ -12,7 +12,7 @@ keywords:
 
 ## 如何保证 Lov 配置正确加载
 
-当以 Lov 作为数据源时，必须保证值集视图配置与数据的加载顺序。`Stores.LovCodeStore.fetchConfig` 默认从缓存中读取配置，否则发送网络请求。
+当以 `Lov` 作为数据源时，必须保证值集视图配置与数据的加载顺序。`Stores.LovCodeStore.fetchConfig` 默认优先从缓存中读取配置，否则发送网络请求。
 
 :::tip
 与 `Lookup` 不同，`Lov` 相关配置 (首次) 需要发送网络请求获取，不能保证一定存在缓存，所以 `fetchConfig` 是异步操作。

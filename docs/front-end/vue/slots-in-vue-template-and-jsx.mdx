@@ -4,11 +4,73 @@ sidebar_position: 30
 displayed_sidebar: frontendSidebar
 ---
 
-<Author cost={2} publish="2024-1-10 14:50" update="" />
-
-简单以 Element UI 中 Button 组建为例：
+<Author cost={5} publish="2024-1-10 14:50" update="2024-6-27 17:29" />
 
 ## template 中插槽的写法
+
+### slot
+
+> 默认插槽可省略或使用 `slot="default"`
+
+```html
+<template>
+  <el-button loading>
+    <!-- 默认/匿名插槽 -->
+    <template> Custom Button Text </template>
+    <!-- 具名插槽 -->
+    <template slot="loading"> 🐳 </template>
+  </el-button>
+</template>
+```
+
+### slot-scope
+
+作用域插槽 `slot-scope` 是用于子组件向外部传递参数的。
+
+> 默认插槽可省略或使用 `slot="default"`
+
+```html
+<template>
+  <el-table>
+    <el-table-column>
+      <!-- 默认/匿名插槽 -->
+      <template slot-scope="{row, column, $index}"> {{ $index+1 }} {{row.id}} </template>
+      <!-- 具名插槽 -->
+      <template name="userName" slot-scope="{row, column, $index}">
+        {{ $index+1 }} {{row.userName}}
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
+```
+
+### v-slot
+
+`v-slot` 是 `2.6.0` 版本引入用来替代 `slot` 和 `slot-scope` 的，所以之后的版本推荐直接使用 `v-slot`。<br/>
+语法为：`v-slot:[slot-name]="[scope-data-name]"`，可使用解构。
+
+> 默认插槽可省略或使用 `v-slot` 或使用 `v-slot:default`
+
+```html
+<template>
+  <el-button loading>
+    <template> Custom Button Text </template>
+    <template v-slot:loading> 🐳 </template>
+  </el-button>
+  <el-table>
+    <el-table-column>
+      <!-- 默认/匿名插槽 -->
+      <template v-slot="{row, column, $index}"> {{ $index+1 }} {{row.id}} </template>
+      <!-- 具名插槽 -->
+      <template v-slot:userName="{row, column, $index}"> {{ $index+1 }} {{row.userName}} </template>
+    </el-table-column>
+  </el-table>
+</template>
+```
+
+### \# 简写
+
+> 默认插槽可省略或使用 `#default`
 
 ```html
 <template>
@@ -16,6 +78,14 @@ displayed_sidebar: frontendSidebar
     <template #default> Custom Button Text </template>
     <template #loading> 🐳 </template>
   </el-button>
+  <el-table>
+    <el-table-column>
+      <!-- 默认/匿名插槽 -->
+      <template #default="{row, column, $index}"> {{ $index+1 }} {{row.id}} </template>
+      <!-- 具名插槽 -->
+      <template #userName="{row, column, $index}"> {{ $index+1 }} {{row.userName}} </template>
+    </el-table-column>
+  </el-table>
 </template>
 ```
 
@@ -31,6 +101,10 @@ export default defineComponent(() => {
       v-slots={{
         default: () => 'Custom Button Text',
         loading: () => '🐳',
+        {/* 作用域插槽 */}
+        withProps: (props) => {
+          return <span>{props.title}</span>;
+        },
       }}
     />
   );

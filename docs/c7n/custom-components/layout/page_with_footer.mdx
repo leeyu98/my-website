@@ -1,0 +1,132 @@
+---
+title: PageWithFooter
+description: 基于 PageHeaderWrapper 组件封装的支持自定义固定底部操作栏的布局组件。
+sidebar_position: 10
+tags:
+  - Layout
+  - 布局
+keywords:
+  - PageWithFooter
+---
+
+<Author cost={3} publish="2024-9-18 18:35:00" update="2024-11-12 15:8" />
+
+基于 `PageHeaderWrapper` 组件封装的支持自定义固定底部操作栏的布局组件。
+
+## 特性说明
+
+- 支持自定义底部固定操作栏
+- 兼容 `PageHeaderWrapper` 所有属性
+- 内置 `Spin` 控制内容加载效果
+
+## 基本用法
+
+```tsx
+import { PageWithFooter } from '@/components/layout';
+
+export default () => {
+  return (
+    <PageWithFooter
+      title={title}
+      header={
+        <Button style={{ marginRight: 8 }} onClick={handleLinkBack}>
+          <Icon type="arrow_back" style={{ marginRight: 4 }} />
+          返回
+        </Button>
+      }
+      contentProps={{ style: { paddingLeft: 50 } }}
+      showFooter={!isReadonly}
+      footer={<Button onClick={handleLinkBack}>取消</Button>}
+    >
+      {/* content here */}
+    </PageWithFooter>
+  );
+};
+```
+
+## API
+
+| 参数         | 类型              | 说明                                           | 默认值  |
+| :----------- | :---------------- | :--------------------------------------------- | :------ |
+| showFooter   | `boolean`         | <Highlight>可选</Highlight> 是否需要底部操作栏 | `false` |
+| footerHeight | `number`          | <Highlight>可选</Highlight> 底部操作栏高度     | `60`    |
+| footer       | `React.ReactNode` | <Highlight>可选</Highlight> 底部操作栏内容     | `null`  |
+
+### 源代码
+
+```tsx
+import { Size } from 'choerodon-ui/lib/_util/enum';
+import { Spin } from 'choerodon-ui/pro';
+import { SpinProps } from 'choerodon-ui/pro/lib/spin';
+import { PageHeaderWrapper } from 'components/Page';
+
+// 基于 PageHeaderWrapper 封装，支持所有属性；PageWithFooter 存在固定底部按钮组的布局
+type PickSpinProps = Pick<SpinProps, 'spinning' | 'dataSet' | 'size' | 'tip'>;
+export interface PageWithFooterProps extends React.ComponentProps<typeof PageHeaderWrapper> {
+  showFooter?: boolean;
+  footerHeight?: number;
+  footer?: React.ReactNode;
+}
+
+const PageWithFooter: React.FC<PageWithFooterProps & PickSpinProps> = ({
+  children,
+  showFooter = false,
+  footerHeight = 60,
+  footer = null,
+  spinning = false,
+  dataSet,
+  size = Size.default,
+  tip = '',
+  contentProps = { style: {} },
+  ...wrapperProps
+}) => {
+  return (
+    <PageHeaderWrapper
+      {...wrapperProps}
+      contentProps={{
+        ...contentProps,
+        style: { position: 'relative', paddingRight: 0, paddingBottom: 0, ...contentProps.style },
+      }}
+    >
+      <div
+        style={{
+          height: showFooter ? `calc(100% - ${footerHeight}px)` : '100%',
+          overflowY: 'auto',
+          paddingRight: contentProps.style?.paddingRight ?? 50,
+        }}
+      >
+        <Spin dataSet={dataSet} spinning={spinning} tip={tip} size={size}>
+          {children}
+        </Spin>
+      </div>
+      {showFooter && (
+        <div
+          style={{
+            width: '100%',
+            height: footerHeight,
+            textAlign: 'center',
+            padding: '12px 0',
+            backgroundColor: '#ffffff',
+          }}
+        >
+          {footer}
+        </div>
+      )}
+    </PageHeaderWrapper>
+  );
+};
+
+export default PageWithFooter;
+```
+
+## 更新日志
+
+### alpha
+
+**2023-11-12**
+
+- 🎉 新增 `Spin` 控制内容加载效果
+
+**2023-08-27**
+
+- 🎉 新增 `PageWithFooter` 布局组件

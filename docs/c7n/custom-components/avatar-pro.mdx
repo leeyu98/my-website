@@ -12,6 +12,10 @@ keywords:
 
 <Author count={3000} publish="2023-5-11 18:40" update="2024-5-20 16:30" />
 
+:::danger
+✂️ 当前组件已停止更新维护，该文档已归档并停止更新。
+:::
+
 基于 `Avatar` 组件封装的头像组件。
 
 ![基本用法](./images/avatar-pro.png)
@@ -97,11 +101,11 @@ export default () => {
 
 > 除此以下附加属性外，支持 `Avatar` 默认所有属性 `AvatarProps`
 
-| 参数     | 类型                                                                | 说明                                                                                        | 默认值      |
-| :------- | :------------------------------------------------------------------ | :------------------------------------------------------------------------------------------ | :---------- |
-| children | <div style={{ width: 260 }} /> `string` &#124; `React.ReactElement` | <Highlight>可选</Highlight> 子节点，递归查找 `string` 类型的子节点并显示 (`Emoji` 字符规范) | -           |
-| colorful | `boolean`                                                           | <Highlight>可选</Highlight> 是否启用多彩显示，仅 `children` 为 `string` 类型时有效          | `false`     |
-| mode     | `AvatarMode`                                                        | <Highlight>可选</Highlight> 文本截取模式，枚举                                              | `full_char` |
+| 参数     | 类型                                                            | 说明                                                                                        | 默认值      |
+| :------- | :-------------------------------------------------------------- | :------------------------------------------------------------------------------------------ | :---------- |
+| children | <div style={{ width: 260 }} /> `string` \| `React.ReactElement` | <Highlight>可选</Highlight> 子节点，递归查找 `string` 类型的子节点并显示 (`Emoji` 字符规范) | -           |
+| colorful | `boolean`                                                       | <Highlight>可选</Highlight> 是否启用多彩显示，仅 `children` 为 `string` 类型时有效          | `false`     |
+| mode     | `AvatarMode`                                                    | <Highlight>可选</Highlight> 文本截取模式，枚举                                              | `full_char` |
 
 ### AvatarMode
 
@@ -116,6 +120,146 @@ export enum AvatarMode {
 ```
 
 ## 源代码
+
+```tsx
+import type { AvatarProps } from 'choerodon-ui/lib/avatar';
+import cls from 'classnames';
+import * as React from 'react';
+import AvatarP from './AvatarP';
+import styles from './index.module.less';
+
+// 预置头像色盘
+const colorPalette = [
+  { color: '#0840F8', backgroundColor: '#D6E4FF' },
+  { color: '#722ED1', backgroundColor: '#EFDBFF' },
+  { color: '#1890FF', backgroundColor: '#BAE7FF' },
+  { color: '#13C2C2', backgroundColor: '#B5F5EC' },
+  { color: '#52C41A', backgroundColor: '#D9F7BE' },
+  { color: '#FA8C16', backgroundColor: '#FFE7BA' },
+  { color: '#F5222D', backgroundColor: '#FFCCC7' },
+  { color: '#FA541C', backgroundColor: '#FFD8BF' },
+  { color: '#EB2F96', backgroundColor: '#FFD6E7' },
+  { color: '#FAAD14', backgroundColor: '#FFF1B8' },
+];
+
+/**
+ * @description 获取头像配色
+ * @param text 展示字段值
+ */
+const getAvatarColor = (text = '-') => {
+  const charCode = text?.codePointAt(0) ?? 0;
+  const index = charCode % colorPalette.length;
+  return colorPalette[index];
+};
+
+// FIXED: 修复超出 UTF16 码元乱码问题
+const getSliceString = (text = '-', length) => {
+  let sliceLength = Math.abs(length);
+  if (length === 1) {
+    sliceLength += text?.codePointAt(0) ?? 0 > 0xffff ? 1 : 0;
+  } else if (length === 2) {
+    if (text?.codePointAt(0) ?? 0 > 0xffff) {
+      sliceLength += 1;
+      if (text?.codePointAt(2) ?? 0 > 0xffff) {
+        sliceLength += 1;
+      }
+    }
+  } else if (length === -1) {
+    sliceLength += text?.codePointAt(text.length - 1) ?? 0 > 0xffff ? 1 : 0;
+  } else if (length === -2) {
+    if (text?.codePointAt(text.length - 1) ?? 0 > 0xffff) {
+      sliceLength += 1;
+      if (text?.codePointAt(text.length - 3) ?? 0 > 0xffff) {
+        sliceLength += 1;
+      }
+    }
+  }
+  return length > 0 ? text.slice(0, sliceLength) : text.slice(sliceLength * -1);
+};
+
+const getAvatarText = (children, mode = AvatarMode.FullChar) => {
+  if (typeof children !== 'string') {
+    if (children?.props?.children) {
+      return getAvatarText(children?.props?.children, mode);
+    }
+    // eslint-disable-next-line no-console
+    console.warn(`Warning: AvatarPro's children should be a string type.`);
+    return '-';
+  }
+
+  switch (mode) {
+    case AvatarMode.FirstChar:
+      return getSliceString(children, 1);
+    case AvatarMode.First2Char:
+      return getSliceString(children, 2);
+    case AvatarMode.LastChar:
+      return getSliceString(children, -1);
+    case AvatarMode.Last2Char:
+      return getSliceString(children, -2);
+    default:
+      return children;
+  }
+};
+
+export enum AvatarMode {
+  FirstChar = 'first_char',
+  First2Char = 'first_2char',
+  LastChar = 'last_char',
+  Last2Char = 'last_2char',
+  FullChar = 'full_char',
+}
+
+export type AvatarProProps = AvatarProps & {
+  /**
+   * @description 子节点
+   * @default '-'
+   */
+  children?: string | React.ReactElement;
+
+  /**
+   * @description 文本截取模式
+   * @default 'full_char'
+   */
+  mode?: AvatarMode;
+
+  /**
+   * @description 是否启用多彩模式
+   * @default false
+   */
+  colorful?: boolean;
+};
+
+/**
+ * @see https://changnian.netlify.app/docs/c7n/custom-components/avatar-pro
+ */
+const AvatarPro: React.FC<AvatarProProps> = ({
+  children = '-',
+  colorful = false,
+  mode = AvatarMode.FullChar,
+  style,
+  className,
+  src,
+  ...avatarProps
+}) => {
+  const avatarText = !src ? getAvatarText(children, mode) : '';
+  const avatarColorStyle = !src && colorful ? getAvatarColor(avatarText) : {};
+
+  return (
+    <AvatarP
+      style={{ ...avatarColorStyle, ...style }}
+      className={cls(styles.avatar, className)}
+      shape="circle"
+      size={28}
+      src={src}
+      {...avatarProps}
+    >
+      {avatarText}
+    </AvatarP>
+  );
+};
+
+export default AvatarPro;
+```
 
 ### 文字倒置修复
 
@@ -172,10 +316,6 @@ const getAvatarColor = (text = '-') => {
 ```
 
 ## 更新日志
-
-### 2024-5-20
-
-- ✂️ 当前组件不再更新维护，该文档会在将来的更新中归档
 
 ### 0.1.1
 

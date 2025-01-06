@@ -1,0 +1,193 @@
+---
+title: SelectPro
+description: 基于 Element React 封装的下拉组件。
+sidebar_position: 10
+tags:
+  - Element React
+  - SelectPro
+keywords:
+  - Element React
+  - SelectPro
+---
+
+<Author count={3000} publish="2024-9-14 10:40" />
+
+:::danger
+✂️ 当前组件已停止更新维护，如遇问题，需自行修复！
+:::
+
+基于 `Element React` 的 `Select` 组件封装的下拉选择组件。
+
+## 特性说明
+
+- 支持 `dataSet` 自动获取值集数据渲染
+- 支持 `options` `optionsData` 手动渲染
+- 理论上与 `Select` 组件完全兼容，支持 `Select` 组件除的所有属性
+
+## 何时使用
+
+- 使用 `Select` 组件的所有场景
+
+## 基本用法
+
+```tsx showLineNumbers
+import { SelectPro } from '@/components/element-pro';
+
+export default () => {
+  return (
+    <SelectPro
+      name="type"
+      dataSet={dataSet}
+      value={model.type}
+      onChange={(val) => handleValueChange('type', val)}
+    />
+  );
+};
+```
+
+## API
+
+> 除此以下附加属性外，支持 `Select` 默认所有属性。
+
+| 参数        | 类型 <div style={{minWidth:130}}/>    | 说明                                                                                                                                         | 默认值    |
+| :---------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
+| value       | `any`                                 | <Highlight color="red">必输</Highlight> 绑定的 Element 表单 model 中的 value                                                                 | -         |
+| name        | `string`                              | <Highlight>可选</Highlight> field name【未关联 DataSet 时不需要传入】                                                                        | `false`   |
+| valueField  | `string`                              | <Highlight>可选</Highlight> 值字段，支持 DataSet 配置                                                                                        | `value`   |
+| textField   | `string`                              | <Highlight>可选</Highlight> 展示字段，支持 DataSet 配置                                                                                      | `meaning` |
+| options     | `DataSet` \| `null`               | <Highlight>可选</Highlight> 用于手动渲染数据的 DataSet；优先级高于 dataSet                                                                   | -         |
+| optionsData | ` Array<any>`                         | <Highlight>可选</Highlight> 用于手动渲染的数据，未使用 dataSet 的情况；优先级最高，高于 options                                              | -         |
+| dataSet     | `DataSet` \| `null`                | <Highlight>可选</Highlight> 绑定的 dataSet，用于获取对应字段的 lookupCode 配置；优先级最低<br/>注意：使用查询参数时传入 dataSet.queryDataSet | -         |
+| onChange    | `(value: any, checked?: any) => void` | <Highlight>可选</Highlight> 仅对 onChange 事件做类型重定义（默认 onChange 事件支持从第二参数获取原始数据，但类型定义存在问题）               | -         |
+
+## 源代码
+
+```tsx showLineNumbers title="SelectPro/index.tsx"
+import { Field, Record } from 'choerodon-ui/dataset';
+import DataSet from 'choerodon-ui/dataset/data-set';
+import { Select } from 'element-react';
+import { observer } from 'mobx-react';
+import * as React from 'react';
+
+type SelectProps = React.ComponentProps<typeof Select>;
+
+// WARNING: 开发阶段：组件 API 可能随时变更
+export interface SelectProProps extends Omit<SelectProps, 'onChange'> {
+  /**
+   * @description 绑定的 Element 表单 model 中的 value
+   */
+  value: any;
+  /**
+   * @description 绑定的字段名 - 由于 field 仅支持 string，所以不做其他类型兼容【未关联 DataSet 时不需要传入】
+   */
+  name?: string;
+  /**
+   * @description 用于手动渲染数据时选项绑定的值字段，同时用于生成 key，需要保证唯一性
+   */
+  valueField?: string;
+  /**
+   * @description 用于手动渲染数据时的展示字段
+   */
+  textField?: string;
+  /**
+   * @description 用于手动渲染数据的 DataSet
+   */
+  options?: DataSet | null;
+
+  /**
+   * @description 用于手动渲染的数据，未使用 dataSet 的情况。支持非对象数据渲染
+   */
+  optionsData?: Array<any>;
+
+  /**
+   * @deprecated 后续版本会删除，请使用 dataSet
+   * @description 绑定的 record - 主要为了使用 record.dataSet 获取配置
+   */
+  record?: Record | null;
+
+  /**
+   * @description 绑定的 dataSet - 为了使用 dataSet 获取对应字段的 lookupCode 配置【注意：使用查询参数时传入 dataSet.queryDataSet】
+   */
+  dataSet?: DataSet | null;
+  /**
+   * @description onChange 事件，覆盖默认的 onChange 事件类型问题
+   */
+  onChange?: (value: any, checked: any) => void;
+}
+
+const SelectPro: React.FC<SelectProProps> & {
+  Option: typeof Select.Option;
+  OptionGroup: typeof Select.OptionGroup;
+} = ({
+  value,
+  name,
+  valueField: valField,
+  textField: txtField,
+  options,
+  optionsData,
+  record,
+  dataSet,
+  style,
+  children,
+  onChange,
+  ...restProps
+}) => {
+  const field: Field | undefined = dataSet?.getField(name) || record?.dataSet?.getField(name);
+
+  const textField = txtField || field?.pristineProps?.textField || 'meaning';
+  const valueField = valField || field?.pristineProps?.valueField || 'value';
+
+  const optionsDS = options || field?.options;
+
+  return (
+    <Select
+      value={value}
+      style={{ width: '100%', ...style }}
+      onChange={onChange as SelectProps['onChange']}
+      {...restProps}
+    >
+      {children ||
+        (optionsData || optionsDS)?.map((opt: Record | unknown) => {
+          // record 渲染
+          if (opt instanceof Record) {
+            return (
+              <Select.Option
+                key={opt?.get(valueField)}
+                value={opt?.get(valueField)}
+                label={opt?.get(textField)}
+              />
+            );
+          }
+          // optionsData 渲染
+          if (typeof opt === 'string' || typeof opt === 'number') {
+            return <Select.Option key={opt} value={opt} label={opt} />;
+          }
+          return (
+            <Select.Option
+              key={opt?.[valueField]}
+              value={opt?.[valueField]}
+              label={opt?.[textField]}
+            />
+          );
+        })}
+    </Select>
+  );
+};
+
+SelectPro.Option = Select.Option;
+SelectPro.OptionGroup = Select.OptionGroup;
+
+export default observer(SelectPro);
+```
+
+## 更新日志
+
+### alpha
+
+**2024-08-25**
+
+- 🐞 单选情况下默认不启用可筛选属性（默认只显示选中选项）
+
+**2024-07-26**
+
+- 🎉 新增 `SelectPro` 组件；

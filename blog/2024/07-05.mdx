@@ -1,0 +1,72 @@
+---
+title: 编程命名方式
+keywords:
+  - 命名
+---
+
+## Pascal
+
+帕斯卡命名。常用于组件、类的命名。{/* truncate */}
+
+```js
+class AnimalType {
+  // ...
+}
+
+const ConfirmModal = () => {
+  // ...
+};
+```
+
+## Camel
+
+驼峰。常用于变量、函数命名。
+
+```js
+const userName = 'Chang Nian';
+
+const getUserName = () => 'Chang Nian';
+```
+
+## Kebab
+
+烤串、中划线命名。常用于项目中文件夹命名，也在 `vue` 的规范中常用到。
+
+```html
+<template>
+  <user-info user-name="changnian" />
+  <template v-slot:info>Chang nian</template>
+</template>
+```
+
+## Snake
+
+蛇形、下划线命名。较常用于常量命名，也常见于 `Python` 变量命名规范中。
+
+```js
+const CURRENT_ENV = 'development';
+const API_HOST = 'http://example.com';
+```
+
+```py
+user_name = 'chang nian'
+
+def print_user_name ():
+  print "chang nian"
+```
+
+## 其他
+
+### 短划线打头
+
+函数形参使用短划线打头，表示未使用
+
+```js
+{
+  title: "User name",
+  name: "userName",
+  render: (_, { row }) => {
+    return <span>{row.userName}</span>;
+  };
+}
+```

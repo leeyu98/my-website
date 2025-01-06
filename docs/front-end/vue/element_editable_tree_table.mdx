@@ -1,0 +1,155 @@
+---
+title: Element 可编辑树形表格
+sidebar_position: 50
+displayed_sidebar: frontendSidebar
+key_words:
+  - 树形表格
+---
+
+<Author cost={2} publish="2024-6-27 18:20" />
+
+## 注意点
+
+为保证定义的校验功能正确应用，必须注意一下几点：
+
+1. `<el-table />` 绑定的 :data 必须在 el-form 绑定的 :model 中
+2. `<el-form-item />` 绑定的 prop 必须是该字段的真实路径，否则影响校验
+
+例如：treeData 中 id 为 1.1 的 name 字段数据绑定的 prop 应该是这样的 (以下写法等价)：
+
+```js
+:prop=`treeData[0].children[0].name`;
+:prop=`treeData.0.children.0.name`;
+:prop=`[treeData, 0, children, 0, name]`;
+```
+
+## 源代码
+
+<Tabs>
+<TabItem value="index" label="index.vue" default>
+
+```html
+<template>
+  <el-form :model="formData" ref="tableForm">
+    <el-table row-key="id" :data="formData.treeData" :tree-props="{ children: 'children' }">
+      <el-table-column prop="id" label="ID"> </el-table-column>
+      <el-table-column prop="id" label="自定义渲染 ID">
+        <template v-slot="{ row }">自定义渲染的ID {{ row.id }}</template>
+      </el-table-column>
+      <el-table-column v-slot="{ row, column }" prop="name" label="可编辑的 name">
+        <el-form-item
+          :prop="`treeData.${findPathById(formData.treeData, row.id)}.name`"
+          :rules="rules[column.property]"
+        >
+          <el-input v-model="row.name" />
+        </el-form-item>
+      </el-table-column>
+    </el-table>
+    <el-form-item>
+      <el-button @click="handleValidate">校验</el-button>
+    </el-form-item>
+  </el-form>
+</template>
+
+<script>
+  import { treeData } from 'data.js';
+  import { findPath } from 'utils.js';
+
+  export default {
+    data() {
+      return {
+        formData: { treeData },
+        // 定义校验规则
+        rules: {
+          name: [
+            {
+              required: true,
+              message: 'name 是必输的',
+            },
+          ],
+        },
+      };
+    },
+    methods: {
+      findPath,
+      async handleValidate() {
+        try {
+          const validateRes = await this.$refs['tableForm'].validate();
+          if (validateRes) {
+            console.log(validateRes);
+          }
+        } catch (err) {
+          console.log('invalidated');
+        }
+      },
+    },
+  };
+</script>
+```
+
+</TabItem>
+<TabItem value="data" label="data.js">
+
+```js
+export const treeData = [
+  {
+    id: '1',
+    parentId: '',
+    name: '河南省',
+    children: [
+      {
+        id: '1.1',
+        parentId: '1',
+        name: '郑州市',
+        children: [
+          {
+            id: '1.1.1',
+            parentId: '1.1',
+            name: '郑东新区',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '2',
+    parentId: '',
+    name: '河北省',
+    children: [
+      {
+        id: '2.1',
+        parentId: '2',
+        name: '廊坊市',
+      },
+    ],
+  },
+];
+```
+
+</TabItem>
+<TabItem value="utils" label="utils.js">
+
+```js
+/**
+ * @description 用来生成可编辑 name 需要绑定的路径
+ */
+export const findPath = (tree, targetId, path = '') => {
+  for (let i = 0; i < tree.length; i++) {
+    const node = tree[i];
+    if (node.id === targetId) {
+      return `${path}${i}`;
+    }
+    if (node.children && node.children.length > 0) {
+      const childPath = `${path}${i}.children.`;
+      const result = findPath(node.children, targetId, childPath);
+      if (result !== null) {
+        return result;
+      }
+    }
+  }
+  return null;
+};
+```
+
+</TabItem>
+</Tabs>

@@ -84,4 +84,4 @@ $ GIT_USER=<Your GitHub username> yarn deploy
 
 **其他**
 
-- 表格中使用竖线符号 `&#124;`
+- 表格中使用竖线符号 `\|`
