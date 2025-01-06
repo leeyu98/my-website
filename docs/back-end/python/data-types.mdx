@@ -1,0 +1,421 @@
+---
+title: 数据类型
+draft: true
+---
+
+[Python 教程](https://www.liaoxuefeng.com/wiki/1016959663602400)
+
+## 1 搭建环境
+
+## 2 变量
+
+### 变量的要求和约定
+
+1.  只能包含字母、数字、下划线，不能以数字开头
+2.  不能有空格
+3.  不能是关键字
+4.  尽量使用小写，有一定意义
+5.
+
+## 3 数据类型
+
+### 3.1 字符串
+
+1.  str.title() 首字母大写
+2.  str.upper() 全大写
+3.  str.lower() 小写
+4.  \+ 可以直接拼接字符串
+5.  支持 `\t\n` 等
+6.  str.strip() 删除两端空格
+    - str.lstrip() 删除开头空格
+    - str.rstrip() 删除末尾空格
+
+### 3.2 数字
+
+- 整数：\*\*表示乘方
+- 浮点数：存在不精确的问题
+- str(data) 将数据转化为 string 类型，因为他不能自动转换<br />
+
+![img](https://note.youdao.com/yws/public/resource/480f7e6997b592dba7f0d0f9884d5552/xmlnote/7DA3C50F884A4B799DDAEC2FB848D712/1532)
+
+### 3.3 列表
+
+list，就像是 js 中的数组。
+
+- 通过下标访问，index 从 0 开始
+- ==列表中的每一项类型可以是不同的==
+
+#### 1) 修改
+
+list\[index] = new_data，==new_data 可以是任意的类型==
+
+#### 2) 增加
+
+- list.append(new_data)<br /> 末尾追加数据，==new_data 可以是任意的类型==
+- list.insert(index,new \_data)<br />
+  插入一个数据，如果 index 大于当前 list 的长度，只会追加到最后；也可以是负数，从右边开始
+
+#### 3) 删除
+
+> 删除某个元素，跟 js 不一样，直接就删掉了，后面的会补上来，不会是 undefined 占位。index 超出会 error，可以是负数
+
+- del list\[index]<br /> 删除某个元素，跟 js 不一样，直接就删掉了，后面的会补上来，不会是 undefined 占位。index 超出会 error，可以是负数
+- list.pop()<br />
+  删除末尾的元素
+- list.pop(index)<br />
+  删除索引处的元素
+- list.remove(data)<br />
+  按照值来删除
+
+> day2 2020.6.25
+
+#### 4) 排序
+
+- list.sort() 永久排序，会改变原来的 list。
+  - 默认按字母顺序排列
+  - 排序的 list 数据类型需要一致，否则会报错
+  - 使用参数 reverse=True，实现倒序排列
+- sorted(list) 临时排序，不会改变原来的 list
+  - 也可以传入第二个参数 reverse=True
+- list.reverse() 按原来 list 倒序排列，永久性排序，可以再次使用 reverse()倒回来。
+
+#### 5) 长度
+
+len(list) 获取 list 的长度
+
+## 4 操作列表
+
+### 4.1 遍历
+
+for 循环：类似于 js 中的 for...in
+
+```python
+for item in list:
+    print(item)
+```
+
+- 注意冒号
+- 记得缩进
+
+### 4.2 创建数值列表
+
+#### 1) range(start,end)
+
+可以快速创建数组列表，包含开始 start，不包含 end
+
+```py
+# 打印 1 ~ 7
+for data in range(1, 8):
+    print(data)
+```
+
+#### 2) list()
+
+可以直接将 range()直接转成列表
+
+```py
+# [1, 2, 3, 4, 5, 6, 7]
+list1 = list(range(1, 8))
+print(list1)
+```
+
+#### 3) range(start, end, step)
+
+指定步长，类似于 matlab 中矩阵
+
+```py
+# 打印 1 3 5 7
+for item in range(1, 8, 2):
+    print(item)
+```
+
+#### 4) 统计函数
+
+- min(list) 最小值
+- max(list) 最大值
+- sum(list) 求和
+
+```py
+list = [0, 9, 5, 3, 2, 8, 6]
+print(min(list), max(list), sum(list))
+# 0 9 33
+```
+
+#### 5) 列表解析
+
+```py
+sq = []
+for val in range(1, 11):
+    sq.append(val**2)
+print(sq)
+```
+
+可以简写成下面的代码
+
+```py
+sq = [val**2 for val in range(1, 11)]
+print(sq)
+```
+
+### 4.3 使用列表的一部分
+
+#### 1) 切片
+
+list\[start\:end] 就是截取 list 的一部分，包含 start 不包含 end
+
+- start 不写，默认从 0 开始；不写 end 就会截取到末尾；只写冒号:也可以截取整个 list
+
+#### 2) 遍历切片
+
+- 就是结合 for 循环遍历
+
+```py
+list = ['name', 'age', 'gender', 'job']
+
+for val in list[0:3]:
+    print(val)
+```
+
+- 切片可以用来复制 list。这和 js 中的引用类型类似（深浅拷贝）：
+  - `list1 = list` 像这种直接赋值的话，其中一个改变时，另一个也会变
+  - `list1 = list[:]` 像这种复制的话就不会。
+
+```py
+list = ['name', 'age', 'gender', 'job']
+list1 = list # 直接赋值
+# 结果['age', 'gender', 'job', 'name'] ['age', 'gender', 'job', 'name']
+
+list1 = list[:] # 拷贝
+# 结果 ['age', 'gender', 'job', 'name'] ['name', 'age', 'gender', 'job']
+
+list.sort() # 排序会改变原数组
+print(list, list1)
+```
+
+### 4.4 元组
+
+- 可以理解为不可以修改的 list，用 `()` 括起来
+- 遍历方式与 list 相同，list\[index]
+- 元组的元素不可以修改，但是整个元素可以重新赋值，也就相当于重新定义了
+
+## 5 if 语句
+
+### 5.1 判断条件
+
+#### 1) 判断是否相等
+
+- 使用 == 判断，不支持 `===`
+- 区分大小写。如果大小写无关紧要，可以使用 lower()或者 upper()函数转换之后再比较
+
+```py
+car = 'BWM'
+print(car.lower() == 'bWm'.lower())
+# True
+```
+
+#### 2) 判断是否不相等
+
+- 使用 !=
+
+#### 3) 比较数字
+
+- 用法和其他语言类似：`==,!=,>,<,>=,<=`
+
+<font color="red">注意</font>
+
+- 比较两个 `字符串` 也是可以使用 `>,<,>=,<=` 依次顺位比较 ASCII
+
+```py
+print('ab'>'ba') # False
+```
+
+- 比较两个 `list` 时，依次顺位比较 list 元素的 ASCII，与 list 长度无关
+
+```py
+print([1,2,7]>[1,2,5,8,9]) # True
+```
+
+- 比较 字符串和数字时。不能直接比较，可以使用 str(number)将数字转成字符串，再比较 ASCII
+- 其他的就是不同类型的数据没办法一起比较
+
+#### 4) 多条件 and
+
+- 使用 and
+- 注意不用()
+
+#### 5) 选择条件 or
+
+- 使用 or
+- 注意不用()
+
+#### 6) 某个值是否在列表中 in
+
+- val in list 可以作为 if 语句的条件
+
+```py
+print(2 in [1, 2, 4]) # True
+```
+
+其实元是可以的
+
+```py
+print(2 in (1, 2, 4)) # True
+```
+
+#### 7) 某个值是否不在列表中 not in
+
+- 和 in 用法一致，结果相反
+
+#### 8) 布尔表达式
+
+- Python 中的布尔值只有 True 和 False，注意首字母是大写
+- 布尔表达式就是赋值为布尔值 val = True/False
+
+### 5.2 if 条件语句
+
+- if data1 == data2: 的形式，别忘了冒号:
+- 注意不使用括号
+-
+
+> day3 2020.6.26
+
+#### 1) 简单 if 语句
+
+#### 2) if-else
+
+#### 3) if-elif-else
+
+- 可以有多个 elif
+- 也可以没有 else
+
+```py
+date = 3
+if date <= 5 and date >= 1:
+    print('weekdays')
+elif date > 5 and date < 7:
+    print('weekends')
+else:
+    print('invalid')
+```
+
+- 通过 if 条件语句控制
+
+```py
+print('Making a pizza:')# 做一个pizza
+ingredients = ['mushrooms', 'green peppers', 'cheese']
+for ingredient in ingredients:
+    if ingredient == 'cheese':
+        print("We don't have any cheese") # 但是现在没有奶油了
+    else:
+        print('Adding ' + ingredient)
+print('finished!')
+
+# Making a pizza:
+# Adding mushrooms
+# Adding green peppers
+# We don't have any cheese
+# finished!
+```
+
+- 或者如果是空列表
+
+```py
+print('Making a pizza:')
+ingredients = []
+# 判断列表是不是空的
+if ingredients:
+    for ingredient in ingredients:
+        print('Adding ' + ingredient)
+    print('finished!')
+else:
+    print('You are making a plain pizza')
+# Making a pizza:
+# You are making a plain pizza
+```
+
+- 使用多个列表
+
+```py
+print('Making a pizza:')
+ingredients = ['mushrooms', 'green peppers', 'cheese']  # 原材料
+pizza = ['cheese', 'carrot']  # 需要做的pizza
+
+for ingredient in pizza:
+    if ingredient in ingredients:
+        print('Adding ' + ingredient)
+    else:
+        print('We donnot have ' + ingredient)
+print('finished!')
+
+# Making a pizza:
+# Adding cheese
+# We donnot have carrot
+# finished!
+```
+
+for 循环输出 `list` 时，需要输出下标怎么办，需要使用枚举实现 `enumerate(list)`
+
+```py
+print('how to put an elephant into a fridge:')
+steps = [
+    'open the door of the fridge', 'put the elephant in', 'close the door'
+]
+for index, step in enumerate(steps):
+    print('step' + str(index) + ': ' + step)
+print('finished')
+
+# how to put an elephant into a fridge:
+# step0: open the door of the fridge
+# step1: put the elephant in
+# step2: close the door
+# finished
+```
+
+## 6 字典
+
+类似于 js 中的对象，是键值对的形式。
+
+- 使用 {} 括起来的一些键值对
+- 访问方式只能使用 `obj['key']`。同样是通过 key 访问，但是不能使用打点.的形式，也不能使用 index 的形式。
+- js 中访问对象的属性时可以使用 `obj.key` 和 `obj['key']`
+
+```py
+person = {'name': 'Ryan', 'age': 22}
+print(person['name'])
+```
+
+### 6.1 添加或者修改
+
+- 也使用同样的 `obj['key']` 访问方式
+
+```py
+person = {'name': 'Ryan', 'age': 22}
+person['name'] = "Dylan"
+print(person)
+# {'name': 'Dylan', 'age': 22}
+```
+
+### 6.2 删除键值对
+
+- `del obj['key']`
+  - 删除了就永远消失了
+
+### 6.3 遍历字典
+
+#### 1) 遍历所有==键值对==
+
+- 使用 `obj.items()`
+
+```py
+person = {'name': 'Ryan', 'age': 22}
+for key, value in person.items():
+    print(key + ': ' + str(value))
+# name: Ryan
+# age: 22
+```
+
+- 试过了，这个 item()是不能用于遍历 list 的
+
+#### 2) 遍历所有的==键==
+
+- 使用 `obj.keys()`
