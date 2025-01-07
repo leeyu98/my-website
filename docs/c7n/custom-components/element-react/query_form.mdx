@@ -10,7 +10,7 @@ keywords:
   - QueryForm
 ---
 
-<Author count={3000} publish="2024-9-14 14:55" update="2024-11-14 10:15" />
+<Author cost={6} publish="2024-9-14 14:55" update="2024-12-12 16:15" />
 
 :::danger
 ✂️ 当前组件已停止更新维护，如遇问题，需自行修复！
@@ -83,33 +83,33 @@ export interface QueryFormProps {
    */
   dataSet: DataSet;
   /**
-   * @deprecated 使用 dataSet.queryDataSet 中配置 defaultValue 代替
-   * @description 查询表单默认值
-   * @default {}
-   */
-  defaultValues?: any;
-  /**
    * @description 查询表单属性，兼容 FormProps
    */
   queryFormProps?: Omit<FormProps, 'inline' | 'model'>;
-
   /**
    * @description 自定义传入组件属性，实现自定义
    */
   queryFieldsProps?: Record<string, Record<any, any>>;
-
-  className?: string;
   /**
    * @description 点击查询按钮之后的回调
    * @default ()=>{}
    */
   afterQuery?: (params: any) => any;
+  /**
+   * @description 点击查询重置之后的回调
+   * @default ()=>{}
+   */
   afterReset?: () => any;
-
+  /**
+   * @description 排除的查询字段 - 不会被渲染
+   * @default []
+   */
   excludeFields?: string[];
-
+  /**
+   * @description 级联清除字段映射 - 清除 key 时同时清除级联字段
+   * @default {}
+   */
   cascadeMap?: Record<string, string[]>;
-
   /**
    * @description 切换查询条件时是否自动查询
    * @default true
@@ -120,9 +120,11 @@ export interface QueryFormProps {
    * @default true
    */
   autoQueryAfterReset?: boolean;
+
+  className?: string;
 }
 
-const dateTypeMapping = {
+const DATE_TYPE_MAPPING = {
   [FieldType.year]: {
     selectMode: 'year',
     meaning: '年',
@@ -186,7 +188,19 @@ const QueryForm: React.FC<QueryFormProps> = ({
       ([k]) => !excludeFields.includes(k)
     );
     return fieldsMap;
-  }, [queryDataSet?.fields]);
+  }, [queryDataSet?.fields, excludeFields?.length]);
+
+  // 配置中的默认值
+  const configDefaultValues = React.useMemo(() => {
+    const cfgDefaultValues = {};
+    queryFields.forEach(([k, field]) => {
+      const { defaultValue } = field?.pristineProps || {};
+      if (defaultValue) {
+        cfgDefaultValues[k] = defaultValue;
+      }
+    });
+    return cfgDefaultValues;
+  }, [queryFields?.length]);
 
   const handleInputChange = (key: string, value: any) => {
     setModel((prevModel: any) => ({
@@ -237,11 +251,13 @@ const QueryForm: React.FC<QueryFormProps> = ({
         forceResetValue[k] = null;
       }
     });
-    setModel({ ...resetValue, ...defaultValues, ...forceResetValue });
+    // 保留注释 for debugger
+    console.log('[reset value]', { ...resetValue, ...configDefaultValues, ...forceResetValue });
+    setModel({ ...resetValue, ...configDefaultValues, ...forceResetValue });
 
     queryDataSet?.current?.set({
       ...resetValue,
-      ...defaultValues,
+      ...configDefaultValues,
       ...forceResetValue,
     });
 
@@ -340,7 +356,7 @@ const QueryForm: React.FC<QueryFormProps> = ({
     }
     // 年月周
     if ([FieldType.year, FieldType.month, FieldType.week].includes(type)) {
-      const { selectMode, meaning } = dateTypeMapping[type];
+      const { selectMode, meaning } = DATE_TYPE_MAPPING[type];
       return (
         <Form.Item
           key={name}
@@ -479,6 +495,10 @@ export default observer(QueryForm);
 ## 更新日志
 
 ### alpha
+
+**2024-12-12**
+
+- 🐞 修复查询表单默认值缓存后无法清除问题；
 
 **2024-11-14**
 
