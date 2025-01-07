@@ -1,7 +1,7 @@
 ---
-displayed_sidebar: frontendSidebar
 title: 稀疏数组中的空位
 description: 稀疏数组中的空位是什么，和 undefined 有什么不同，数组的方法又是如何处理空位的。
+displayed_sidebar: frontendSidebar
 tags:
   - 数组
   - 数组空位
@@ -10,9 +10,9 @@ keywords:
   - 数组空位
 ---
 
-<Author cost={5} publish="2024-1-3 23:15" update="" />
+<Author cost={5} publish="2024-1-3 23:15" update="2025-1-7 16:35" />
 
-下面的这句代码执行之后，arr 的值是怎样的？
+下面的这句代码执行之后，`arr` 的值是怎样的？
 
 ```js
 const arr = Array(5).map((i) => 5);
@@ -153,8 +153,8 @@ for (const item of [1, , 3]) {
 [...[1, , 3]]; // [1, undefined, 3];
 ```
 
-除此之外，`fill()` 能够正常填补空位 (也可以理解为将空位视为 undefined)
+除此之外，`fill()` 能够正常填补空位 (也可以理解为将空位视为 `undefined`)
 
 ```js
-[1, , 3].fill(2, 1, 2); // [1,2,3]
+[1, , 3].fill(2, 1, 2); // [1, 2, 3]
 ```
