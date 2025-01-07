@@ -54,6 +54,22 @@ const config: Config = {
         theme: {
           customCss: [require.resolve('./src/global.scss')], // CSS 替换为 SCSS
         },
+        svgr: {
+          svgrConfig: {
+            svgoConfig: {
+              plugins: [
+                {
+                  name: 'preset-default',
+                  params: {
+                    overrides: {
+                      cleanupIds: false,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
       } satisfies Preset.Options,
     ],
   ],
