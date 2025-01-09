@@ -35,12 +35,15 @@ sh build.local.sh --branch=release
 11. 切换回 `current_branch` 分支
 
 <details>
-<summary>为什么打包前要备份 dist 文件？</summary>
-
-**避免重复构建，节省时间；避免报错。**
-
-项目启动后 `dist` 中会生成项目运行必须的 `hzero_front` `hzero-front_components` `hzero_front_ued` 文件，但在打包时会清除这些文件并在下次启动项目时重新生成，备份可以节省再次生成这些文件的时间。
-
+  <summary>为什么打包前要备份 dist 文件？</summary>
+  <p>
+    **避免重复构建，节省时间；避免报错。**
+    <p>
+      项目启动后 `dist` 中会生成项目运行必须的 `hzero_front` `hzero-front_components`
+      `hzero_front_ued`
+      文件，但在打包时会清除这些文件并在下次启动项目时重新生成，备份可以节省再次生成这些文件的时间。
+    </p>
+  </p>
 </details>
 
 ```bash title="build.local.sh"
