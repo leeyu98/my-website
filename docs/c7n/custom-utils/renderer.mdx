@@ -1,0 +1,123 @@
+---
+title: 自定义渲染组件
+description: 自定义渲染组件。
+sidebar_position: 100
+tags:
+  - renderer
+keywords:
+  - renderer
+---
+
+<Author cost={2} publish="2025-5-14 11:28" update="" />
+
+自定义渲染组件，通常在 `src/utils/renderer.tsx` 文件中。
+
+## tagRender
+
+结合独立值集中的 `tag` 字段配置，实现动态颜色标签。
+
+<Tabs>
+<TabItem value="first" label="V1" default>
+
+```tsx
+import { Tag } from 'choerodon-ui';
+import { Renderer } from 'choerodon-ui/pro/lib/field/FormField';
+import * as React from 'react';
+
+/**
+ * @description 需要在对应的值集中配置 tag 为 color 支持 rgb, hex, hsl 等格式
+ * @example red
+ */
+export const tagRenderer: Renderer = ({ record, name, value, text }) => {
+  if (!text) {
+    return '-';
+  }
+  const lookupData: any = record?.dataSet?.getField(name)?.getLookupData(value, record);
+  const color: string | undefined = lookupData?.tag || 'blue';
+
+  return (
+    <Tag color={color} style={{ marginRight: 0 }}>
+      {text}
+    </Tag>
+  );
+};
+```
+
+</TabItem>
+<TabItem value="second" label="V2">
+
+当使用 `getLookupData` 获取不到对应的 `lookupData` 时，使用 `getOptions` 手动获取。
+
+```tsx
+import { Tag } from 'choerodon-ui';
+import { Renderer } from 'choerodon-ui/pro/lib/field/FormField';
+import * as React from 'react';
+
+/**
+ * @description 需要在对应的值集中配置 tag 为 color 支持 rgb, hex, hsl 等格式
+ * @example red
+ */
+export const tagRenderer: Renderer = ({ record, name, value, text }) => {
+  if (!text) {
+    return '-';
+  }
+  const currentField = record?.dataSet?.getField(name);
+  const lookupRecord = currentField
+    ?.getOptions()
+    ?.find((rcd) => rcd.get(currentField?.get('valueField')) === value);
+  const color: string | undefined = lookupRecord?.get('tag') || 'blue';
+
+  return (
+    <Tag color={color} style={{ marginRight: 0 }}>
+      {text}
+    </Tag>
+  );
+};
+```
+
+</TabItem>
+</Tabs>
+
+**应用**
+
+```tsx
+import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
+import { tagRenderer } from 'utils/renderer';
+
+const columns: ColumnProps[] = [
+  {
+    name: 'status',
+    renderer: tagRenderer,
+  },
+];
+```
+
+## rowNumberRenderer
+
+自定义渲染行号。
+
+```tsx
+import { Renderer } from 'choerodon-ui/pro/lib/field/FormField';
+import { ColumnRenderProps } from 'choerodon-ui/pro/lib/table/Column';
+
+export const rowNumberRenderer: Renderer<ColumnRenderProps> = ({ dataSet, record }) => {
+  const { currentPage, pageSize } = dataSet || { currentPage: 1, pageSize: 10 };
+  const { index } = record || { index: 0 };
+  return <span>{(currentPage - 1) * pageSize + index + 1}</span>;
+};
+```
+
+**应用**
+
+```tsx
+import { ColumnProps } from 'choerodon-ui/pro/lib/table/Column';
+import { rowNumberRenderer } from 'utils/renderer';
+
+const columns: ColumnProps[] = [
+  {
+    header: '序号',
+    renderer: rowNumberRenderer,
+    width: 50,
+  },
+];
+```

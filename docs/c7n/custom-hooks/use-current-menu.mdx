@@ -8,9 +8,9 @@ keywords:
   - HZERO 菜单
 ---
 
-<Author cost={5} publish="2024-4-15 18:5" update="2024-5-20 17:5" />
+<Author cost={5} publish="2024-4-15 18:5" update="2025-4-25 18:05" />
 
-获取当前打开 `Tab` 对应的菜单信息，可用于动态设置标题与编码。
+获取当前打开 `Tab` 对应的菜单信息，可用于动态设置标题与权限集编码。
 
 ## 特性说明
 
@@ -36,7 +36,7 @@ export default () => {
 | 参数 | 类型     | 说明                                               | 默认值 | 默认值说明                     |
 | :--- | :------- | :------------------------------------------------- | :----- | ------------------------------ |
 | key  | `string` | <Highlight>可选</Highlight> 要获取的具体属性的键值 |        | 默认为空，返回当前菜单所有信息 |
-| deps | `any[]`  | <Highlight>可选</Highlight> 当前钩子依赖值         | `[]`   | 默认不监听任何外部属性的变化       |
+| deps | `any[]`  | <Highlight>可选</Highlight> 当前钩子依赖值         | `[]`   | 默认不监听任何外部属性的变化   |
 
 ## 返回值
 
@@ -83,17 +83,17 @@ export function useCurrentMenu(key?: string | undefined, deps?: React.Dependency
   const [currentMenu, setCurrentMenu] = React.useState<IReturnType<typeof key>>(
     {} as IReturnType<typeof key>
   );
+  const menuId = getMenuId();
 
   React.useEffect(() => {
     (async () => {
       await waitMenuDataLoad();
-      const menuId = getMenuId();
       const menuData = getMenuLeafData();
 
       const currentMenu = menuData.find((item) => item.id === menuId);
       setCurrentMenu(key ? currentMenu?.[key] : currentMenu ?? {});
     })();
-  }, [...(deps ?? [])]);
+  }, [...(deps ?? []), menuId]);
 
   return currentMenu;
 }
