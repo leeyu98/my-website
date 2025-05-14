@@ -1,0 +1,63 @@
+---
+title: 自定义数据处理
+description: 自定义数据处理。
+sidebar_position: 10
+tags:
+  - constants
+keywords:
+  - constants
+---
+
+<Author cost={2} publish="2025-5-14 11:28" update="" />
+
+自定义常量，通常在 `src/utils/data.tsx` 文件中。
+
+## filterTree
+
+根据关键字筛选树状数据，返回包含关键字的节点和相关的父级节点。
+
+```ts
+import { uniqBy } from 'lodash-es';
+
+export type TreeOptionsType = {
+  /**
+   * @description 主键 id 字段
+   * @default id
+   */
+  idKey?: string;
+  /**
+   * @description 关联父级 parentId 字段
+   * @default parentId
+   */
+  parentKey?: string;
+  /**
+   * @description 控制是否展开 expand 字段
+   * @default expand
+   */
+  expandKey?: string;
+};
+
+export const filterTree = <T extends any>(
+  flatTree: T[] = [],
+  keyword = '',
+  filterKey: string = 'name',
+  treeOptions?: TreeOptionsType
+) => {
+  const { idKey = 'id', parentKey = 'parentId', expandKey = 'expand' } = treeOptions || {};
+  const arr: T[] = [];
+  let resArr: T[] = flatTree.filter((row) => row?.[filterKey]?.includes(keyword));
+  // 筛选出
+  while (resArr.length) {
+    const current = resArr.pop();
+    arr.push(current as T);
+    const parent = flatTree.find((row) => row?.[idKey] === current?.[parentKey]);
+    if (parent) {
+      resArr.push(parent);
+      // 检索时展开父级
+      arr.push({ ...parent, [expandKey]: true });
+    }
+  }
+
+  return uniqBy(arr, idKey);
+};
+```

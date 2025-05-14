@@ -1,0 +1,30 @@
+---
+title: 自定义常量
+description: 自定义常量。
+sidebar_position: 10
+tags:
+  - constants
+keywords:
+  - constants
+---
+
+<Author cost={1} publish="2025-5-14 11:27" update="" />
+
+自定义常量，通常在 `src/utils/constants.tsx` 文件中。
+
+```ts
+import { getCurrentOrganizationId, isTenantRoleLevel } from 'utils/utils';
+
+// 默认当前模块的 API 前缀
+export const API_PREFIX = isTenantRoleLevel()
+  ? `/platform/v1/${getCurrentOrganizationId()}`
+  : '/platform/v1';
+
+// 如需其他模块的 API 前缀
+export const API_PREFIX_OTHER = isTenantRoleLevel()
+  ? `/other/v1/${getCurrentOrganizationId()}`
+  : '/other/v1';
+
+// 桶名不能使用大写字母、下划线
+export const BUCKET_INTERNATIONAL = 'international';
+```
