@@ -1,0 +1,9 @@
+{
+  "label": "浏览器",
+  "position": 35,
+  "link": {
+    "type": "generated-index",
+    "slug": "tutorial/browser",
+    "description": "浏览器应用即调试技巧。"
+  }
+}
