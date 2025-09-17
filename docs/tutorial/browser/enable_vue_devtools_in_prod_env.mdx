@@ -1,0 +1,31 @@
+---
+title: 生产环境中启用 Vue Devtools 插件
+sidebar_position: 10
+---
+
+<Author cost={2} publish="2025-9-17 17:20" update="" />
+
+为了安全起见，一般情况下在生产环境中会禁用 `vue devtools` 调试工具，但有些情况下需要通过该工具调试问题。
+
+:::info
+Devtools inspection is not available because
+it's in production mode or explicitly disabled by the author.
+:::
+
+插件提示生产环境不可用或已被禁用。
+
+## 解决方案
+
+通过 JS 脚本临时启用。
+
+```js
+// 获取 Vue 实例（根据项目挂载点调整选择器）
+const Vue = document.querySelector('#app').__vue__.$root.constructor;
+
+// 获取 Vue Devtools 全局变量
+const devtools = window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+
+// 启用 devtools
+Vue.config.devtools = true;
+devtools.emit('init', Vue);
+```
