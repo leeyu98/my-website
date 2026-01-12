@@ -86,3 +86,13 @@ div[name*='blog' i]
 div[class|='blog' i]
 /* 能够匹配 'blog','Blog-name','blog Name', 但不能匹配 'blogname' */
 ```
+
+## 注意事项
+
+使用正则匹配选择器时，是将整个 class 属性（或其他属性）的值作为字符串进行匹配的，例如：
+
+```css
+/* class="ant-tag ant-tag--selected" 匹配 */
+/* class="ant-tag--selected ant-tag" 不匹配 */
+div[class^='ant-'][class$="--selected"]
+```
