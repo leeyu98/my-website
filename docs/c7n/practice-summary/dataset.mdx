@@ -1,0 +1,47 @@
+---
+title: DataSet
+description: DataSet 相关的巧妙用法。
+sidebar_position: 5
+tags:
+  - DataSet
+  - c7n
+keywords:
+  - DataSet
+---
+
+<Author cost={4} publish="2026-2-2 14:37" update="" />
+
+## record 属性
+
+通过 `record` 属性可以为 dataSet 中的所有记录添加属性控制，支持以下 4 个属性，并且支持动态调整：
+
+```ts
+interface RecordBaseProps {
+  disabled?: boolean | undefined;
+  selectable?: boolean | undefined;
+  defaultSelected?: boolean | undefined;
+  defaultExpanded?: boolean | undefined;
+}
+
+type RecordDynamicProps = {
+  [P in keyof RecordBaseProps]: (record: Record) => RecordBaseProps[P];
+};
+
+interface RecordProps extends RecordBaseProps {
+  dynamicProps?: Partial<RecordDynamicProps>;
+}
+```
+
+举例：username 为空的行不允许勾选
+
+```ts
+export const getTableDSProps = () => {
+  return {
+    record: {
+      dynamicProps: {
+        selectable: (record) => !!record?.get('username'),
+      },
+    },
+  };
+};
+```
