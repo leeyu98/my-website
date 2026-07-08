@@ -67,7 +67,7 @@ $ GIT_USER=<Your GitHub username> yarn deploy
 
 **文件**
 
-- 采用 snake case 命名
+- 采用 `snake-case` 命名
 
 **标签（tags）**
 

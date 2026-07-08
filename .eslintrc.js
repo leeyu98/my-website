@@ -1,6 +1,4 @@
-// @ts-check
 module.exports =
-  /** @type {import('eslint').Linter.BaseConfig} */
   ({
     extends: ['plugin:@docusaurus/recommended'],
     rules: {

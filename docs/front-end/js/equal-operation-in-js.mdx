@@ -36,7 +36,7 @@ keywords:
 当其中一个操作数是 `null/undefined` 时，只有另一个也是 `null/undefined` 时返回 `true`。
 
 :::warning 违反规则的特例
-`document.all` 被视为 `undefined`，所以 `document.all == undefined`，`document.all == null`，但是 `document.all == null && document.all == undefined` 为 `false`。
+`document.all` 被视为 `undefined`，所以 `document.all == undefined`，`document.all == null`，但是 `document.all === null && document.all === undefined` 为 `false`。
 :::
 
 ### 类型不同
