@@ -1,6 +1,6 @@
 import type * as Preset from '@docusaurus/preset-classic';
 import type { Config } from '@docusaurus/types';
-import { MDX1CompatOptions } from '@docusaurus/types/src/config';
+import { MarkdownConfig } from '@docusaurus/types/src/markdown';
 import type { PluginOptions } from '@easyops-cn/docusaurus-search-local';
 import { themes } from 'prism-react-renderer';
 import footer from './config/footer';
@@ -22,7 +22,6 @@ const config: Config = {
   projectName: 'my-website', // Usually your repo name.
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -163,21 +162,32 @@ const config: Config = {
     introduction: ['欢迎来到长念的小站', '我是一名前端开发者'],
   },
   markdown: {
+    format: 'detect',
+    hooks: {
+      onBrokenMarkdownImages: 'warn',
+      onBrokenMarkdownLinks: 'warn',
+    },
     mdx1Compat: {
       comments: true,
       admonitions: true,
       headingIds: true,
-    } satisfies MDX1CompatOptions,
+    },
   },
   // new future config
   future: {
-    experimental_faster: {
+    faster: {
       swcJsLoader: true,
       swcJsMinimizer: true, // 启用 SWC JS 压缩
       swcHtmlMinimizer: true, // 启用 SWC HTML 压缩
       lightningCssMinimizer: true, // 使用 Lightning CSS 压缩
       rspackBundler: true, // 启用 Rspack 构建
       mdxCrossCompilerCache: true, // 浏览器/NodeJS 环境仅编译一次
+    },
+    v4: {
+      siteStorageNamespacing: true,
+      fasterByDefault: true,
+      mdx1CompatDisabledByDefault: true,
+      removeLegacyPostBuildHeadAttribute: true,
     },
   },
 };
