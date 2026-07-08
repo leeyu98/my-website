@@ -36,7 +36,7 @@ keywords:
 
 ## 情景再现
 
-不知道在使用 `application/x-www-form-urlencoded` 时是否遇到过一下场景呢？
+不知道在使用 `application/x-www-form-urlencoded` 时是否遇到过以下场景呢？
 
 :::info 说明
 为了便于观察，以下为模拟浏览器解码之后的数据视图。
@@ -295,7 +295,7 @@ pets.age: 3
 
 ### comma
 
-逗号分隔，不适用对象数组，会丢失信息
+逗号分隔，不适用于对象数组，会丢失信息
 
 ```js
 qs.stringify(userData, { encode: false, arrayFormat: 'comma' });
