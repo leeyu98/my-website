@@ -6,84 +6,241 @@ tags:
   - tsconfig
 ---
 
-<Author count={3500} publish="2023-10-7 16:16" />
+<Author count={5000} publish="2023-10-7 16:16" />
 
-`tsconfig.json` 文件是 `TypeScript` 项目的配置文件，它包含了编译器的配置选项。常用的配置属性如下：
+`tsconfig.json` 是 `TypeScript` 项目的配置文件，位于项目根目录。通过 `tsc --init` 可快速生成。
 
 ## compilerOptions
 
-编译器的选项。
+编译器的核心选项，按功能分组如下。
 
-| 配置项                         | 说明                                                           | 默认值 |
-| ------------------------------ | -------------------------------------------------------------- | ------ |
-| target                         | 编译目标 JavaScript 版本，可以是 "ES3"，"ES5" 或 "ES2015" 等。 |        |
-| module                         | 指定模块系统，可以是 "CommonJS"，"AMD" 或 "System" 等。        |        |
-| sourceMap                      | 是否生成 sourcemap 文件。                                      |        |
-| outDir                         | 编译输出目录。                                                 |        |
-| rootDir                        | 设置项目的根目录。                                             |        |
-| strict                         | 是否开启严格类型检查。                                         |        |
-| noImplicitAny                  | 是否禁止隐式 any 类型。                                        |
-| lib                            | 指定要包含在编译中的库文件，如 "es2015"。                      |        |
-| paths                          | 指定模块路径别名。                                             |        |
-| baseUrl                        | 指定基础目录。                                                 |        |
-| jsx                            | 指定 JSX 的处理方式。                                          |        |
-| allowJs                        | 是否允许编译 JavaScript 文件。                                 |        |
-| checkJs                        | 是否检查 JavaScript 文件。                                     |        |
-| declaration                    | 是否生成声明文件。                                             |        |
-| declarationMap                 | 是否生成声明文件的 sourcemap。                                 |        |
-| emitDecoratorMetadata          | 是否支持装饰器。                                               |        |
-| experimentalDecorators         | 是否支持实验性装饰器。                                         |        |
-| listEmittedFiles               | 是否列出所有输出的文件。                                       |        |
-| listFiles                      | 是否列出所有编译过的文件。                                     |        |
-| locale                         | 指定本地化语言。                                               |        |
-| mapRoot                        | 指定 sourcemap 文件的根目录。                                  |        |
-| moduleResolution               | 指定模块解析策略。                                             |        |
-| noEmit                         | 是否禁止输出 JavaScript 代码。                                 |        |
-| noEmitHelpers                  | 是否禁止输出辅助函数。                                         |        |
-| noEmitOnError                  | 是否在发生错误时禁止输出 JavaScript 代码。                     |        |
-| noImplicitReturns              | 是否禁止隐式返回。                                             |        |
-| noUnusedLocals                 | 是否检查未使用的局部变量。                                     |        |
-| noUnusedParameters             | 是否检查未使用的参数。                                         |        |
-| preserveConstEnums             | 是否保留 const 枚举。                                          |        |
-| pretty                         | 是否格式化输出的 JavaScript 代码。                             |        |
-| removeComments                 | 是否移除注释。                                                 |        |
-| skipLibCheck                   | 是否跳过检查库文件。                                           |        |
-| sourceRoot                     | 指定源文件的根目录。                                           |        |
-| suppressExcessPropertyErrors   | 是否禁止过多属性错误。                                         |        |
-| suppressImplicitAnyIndexErrors | 是否禁止隐式 any 类型索引错误。                                |        |
-| typeRoots                      | 指定类型声明文件的根目录。                                     |        |
-| types                          | 指定需要包含在编译中的类型声明文件。                           |        |
-| watch                          | 是否监视文件变化并重新编译。                                   |        |
+### 基础编译
+
+| 配置项 | 说明 | 默认值 |
+| --- | --- | --- |
+| `target` | 编译目标 JavaScript 版本。可选 `"es2016"` ～ `"es2024"` 及 `"esnext"` | `"es2016"` |
+| `module` | 模块系统。现代项目推荐 `"preserve"` 或 `"node16"`；CLI 工具用 `"commonjs"` | `"commonjs"`（当 target 为 ES3/ES5） |
+| `lib` | 编译时包含的内置类型库，如 `["es2024", "dom"]` | 根据 target 自动推断 |
+| `jsx` | JSX 处理方式：`"react-jsx"` / `"react-jsxdev"` / `"preserve"` / `"react"` / `"react-native"` | `undefined` |
+| `allowJs` | 允许编译 `.js` 文件 | `false` |
+| `checkJs` | 对 `.js` 文件进行类型检查（需配合 `allowJs`） | `false` |
+| `resolveJsonModule` | 允许导入 `.json` 模块 | `false` |
+| `isolatedModules` | 将每个文件作为独立模块处理，确保兼容非 tsc 编译器（如 esbuild、swc） | `false` |
+
+### 严格模式（strict 系列）
+
+`"strict": true` 会同时启用以下全部选项（推荐开启）：
+
+| 配置项 | strict 子项 | 说明 |
+| --- | :---: | --- |
+| `strict` | — | 总开关，一键开启下方所有严格检查 |
+| `noImplicitAny` | ✅ | 禁止隐式 `any` 类型 |
+| `strictNullChecks` | ✅ | 严格空值检查，`null` / `undefined` 不能赋值给其他类型 |
+| `strictFunctionTypes` | ✅ | 严格函数类型检查 |
+| `strictBindCallApply` | ✅ | 严格检查 `bind` / `call` / `apply` 参数 |
+| `strictPropertyInitialization` | ✅ | 类属性必须在声明或构造函数中初始化 |
+| `useUnknownInCatchVariables` | ✅ | catch 变量默认为 `unknown` 而非 `any` |
+| `alwaysStrict` | ✅ | 输出 `"use strict"` |
+
+```ts
+// strictNullChecks 示例
+let name: string = null; // strictNullChecks: true → Error
+```
+
+---
+
+以下严格选项**不在 `strict` 总开关内**，需单独开启：
+
+| 配置项 | 说明 |
+| --- | --- |
+| `noUnusedLocals` | 检查未使用的局部变量 |
+| `noUnusedParameters` | 检查未使用的函数参数 |
+| `noImplicitReturns` | 函数所有分支必须有返回值 |
+| `noFallthroughCasesInSwitch` | 禁止 switch 穿透（case 必须有 break/return） |
+| `noUncheckedIndexedAccess` | 索引访问类型包含 `undefined` |
+| `exactOptionalPropertyTypes` | 可选属性不允许显式赋 `undefined` |
+| `noPropertyAccessFromIndexSignature` | 禁止用点号访问索引签名属性 |
+
+```ts
+// noUncheckedIndexedAccess 示例
+const arr: string[] = ['a', 'b'];
+const item = arr[5]; // 开启后类型为 string | undefined，避免遗漏边界检查
+```
+
+### 模块解析
+
+| 配置项 | 说明 | 默认值 |
+| --- | --- | --- |
+| `moduleResolution` | 模块解析策略。现代项目用 `"bundler"`，Node.js 项目用 `"node16"` / `"nodenext"` | `"classic"` 或 `"node"`（由 `module` 决定） |
+| `esModuleInterop` | 允许 CommonJS 模块作为默认导入（`import foo from 'foo'`） | `false` |
+| `allowSyntheticDefaultImports` | 允许默认导入没有默认导出的模块（仅类型层面） | `false` |
+| `verbatimModuleSyntax` | 禁止省略 `type` 修饰的导入（`import type` 在输出中会被移除），确保输出原样保留 | `false` |
+| `moduleDetection` | 模块检测方式：`"auto"` / `"legacy"` / `"force"` | `"auto"` |
+| `allowImportingTsExtensions` | 允许导入带 `.ts` / `.tsx` 扩展名的文件（需配合 `noEmit` 或 `emitDeclarationOnly`） | `false` |
+| `allowArbitraryExtensions` | 允许任意扩展名导入 | `false` |
+| `customConditions` | 自定义 `package.json` exports 解析条件 | `[]` |
+
+### 模块别名（paths）
+
+```ts
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"]
+    }
+  }
+}
+```
+
+:::warning
+设置 `paths` 后 `tsc` 不会转换路径，需配合打包工具（webpack alias、vite resolve.alias）使用。
+:::
+
+### 输出与生成
+
+| 配置项 | 说明 |
+| --- | --- |
+| `outDir` | 编译输出目录 |
+| `outFile` | 将所有文件合并输出为单个文件 |
+| `rootDir` | 输入文件的根目录（影响输出目录结构） |
+| `noEmit` | 不输出编译产物（仅做类型检查） |
+| `declaration` | 生成 `.d.ts` 声明文件 |
+| `declarationMap` | 生成声明文件的 sourcemap |
+| `declarationDir` | 声明文件输出目录 |
+| `emitDeclarationOnly` | 仅输出声明文件 |
+| `removeComments` | 移除注释 |
+| `sourceMap` | 生成 sourcemap 文件 |
+| `inlineSourceMap` | 内联 sourcemap |
+| `inlineSources` | 将源代码内联到 sourcemap |
+| `noEmitOnError` | 存在类型错误时不输出文件 |
+| `preserveConstEnums` | 保留 `const enum` 定义（不内联） |
+| `downlevelIteration` | 降级迭代器语法（`for...of` → 兼容写法） |
+| `importHelpers` | 从 `tslib` 导入辅助函数以减小输出体积 |
+
+### 项目与构建
+
+| 配置项 | 说明 |
+| --- | --- |
+| `incremental` | 增量编译，保存上次编译信息以加速后续编译 |
+| `composite` | 启用项目编译模式（project references 必需） |
+| `tsBuildInfoFile` | 增量编译信息文件路径 |
+| `disableSourceOfProjectReferenceRedirect` | 项目引用跳转到 `.d.ts` 而非源文件 |
+| `skipLibCheck` | 跳过 `.d.ts` 类型检查，显著加快编译 |
+| `forceConsistentCasingInFileNames` | 文件名大小写一致性（推荐开启） |
+| `maxNodeModuleJsDepth` | 搜索 `node_modules` 中 `.js` 文件的最大深度 |
+
+### 装饰器
+
+| 配置项 | 说明 |
+| --- | --- |
+| `experimentalDecorators` | 旧版装饰器（TC39 stage 2） |
+| `emitDecoratorMetadata` | 为装饰器生成元数据 |
+
+:::tip
+TypeScript 5.0+ 支持标准装饰器（TC39 stage 3），无需 `experimentalDecorators`。新项目建议使用标准装饰器。
+:::
+
+### 类型定义
+
+| 配置项 | 说明 |
+| --- | --- |
+| `types` | 指定需要包含的 `@types` 包，如 `["node", "jest"]` |
+| `typeRoots` | 类型声明文件的根目录列表 |
+
+### 已废弃/不常用的选项
+
+以下选项已从现代 TypeScript 中移除或强烈不建议使用：
+
+| 配置项 | 原因 |
+| --- | --- |
+| ~~`suppressExcessPropertyErrors`~~ | 已移除 |
+| ~~`suppressImplicitAnyIndexErrors`~~ | 已移除 |
+| `listFiles` / `listEmittedFiles` | CLI 参数，非 tsconfig 配置 |
+| `watch` | CLI 参数 `tsc --watch`，非 tsconfig 配置 |
+| ~~`compileOnSave`~~ | 已移除 |
+| ~~`buildOnSave`~~ | TypeScript 从未支持此项（这是 VS Code 设置） |
+| `locale` | 极少使用，本地化诊断信息 |
+| `pretty` | 默认开启，无需显式设置 |
 
 ## extends
 
-指定继承自另一个 `tsconfig.json` 文件。
+继承另一个 `tsconfig.json` 文件，字段会被合并（子配置覆盖父配置）。
 
-## include
+```json
+// 项目中常见的分层策略
+{
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist"
+  }
+}
+```
 
-指定需要编译的文件路径或文件夹路径，如果指定了 `files`，默认值为 `[]`，否则默认值为 `**/*`。
+常用基础配置包：[`@tsconfig/bases`](https://github.com/tsconfig/bases) 提供了各环境的默认配置。
 
-## exclude
+## files / include / exclude
 
-指定不需要编译的文件路径或文件夹路径。
+控制编译范围。三者关系：先计算 `include` 和 `exclude` 交集，再与 `files` 取并集。
 
-:::tip
-include 和 exclude 支持通配符：
+| 字段 | 说明 | 默认值 |
+| --- | --- | --- |
+| `files` | 显式列出要编译的文件 | `[]` |
+| `include` | 包含的文件/目录（glob 模式） | `["**/*"]`（未指定 `files` 时） |
+| `exclude` | 排除的文件/目录（默认排除 `node_modules`、`outDir` 等） | `["node_modules", "bower_components", "jspm_packages"]` |
 
-- `*` 匹配零个或多个字符（不包括目录分隔符）
-- `?` 匹配任何一个字符（不包括目录分隔符）
-- `**/` 匹配嵌套到任何级别的任何目录
+通配符规则：
 
-:::
+- `*` — 匹配零个或多个字符（不跨目录）
+- `?` — 匹配单个字符（不跨目录）
+- `**/` — 匹配任意嵌套层级
 
-## files
+```json
+{
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts", "src/temp/**"]
+}
+```
 
-指定需要编译的文件列表，如果制定的文件找不到时会报错。当项目中只有一小部分 `TS` 文件时使用，如果文件较多建议使用 `include`
+## references（项目引用）
 
-## compileOnSave
+将大型项目拆分为多个子项目，实现按需编译、类型隔离：
 
-指定是否在保存时编译文件。
+```json
+// tsconfig.json（根）
+{
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/utils" }
+  ]
+}
 
-## buildOnSave
+// packages/core/tsconfig.json（子项目）
+{
+  "compilerOptions": {
+    "composite": true, // 子项目必须开启
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src"]
+}
+```
 
-指定是否在保存时编译文件。
+子项目必须在 `compilerOptions` 中启用 `"composite": true`。
+构建时使用 `tsc --build`（而非 `tsc`）来利用引用关系。
+
+## watchOptions
+
+`tsc --watch` 的文件监听配置：
+
+```json
+{
+  "watchOptions": {
+    "watchFile": "useFsEvents",       // 文件监听方式
+    "watchDirectory": "useFsEvents",  // 目录监听方式
+    "fallbackPolling": "dynamicPriority",
+    "excludeDirectories": ["**/node_modules", "dist"]
+  }
+}
+```

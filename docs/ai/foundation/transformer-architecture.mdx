@@ -1,0 +1,192 @@
+---
+title: 大模型架构：Transformer 解析
+sidebar_position: 3
+displayed_sidebar: aiSidebar
+tags:
+  - ai
+  - transformer
+  - architecture
+---
+
+<Author publish="2026-7-13 12:00" />
+
+几乎所有现代大语言模型（GPT、Claude、Gemini、LLaMA）都基于 `Transformer` 架构。理解 Transformer 是理解 LLM 的起点。
+
+## 历史演进
+
+```text
+2017 ── Transformer (Attention Is All You Need)
+2018 ── BERT (Encoder-only), GPT (Decoder-only)
+2020 ── GPT-3: 175B 参数，涌现能力
+2022 ── ChatGPT / GPT-3.5: RLHF 对齐
+2023 ── GPT-4, Claude 2, Gemini, LLaMA 2
+2024 ── Claude 3, GPT-4o, Gemini 1.5 (多模态)
+2025 ── Claude Opus 4, GPT-4.1, Gemini 2.5
+```
+
+## Transformer 核心结构
+
+Transformer 由 **Encoder** 和 **Decoder** 两个模块组成，每个模块由多个相同的层堆叠而成：
+
+```text
+输入文本 → [Embedding + 位置编码]
+              │
+    ┌─────────┴──────────┐
+    │    Encoder × N     │  ← 理解输入
+    │  ┌──────────────┐  │
+    │  │ Self-Attention│  │
+    │  │ Feed Forward │  │
+    │  └──────────────┘  │
+    └─────────┬──────────┘
+              │
+    ┌─────────┴──────────┐
+    │    Decoder × N     │  ← 生成输出
+    │  ┌──────────────┐  │
+    │  │ Self-Attention│  │
+    │  │ Cross-Attention│ │
+    │  │ Feed Forward │  │
+    │  └──────────────┘  │
+    └─────────┬──────────┘
+              │
+输出文本 ← [Linear + Softmax]
+```
+
+### 三大模型架构
+
+| 架构 | 代表模型 | 特点 |
+| --- | --- | --- |
+| **Encoder-only** | BERT、RoBERTa | 双向理解，适合分类、NER、抽取 |
+| **Decoder-only** | GPT、Claude、LLaMA | 单向生成，自回归预测下一个 token |
+| **Encoder-Decoder** | T5、BART | 编码→解码，适合翻译、摘要 |
+
+现代 LLM 几乎全部采用 **Decoder-only** 架构。
+
+## Attention 注意力机制
+
+Attention 是 Transformer 的灵魂。核心思想：**让模型在处理每个词时，同时关注输入中所有相关词，给不同词分配不同权重。**
+
+### Self-Attention 计算过程
+
+```text
+# 步骤 1: 为每个 token 生成 Q、K、V 三个向量
+Query (Q) = 当前 token 想查询什么       ("我在找什么？")
+Key (K)   = 当前 token 能提供什么信息    ("我有什么？")
+Value (V) = 当前 token 的实际内容       ("我的内容是什么？")
+
+# 步骤 2: 计算注意力分数
+Score = Q × K^T / √d_k     (点积 + 缩放)
+
+# 步骤 3: Softmax 归一化 → 注意力权重
+Weights = Softmax(Score)
+
+# 步骤 4: 加权求和
+Output = Weights × V
+```
+
+```text
+"我 爱 北京"
+    │
+    ▼
+计算 "北京" 应该关注谁：
+  我   → Score: 0.2 → Weight: 0.2
+  爱   → Score: 0.3 → Weight: 0.3
+  北京 → Score: 0.5 → Weight: 0.5
+
+输出 = 0.2×V_我 + 0.3×V_爱 + 0.5×V_北京
+```
+
+### Multi-Head Attention（多头注意力）
+
+单头注意力只能捕获一种关系，**多头注意力**并行运行多组独立的 Q/K/V，每个"头"学习不同类型的关系：
+
+```text
+Head 1: 学习语法关系（主谓宾）
+Head 2: 学习指代关系（它 → 前面提到的事物）
+Head 3: 学习语义关系（同义词、反义词）
+...
+Head n: ...
+```
+
+各头的输出拼接后经线性变换，得到最终表示。这就是 LLM 能同时理解**语法、语义、上下文**的原因。
+
+## 关键组件
+
+### 位置编码（Positional Encoding）
+
+Attention 机制本身**不感知顺序**，"A B"和"B A"对它来说是一样的。位置编码为每个 token 注入位置信息：
+
+- **绝对位置编码**（原始 Transformer）：用正余弦函数编码
+- **RoPE**（旋转位置编码）：LLaMA、Qwen 等主流模型使用，通过旋转矩阵编码相对位置，外推性更好
+- **ALiBi**：用偏置项惩罚远距离 token
+
+### 前馈网络（Feed Forward Network）
+
+每层 Attention 后跟着一个 FFN，通常用 `SwiGLU` 激活函数。FFN 做了大部分**知识存储**工作，参数量也占大头。
+
+### Layer Normalization
+
+在每层前后做归一化，稳定训练。主流使用 **RMSNorm**（比 LayerNorm 更快）：
+
+```text
+Pre-Norm:  Norm → Attention → +残差 → Norm → FFN → +残差  (GPT-3, LLaMA)
+Post-Norm: Attention → +残差 → Norm → FFN → +残差 → Norm  (原始 Transformer)
+```
+
+现代模型都用 Pre-Norm，训练更稳定。
+
+## 训练流程
+
+```text
+阶段 1: Pre-training（预训练）
+  │  海量无标注文本 → 预测下一个 token
+  │  成本：数百万～数千万美元
+  │  产出：Base Model（基座模型）
+  │
+  ▼
+阶段 2: Fine-tuning（微调）
+  │  有监督的高质量指令数据
+  │  成本：数万～数十万美元
+  │  产出：Chat Model（对话模型）
+  │
+  ▼
+阶段 3: RLHF（人类反馈强化学习）
+     人类对回复打分 → 训练奖励模型 → PPO/DPO 对齐
+     成本：数十万美元（标注成本高）
+     产出：对齐后模型
+```
+
+## MoE（混合专家）
+
+一种提升模型效率的架构。不是所有参数都参与每次推理，而是**每次只激活部分"专家"**：
+
+| 模型 | 总参数 | 激活参数 | 说明 |
+| --- | --- | --- | --- |
+| GPT-4 | ~1.8T (传闻) | ~280B | 8 个专家，每次激活 2 个 |
+| Mixtral 8×7B | 46.7B | 12.9B | 8 个专家，每次激活 2 个 |
+| DeepSeek-V3 | 671B | 37B | 256 个专家，每次激活 8 个 |
+
+MoE 的代价：显存占用大（需加载全部参数），但推理速度快（只计算部分）。
+
+## 关键术语速查
+
+| 术语 | 含义 |
+| --- | --- |
+| 参数数量（Params） | 模型中的可训练权重数，如 7B = 70 亿 |
+| 隐藏维度（Hidden Dim） | 每层向量的维度，通常 4096～8192 |
+| 层数（Layers） | Transformer 层的堆叠数，通常 32～96 层 |
+| 上下文长度 | 模型能处理的最大 token 数 |
+| 自回归（Autoregressive） | 逐个生成 token，每次基于之前所有 token 预测下一个 |
+
+## 总结
+
+现代 LLM 的核心公式：
+
+```text
+Decoder-only Transformer
++ Multi-Head Self-Attention
++ RoPE 位置编码
++ Pre-Norm + SwiGLU FFN
++ 海量数据预训练
++ SFT + RLHF 对齐
+= 今天的 LLM
+```

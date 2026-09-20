@@ -1,0 +1,148 @@
+---
+title: 向量数据库对比
+sidebar_position: 2
+displayed_sidebar: aiSidebar
+tags:
+  - ai
+  - vector-db
+  - rag
+---
+
+<Author publish="2026-7-13 12:00" />
+
+向量数据库是 RAG 系统的核心组件，负责存储和检索文档的向量表示。本文对比主流的向量数据库方案。
+
+## 核心概念
+
+向量数据库的核心操作是**近似最近邻搜索**（`ANN`, `Approximate Nearest Neighbor`），在大量向量中快速找到与查询最相似的 Top-K。
+
+### 常用索引算法
+
+| 算法           | 特点                                     |
+| -------------- | ---------------------------------------- |
+| HNSW           | 分层可导航小世界图，查询快，内存占用较高 |
+| IVF            | 倒排文件索引，内存友好，精度略低         |
+| PQ（乘积量化） | 压缩向量，节省内存但损失精度             |
+| DiskANN        | 支持磁盘存储的超大规模索引               |
+
+## 主流向量数据库
+
+### Pinecone（云服务）
+
+| 维度 | 评价                              |
+| ---- | --------------------------------- |
+| 部署 | 全托管云服务，零运维              |
+| 性能 | 优秀，自动扩缩容                  |
+| 成本 | 免费额度有限，大规模较贵          |
+| 生态 | 与 LangChain、LlamaIndex 深度集成 |
+
+```python
+from pinecone import Pinecone
+
+pc = Pinecone(api_key="xxx")
+index = pc.Index("my-index")
+
+# 查询
+results = index.query(
+    vector=[0.1, 0.2, ...],
+    top_k=5,
+    include_metadata=True,
+)
+```
+
+### Milvus（开源）
+
+| 维度 | 评价                       |
+| ---- | -------------------------- |
+| 部署 | 自托管，支持 Docker/K8s    |
+| 性能 | 百万级向量，毫秒级查询     |
+| 成本 | 开源免费，但需要服务器成本 |
+| 生态 | 丰富，支持多种索引类型     |
+
+适合需要**完全控制数据**的企业场景。
+
+### Chroma（轻量级）
+
+| 维度 | 评价                      |
+| ---- | ------------------------- |
+| 部署 | 嵌入式/Client-Server 模式 |
+| 性能 | 适合小型数据集（十万级）  |
+| 成本 | 开源免费                  |
+| 特点 | API 极简，上手最快        |
+
+```python
+import chromadb
+
+client = chromadb.Client()
+collection = client.create_collection("docs")
+
+collection.add(
+    documents=["文档内容..."],
+    metadatas=[{"source": "doc1"}],
+    ids=["1"],
+)
+# 查询
+results = collection.query(query_texts=["关键词"], n_results=5)
+```
+
+适合原型开发和小型项目。
+
+### pgvector（PostgreSQL 扩展）
+
+| 维度 | 评价                            |
+| ---- | ------------------------------- |
+| 部署 | PostgreSQL 扩展，复用现有数据库 |
+| 性能 | 中等，适合百万级以内            |
+| 成本 | 最低（无需额外基础设施）        |
+| 特点 | 向量检索 + SQL 过滤，事务支持   |
+
+```sql
+-- 创建扩展
+CREATE EXTENSION vector;
+
+-- 创建表
+CREATE TABLE documents (
+  id SERIAL PRIMARY KEY,
+  content TEXT,
+  embedding vector(1536)  -- OpenAI embedding 维度
+);
+
+-- 相似度查询
+SELECT * FROM documents
+ORDER BY embedding <=> '[0.1, 0.2, ...]'::vector
+LIMIT 5;
+```
+
+适合**已有 PostgreSQL** 的项目，不需要引入新组件。
+
+### Weaviate
+
+| 维度 | 评价                                   |
+| ---- | -------------------------------------- |
+| 部署 | 自托管或云服务                         |
+| 性能 | 优秀，支持混合搜索                     |
+| 特点 | 内置向量化、GraphQL API、Hybrid Search |
+
+## 选型建议
+
+```text
+┌────────────────────────────────────────────┐
+│  选型决策树                                  │
+├────────────────────────────────────────────┤
+│                                            │
+│  小项目 / 原型？ ──→ Chroma                  │
+│  已有 PostgreSQL？ ──→ pgvector              │
+│  不想运维？ ──→ Pinecone                     │
+│  企业自托管 / 大规模？ ──→ Milvus            │
+│  需要 Hybrid Search？ ──→ Weaviate           │
+│                                            │
+└────────────────────────────────────────────┘
+```
+
+| 方案     | 适用规模       | 运维成本 | 场景                     |
+| -------- | -------------- | -------- | ------------------------ |
+| Chroma   | 小（&lt;100K） | 低       | 原型、个人项目           |
+| pgvector | 中（&lt;1M）   | 低       | 已有 PG 的项目           |
+| Milvus   | 大（&gt;1M）   | 中-高    | 企业级 RAG               |
+| Pinecone | 任意           | 无       | 不想运维的团队           |
+| Weaviate | 中-大          | 中       | 需要多模态/Hybrid Search |
