@@ -44,6 +44,12 @@ const navbar: Navbar = {
       position: 'left',
     },
     {
+      label: 'AI',
+      type: 'doc',
+      docId: 'ai/intro',
+      position: 'left',
+    },
+    {
       label: '猪齿鱼',
       type: 'doc',
       docId: 'c7n/intro',

@@ -1,0 +1,108 @@
+---
+title: AI 编程工具
+sidebar_position: 1
+displayed_sidebar: aiSidebar
+tags:
+  - ai
+  - tools
+  - coding
+---
+
+<Author publish="2026-7-13 12:00" />
+
+AI 编程工具已从简单的代码补全演进为能理解整个项目、执行多步任务的开发伙伴。以下对比当前主流的 AI 编程工具。
+
+## 主流工具对比
+
+| 工具 | 形态 | 特点 | 价格 |
+| --- | --- | --- | --- |
+| **Claude Code** | CLI / IDE 扩展 | 深度代码理解、多文件重构、自主执行 | Pro/Max 订阅 |
+| **GitHub Copilot** | IDE 扩展 | 行级补全 + Chat，生态最成熟 | $10/月 |
+| **Cursor** | 独立 IDE | AI-native 编辑器，多模型切换 | 免费 / $20/月 |
+| **Windsurf** | 独立 IDE | 类似 Cursor，专注 Flow 模式 | 免费 / $15/月 |
+| **Cline** | VS Code 扩展 | 开源 Agent，可接入多种模型 | 免费（自备 API key） |
+| **Continue** | IDE 扩展 | 开源，本地/云端模型灵活配置 | 免费 |
+| **Aider** | CLI | 专注代码编辑，支持多模型 | 免费 |
+| **Amazon Q Developer** | IDE 扩展 | AWS 深度集成，代码安全扫描 | 免费 |
+
+## Claude Code
+
+Anthropic 出品的**终端 AI 编程助手**，定位为开发者的 AI 伙伴：
+
+```bash
+# 直接给描述，自动完成
+> "把这个类迁移到 TypeScript，添加完整的类型定义"
+
+# 理解项目结构
+> "在 user service 中添加邮箱验证逻辑，参考现有的 phone auth 实现"
+
+# 自主多步操作
+> "查找所有未使用的依赖，移除并运行测试确保通过"
+```
+
+**优势**：深度代码理解、多文件编排、自主决策执行
+**局限**：需订阅，中文项目表现可能不如英文
+
+## GitHub Copilot
+
+编程辅助的开创者，**行级补全**仍然是核心竞争力：
+
+- **补全**：根据上下文预测下一行/下一个函数，速度快
+- **Chat**：选中代码对话，支持 `/fix`、`/tests`、`/explain` 等斜杠命令
+- **Agent 模式**（Coding Agent）：Copilot 自主规划并执行多步编辑
+
+**适合**：日常编码加速，与 GitHub 生态无缝衔接。
+
+## Cursor
+
+基于 VS Code 的 AI-native 编辑器，**Tab 补全 + Inline Edit + Composer** 三层模式：
+
+- **Tab**：跳转式补全，能预测多行代码和光标位置
+- **Cmd+K**：内联编辑选区
+- **Composer**：多文件 Agent 模式，同时编辑多个文件
+- **多模型**：Claude、GPT-4o、Gemini 自由切换
+
+**适合**：不想用终端、偏好 GUI 操作，需要多模型灵活切换。
+
+## Aider（CLI）
+
+开源 CLI 工具，**基于 git diff 的最小改动理念**：
+
+```bash
+# 自动追踪 git，每次只改必要的内容
+aider --model claude-sonnet-5 src/
+
+# AI 编辑后自动生成 commit
+# 做错了？git checkout 即可回退
+```
+
+**适合**：喜欢终端 + git 工作流，对代码变更粒度有要求。
+
+## 选型建议
+
+```text
+你用什么工作方式？
+
+终端党 / 重型重构 / 多文件编排
+  └── Claude Code
+
+VS Code 日常 / 轻量补全 / 性价比
+  └── GitHub Copilot
+
+全功能 AI-IDE / GUI 偏好 / 多模型
+  └── Cursor
+
+开源 / 自有 API key / 自定义
+  └── Cline 或 Continue
+
+终端最小改动 / Git 工作流
+  └── Aider
+```
+
+## 使用建议
+
+1. **不要完全信任生成的代码**：始终 review，尤其是安全相关的逻辑
+2. **写好 prompt=写好代码**：需求描述越清晰，产出质量越高
+3. **配合 git 频繁提交**：AI 修改前 commit，方便对比和回退
+4. **渐进式使用**：从简单任务开始，逐步建立信任后扩展范围
+5. **提供上下文**：打开相关文件、附上接口文档，模型理解越深产出越好

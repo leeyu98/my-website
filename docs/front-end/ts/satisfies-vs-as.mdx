@@ -3,6 +3,9 @@ title: TS 关键词 satisfies 和 as
 draft: true
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ## as
 
 ### 类型断言
@@ -11,17 +14,17 @@ draft: true
 因为在某些时候开发者可能比 `TypeScript` 更清楚地知道具体的类型，例如：
 
 ```ts
-const divElm = document.getElementById('#id');
+const divElm = document.getElementById('id');
 ```
 
 `document.getElementById` 默认返回的是较为宽泛的类型 `HTMLElement`，但开发者更清楚地知道获取的类型是更为精确的 `HTMLDivElement`，这时就可以使用类型断言，强制进行类型转换。断言有两种语法形式：
 
 ```ts
 // as 关键字
-const divElm = document.getElementById('#id') as HTMLDivElement;
+const divElm = document.getElementById('id') as HTMLDivElement;
 
 // 尖括号
-const divElm = <HTMLDivElement>document.getElementById('#id');
+const divElm = <HTMLDivElement>document.getElementById('id');
 ```
 
 ### 断言的类型要求
@@ -37,10 +40,6 @@ const str = 123 as string;
 // code-error-next-line
 const num = '123' as number;
 // Error: 类型 "string" 到类型 "number" 的转换可能是错误的，因为两种类型不能充分重叠。
-
-// 允许空对象字面量 {} 作为任何类型的子类型
-const num = {} as number;
-const str = {} as string;
 ```
 
 类型断言之后，`TypeScript` 会把该类型作为断言后的类型处理，但是 `TypeScript` 并不会对断言的准确性进行检验：
@@ -56,3 +55,103 @@ str.charAt(0);
 所以断言是比较危险的，开发者必须确保断言的正确性。
 
 ## satisfies
+
+`satisfies` 是 TypeScript 4.9 引入的关键字，用于**检验类型是否匹配**，同时**保留推导出的更精确类型**。
+
+### 基本用法
+
+```ts
+type Colors = 'red' | 'green' | 'blue';
+
+// 使用类型注解 — 类型被拓宽为 Colors，丢失了具体值
+const palette1: Record<Colors, string> = {
+  red: '#ff0000',
+  green: '#00ff00',
+  blue: '#0000ff',
+};
+// palette1.red 的类型是 string
+
+// 使用 satisfies — 既校验类型，又保留每个属性的字面量类型
+const palette2 = {
+  red: '#ff0000',
+  green: '#00ff00',
+  blue: '#0000ff',
+} satisfies Record<Colors, string>;
+// palette2.red 的类型是 '#ff0000'（字面量类型），而不是 string
+```
+
+### satisfies vs as 的核心区别
+
+| 特性       | `as`                    | `satisfies`         |
+| ---------- | ----------------------- | ------------------- |
+| 类型校验   | ❌ 不做校验，强制转换    | ✅ 校验是否匹配      |
+| 类型推断   | 被断言类型完全覆盖       | 保留原始窄类型       |
+| 安全性     | 低，可能掩盖错误         | 高，编译时发现问题    |
+| 额外属性   | 不报错                   | 报错                |
+
+<Tabs>
+<TabItem value="as" label="as 的问题">
+
+```ts
+type User = { name: string; age: number };
+
+// as 不校验属性是否存在 — 多余属性不报错
+const user = {
+  name: 'Alice',
+  age: 30,
+  email: 'alice@example.com', // 本该报错，但 as 绕过了
+} as User;
+
+// age 类型错误也不会被检测
+// code-error-next-line
+const user2 = {
+  name: 'Bob',
+  age: '30', // 应该是 number，但 as 不会报错
+} as User;
+```
+
+</TabItem>
+<TabItem value="satisfies" label="satisfies 的安全性">
+
+```ts
+type User = { name: string; age: number };
+
+// satisfies 会校验属性
+// code-error-next-line
+const user = {
+  name: 'Alice',
+  age: 30,
+  email: 'alice@example.com', // Error: "email" 不存在于类型 "User" 中
+} satisfies User;
+
+// code-error-next-line
+const user2 = {
+  name: 'Bob',
+  age: '30', // Error: 不能将类型 "string" 分配给类型 "number"
+} satisfies User;
+```
+
+</TabItem>
+</Tabs>
+
+### 配合 as const 使用
+
+`satisfies` 与 `as const` 组合，可以在保证类型安全的同时获得最精确的字面量类型：
+
+```ts
+const routes = {
+  home: '/',
+  about: '/about',
+  user: '/user/:id',
+} as const satisfies Record<string, `/${string}`>;
+
+// routes.home 的类型是 '/'（字面量）
+// routes.user 的类型是 '/user/:id'（字面量）
+// 同时所有值都被校验为 `/${string}` 格式
+```
+
+### 典型使用场景
+
+1. **调色板 / 常量映射**：既要有类型安全，又要保留具体值用于自动补全
+2. **路由配置**：校验路由格式，同时保留路径字面量
+3. **组件 props 默认值**：校验是否符合 Props 类型，同时保留窄类型推导

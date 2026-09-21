@@ -1,0 +1,264 @@
+---
+title: 流程控制
+draft: true
+---
+
+> 参考：[Python 教程 - 廖雪峰](https://www.liaoxuefeng.com/wiki/1016959663602400)
+
+## 遍历
+
+for 循环：类似于 js 中的 `for...in`
+
+```python
+for item in my_list:
+    print(item)
+```
+
+- 注意冒号
+- 记得缩进
+
+for 循环输出列表时，需要输出下标怎么办？使用 `enumerate(list)` 实现
+
+```py
+print('how to put an elephant into a fridge:')
+steps = [
+    'open the door of the fridge', 'put the elephant in', 'close the door'
+]
+for index, step in enumerate(steps):
+    print('step' + str(index) + ': ' + step)
+print('finished')
+
+# how to put an elephant into a fridge:
+# step0: open the door of the fridge
+# step1: put the elephant in
+# step2: close the door
+# finished
+```
+
+## 创建数值列表
+
+### range(start, end)
+
+可以快速创建数值序列，包含 start，不包含 end
+
+```py
+# 打印 1 ~ 7
+for data in range(1, 8):
+    print(data)
+```
+
+### list()
+
+可以直接将 `range()` 转成列表
+
+```py
+# [1, 2, 3, 4, 5, 6, 7]
+list1 = list(range(1, 8))
+print(list1)
+```
+
+### range(start, end, step)
+
+指定步长
+
+```py
+# 打印 1 3 5 7
+for item in range(1, 8, 2):
+    print(item)
+```
+
+### 统计函数
+
+- `min(list)` 最小值
+- `max(list)` 最大值
+- `sum(list)` 求和
+
+```py
+my_list = [0, 9, 5, 3, 2, 8, 6]
+print(min(my_list), max(my_list), sum(my_list))
+# 0 9 33
+```
+
+### 列表解析
+
+```py
+sq = []
+for val in range(1, 11):
+    sq.append(val**2)
+print(sq)
+```
+
+可以简写成下面的代码
+
+```py
+sq = [val**2 for val in range(1, 11)]
+print(sq)
+```
+
+## if 语句
+
+### 判断条件
+
+#### 判断是否相等
+
+- 使用 `==` 判断，不支持 `===`
+- 区分大小写。如果大小写无关紧要，可以使用 `lower()` 或者 `upper()` 函数转换之后再比较
+
+```py
+car = 'BWM'
+print(car.lower() == 'bWm'.lower())
+# True
+```
+
+#### 判断是否不相等
+
+- 使用 `!=`
+
+#### 比较数字
+
+- 用法和其他语言类似：`==`、`!=`、`>`、`<`、`>=`、`<=`
+
+:::warning 注意
+
+- 比较两个 **字符串** 也可以使用 `>`、`<`、`>=`、`<=`，依次顺位比较 ASCII
+
+```py
+print('ab' > 'ba')  # False
+```
+
+- 比较两个 **列表** 时，依次顺位比较列表元素的 ASCII，与列表长度无关
+
+```py
+print([1, 2, 7] > [1, 2, 5, 8, 9])  # True
+```
+
+- 比较**字符串和数字**时，不能直接比较。可以使用 `str(number)` 将数字转成字符串，再比较 ASCII
+- 不同类型的其他数据没办法一起比较
+
+:::
+
+#### 多条件 and
+
+- 使用 `and`
+- 注意不用括号
+
+#### 选择条件 or
+
+- 使用 `or`
+- 注意不用括号
+
+#### 某个值是否在列表中 in
+
+- `val in list` 可以作为 if 语句的条件
+
+```py
+print(2 in [1, 2, 4])  # True
+```
+
+其实元组也是可以的
+
+```py
+print(2 in (1, 2, 4))  # True
+```
+
+#### 某个值是否不在列表中 not in
+
+- 和 `in` 用法一致，结果相反
+
+#### 布尔表达式
+
+- Python 中的布尔值只有 `True` 和 `False`，注意首字母是大写
+- 布尔表达式就是赋值为布尔值 `val = True / False`
+
+### if 条件语句
+
+- `if data1 == data2:` 的形式，别忘了冒号 `:`
+- 注意不使用括号
+
+#### 简单 if 语句
+
+```py
+age = 18
+if age >= 18:
+    print('You are an adult')
+```
+
+#### if-else
+
+```py
+age = 16
+if age >= 18:
+    print('You are an adult')
+else:
+    print('You are a minor')
+```
+
+#### if-elif-else
+
+- 可以有多个 `elif`
+- 也可以没有 `else`
+
+```py
+date = 3
+if date <= 5 and date >= 1:
+    print('weekdays')
+elif date > 5 and date < 7:
+    print('weekends')
+else:
+    print('invalid')
+```
+
+通过 if 条件语句控制
+
+```py
+print('Making a pizza:')
+ingredients = ['mushrooms', 'green peppers', 'cheese']
+for ingredient in ingredients:
+    if ingredient == 'cheese':
+        print("We don't have any cheese")
+    else:
+        print('Adding ' + ingredient)
+print('finished!')
+
+# Making a pizza:
+# Adding mushrooms
+# Adding green peppers
+# We don't have any cheese
+# finished!
+```
+
+如果是空列表
+
+```py
+print('Making a pizza:')
+ingredients = []
+# 判断列表是不是空的
+if ingredients:
+    for ingredient in ingredients:
+        print('Adding ' + ingredient)
+    print('finished!')
+else:
+    print('You are making a plain pizza')
+# Making a pizza:
+# You are making a plain pizza
+```
+
+使用多个列表
+
+```py
+print('Making a pizza:')
+ingredients = ['mushrooms', 'green peppers', 'cheese']  # 原材料
+pizza = ['cheese', 'carrot']  # 需要做的 pizza
+
+for ingredient in pizza:
+    if ingredient in ingredients:
+        print('Adding ' + ingredient)
+    else:
+        print('We donnot have ' + ingredient)
+print('finished!')
+
+# Making a pizza:
+# Adding cheese
+# We donnot have carrot
+# finished!
+```
