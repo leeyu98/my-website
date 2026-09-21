@@ -1,0 +1,60 @@
+---
+title: Tooltip 悬浮提示
+description: Tooltip 悬浮提示相关的实践方案。
+sidebar_position: 60
+tags:
+  - Tooltip
+keywords:
+  - Tooltip
+---
+
+<Author cost={4} publish="2026-9-20 17:25" update="" />
+
+## 表格中超长悬浮提示优化
+
+当表格中出现超长文本展示时，默认的 tooltip 会出现反复闪动行为：<br/>
+鼠标悬浮 → 出现tooltip提示 → 提示过长导致失去焦点 → tooltip 消失 → 再次获得焦点...<br/>
+可以通过自定义渲染 tooltip 解决此类问题。
+
+<Tabs>
+<TabItem value="index.tsx" label="index.tsx" default>
+
+```tsx
+import styles from './index.module.less';
+
+export default () => {
+  const columns: ColumnProps[] = [
+    // 响应报文
+    {
+      name: 'responseJson',
+      tooltip: TableColumnTooltip.none,
+      renderer: ({ value }) => (
+        <Tooltip placement="top" title={value} popupClassName={styles.popup}>
+          <div style={{ width: '100%', overflowX: 'hidden', textOverflow: 'ellipsis' }}>
+            {value}
+          </div>
+        </Tooltip>
+      ),
+    },
+  ];
+};
+```
+
+</TabItem>
+<TabItem value="index.module.less" label="index.module.less">
+
+```less
+.popup {
+  :global(.c7n-pro-tooltip-popup-inner.c7n-pro-tooltip-popup-inner-dark) {
+    max-width: 80vw !important;
+    max-height: 90vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important; // 保留换行
+  }
+}
+```
+
+</TabItem>
+</Tabs>
